@@ -136,7 +136,7 @@ function QuotePageContent() {
                     >
                       {rims.map((rim) => (
                         <option key={rim.id} value={rim.name}>
-                          {rim.name} - {rim.size} ({rim.price})
+                          {rim.name} - {rim.style} ({rim.color})
                         </option>
                       ))}
                     </select>
