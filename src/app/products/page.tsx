@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+
 
 interface Product {
   id: string;
@@ -19,8 +19,7 @@ const ALL_PRODUCTS: Product[] = [
   { id: "r3", name: "Silver Split-Spoke", category: "rims", image: "/images/cfd7cdae-e500-4e73-b81f-fbe791e235b8.jpg", price: "$749" },
   { id: "r4", name: "Gunmetal Racing", category: "rims", image: "/images/f612cd15-1bfc-4c54-b41c-059ab0070079.jpg", price: "$829" },
   // Lights & Accessories can use existing images as placeholders; replace later with real assets
-  { id: "l1", name: "LED Headlight Kit", category: "lights", image: "/images/4163b269-8817-4864-ad5c-b4c010ffb273.jpg", price: "$199" },
-  { id: "a1", name: "Wheel Lock Set", category: "accessories", image: "/images/becf64e6-b32e-42cc-9da0-2e0630357ff7.jpg", price: "$49" },
+
 ];
 
 export default function ProductsPage() {
@@ -54,6 +53,11 @@ export default function ProductsPage() {
       {/* Grid */}
       <section className="px-4 sm:px-6 lg:px-8 py-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.length === 0 && (
+            <div className="col-span-full text-center text-gray-400 py-10">
+              No products in this category yet.
+            </div>
+          )}
           {filtered.map((p) => (
             <div key={p.id} className="group bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
               <div className="relative aspect-video">
@@ -71,7 +75,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      <Footer />
+
     </main>
   );
 }

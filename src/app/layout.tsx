@@ -19,6 +19,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PR Auto Custom - Premium Custom Rims & Wheels",
   description: "Interactive rim customizer and quote system for premium custom wheels",
+  icons: {
+    icon: "/logos/logo.png",
+    shortcut: "/logos/logo.png",
+    apple: "/logos/logo.png",
+  },
 };
 
 export default function RootLayout({
