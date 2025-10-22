@@ -16,8 +16,8 @@ export const Footer: React.FC = () => {
           <Image
             src="/images/nuvana-logo.jpg"
             alt="Nuvana logo"
-            width={90}
-            height={24}
+            width={60}
+            height={16}
             className="object-contain"
           />
           <span className="text-gray-400 text-xs">Made by <span className="text-white font-medium">Nuvana</span></span>

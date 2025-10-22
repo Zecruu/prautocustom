@@ -9,10 +9,10 @@ export const Hero: React.FC = () => {
 
   return (
     <section
-      className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20 bg-cover md:bg-cover bg-center md:bg-center bg-no-repeat"
+      className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20 bg-cover bg-no-repeat"
       style={{
         backgroundImage: 'url(/images/IMG_1484.JPG)',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center 30%',
       }}
     >
       {/* Dark Overlay */}
