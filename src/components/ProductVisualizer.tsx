@@ -48,17 +48,17 @@ export const ProductVisualizer: React.FC = () => {
               </div>
               <div className="text-center">
                 <h3 className="text-2xl font-bold text-white mb-2">
-                  {t(`visualizer.rims.${selectedRim.id}.name`)}
+                  {selectedRim.name}
                 </h3>
                 <p className="text-gray-400 mb-4">
-                  {t(`visualizer.rims.${selectedRim.id}.description`)}
+                  {selectedRim.description}
                 </p>
                 <div className="flex justify-center gap-4 text-sm flex-wrap">
                   <span className="px-4 py-2 bg-gray-700 rounded-full text-white">
-                    <strong>{t('visualizer.style')}:</strong> {t(`visualizer.rims.${selectedRim.id}.style`)}
+                    <strong>{t('visualizer.style')}:</strong> {selectedRim.style}
                   </span>
                   <span className="px-4 py-2 bg-gray-700 rounded-full text-white">
-                    <strong>{t('visualizer.color')}:</strong> {t(`visualizer.rims.${selectedRim.id}.color`)}
+                    <strong>{t('visualizer.color')}:</strong> {selectedRim.color}
                   </span>
                 </div>
               </div>
@@ -83,14 +83,14 @@ export const ProductVisualizer: React.FC = () => {
                     <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-600">
                       <Image
                         src={rim.image}
-                        alt={t(`visualizer.rims.${rim.id}.name`)}
+                        alt={rim.name}
                         fill
                         className="object-cover"
                       />
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold">{t(`visualizer.rims.${rim.id}.name`)}</div>
-                      <div className="text-sm opacity-75">{t(`visualizer.rims.${rim.id}.color`)}</div>
+                      <div className="font-semibold">{rim.name}</div>
+                      <div className="text-sm opacity-75">{rim.color}</div>
                     </div>
                   </button>
                 ))}

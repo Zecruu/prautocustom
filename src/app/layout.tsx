@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { I18nProvider } from "@/components/I18nProvider";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { Footer } from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <I18nProvider>
           <AuthProvider>
             {children}
+            <Footer />
             <WhatsAppFloat />
           </AuthProvider>
         </I18nProvider>
