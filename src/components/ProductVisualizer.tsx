@@ -106,6 +106,16 @@ export const ProductVisualizer: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* View More Products Button */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/products"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300"
+          >
+            {t('visualizer.viewMoreProducts')}
+          </Link>
+        </div>
       </div>
     </section>
   );

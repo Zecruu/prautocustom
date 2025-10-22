@@ -14,10 +14,10 @@ interface Product {
 }
 
 const ALL_PRODUCTS: Product[] = [
-  { id: "r1", name: "Chrome Multi-Spoke", category: "rims", image: "/images/4163b269-8817-4864-ad5c-b4c010ffb273.jpg", price: "$899" },
-  { id: "r2", name: "Black Sport Mesh", category: "rims", image: "/images/becf64e6-b32e-42cc-9da0-2e0630357ff7.jpg", price: "$799" },
-  { id: "r3", name: "Silver Split-Spoke", category: "rims", image: "/images/cfd7cdae-e500-4e73-b81f-fbe791e235b8.jpg", price: "$749" },
-  { id: "r4", name: "Gunmetal Racing", category: "rims", image: "/images/f612cd15-1bfc-4c54-b41c-059ab0070079.jpg", price: "$829" },
+  { id: "r1", name: "Chrome Multi-Spoke", category: "rims", image: "/images/4163b269-8817-4864-ad5c-b4c010ffb273.jpg" },
+  { id: "r2", name: "Black Sport Mesh", category: "rims", image: "/images/becf64e6-b32e-42cc-9da0-2e0630357ff7.jpg" },
+  { id: "r3", name: "Silver Split-Spoke", category: "rims", image: "/images/cfd7cdae-e500-4e73-b81f-fbe791e235b8.jpg" },
+  { id: "r4", name: "Gunmetal Racing", category: "rims", image: "/images/f612cd15-1bfc-4c54-b41c-059ab0070079.jpg" },
   // Lights & Accessories can use existing images as placeholders; replace later with real assets
 
 ];
@@ -63,12 +63,9 @@ export default function ProductsPage() {
               <div className="relative aspect-video">
                 <Image src={p.image} alt={p.name} fill className="object-cover" />
               </div>
-              <div className="p-5 flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="text-white font-semibold text-lg">{p.name}</h3>
-                  <p className="text-gray-400 text-sm capitalize">{p.category}</p>
-                </div>
-                {p.price && <span className="text-white font-bold">{p.price}</span>}
+              <div className="p-5">
+                <h3 className="text-white font-semibold text-lg">{p.name}</h3>
+                <p className="text-gray-400 text-sm capitalize">{p.category}</p>
               </div>
             </div>
           ))}

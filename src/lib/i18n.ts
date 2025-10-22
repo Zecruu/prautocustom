@@ -29,6 +29,7 @@ const resources = {
         availableRims: 'Available Rims',
         style: 'Style',
         color: 'Color',
+        viewMoreProducts: 'View More Products',
         rims: {
           rim1: {
             name: 'Chrome Multi-Spoke',
@@ -126,6 +127,7 @@ const resources = {
         availableRims: 'Rines Disponibles',
         style: 'Estilo',
         color: 'Color',
+        viewMoreProducts: 'Ver Más Productos',
         rims: {
           rim1: {
             name: 'Multi-Radios Cromado',
