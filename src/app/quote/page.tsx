@@ -175,16 +175,12 @@ function QuotePageContent() {
                       <p className="text-white font-semibold">{selectedRim.name}</p>
                     </div>
                     <div>
-                      <p className="text-gray-400 text-sm">Size</p>
-                      <p className="text-white font-semibold">{selectedRim.size}</p>
+                      <p className="text-gray-400 text-sm">Style</p>
+                      <p className="text-white font-semibold">{selectedRim.style}</p>
                     </div>
                     <div>
                       <p className="text-gray-400 text-sm">Color</p>
                       <p className="text-white font-semibold">{selectedRim.color}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Price</p>
-                      <p className="text-white font-semibold text-lg">{selectedRim.price}</p>
                     </div>
                     <div className="pt-4 border-t border-gray-600">
                       <p className="text-gray-400 text-sm">Description</p>
