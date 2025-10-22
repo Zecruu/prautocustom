@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -9,18 +8,15 @@ export const Hero: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background Image */}
-      <Image
-        src="/images/hero.png"
-        alt="PR Auto Custom Hero"
-        fill
-        className="object-cover absolute inset-0 -z-10"
-        priority
-      />
-
+    <section
+      className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20 bg-cover bg-top bg-no-repeat"
+      style={{
+        backgroundImage: 'url(/images/hero.png)',
+        backgroundPosition: 'center top',
+      }}
+    >
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40 -z-10" />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl">

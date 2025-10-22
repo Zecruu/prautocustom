@@ -24,16 +24,36 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logos/logo.png"
-              alt="PR Auto Custom"
-              width={40}
-              height={40}
-              className="rounded-lg"
-            />
-            <span className="text-white font-bold text-xl hidden sm:inline">PR Auto Custom</span>
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logos/logo.png"
+                alt="PR Auto Custom"
+                width={40}
+                height={40}
+                className="rounded-lg"
+              />
+              <span className="text-white font-bold text-xl hidden sm:inline">PR Auto Custom</span>
+            </Link>
+
+            {/* Nuvana Branding */}
+            <a
+              href="https://www.nuvanaweb.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 border border-white/10"
+              title="Website by Nuvana"
+            >
+              <Image
+                src="/images/nuvana-logo.jpg"
+                alt="Nuvana"
+                width={20}
+                height={20}
+                className="rounded"
+              />
+              <span className="text-gray-400 text-xs">Made by <span className="text-white font-medium">Nuvana</span></span>
+            </a>
+          </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
@@ -56,9 +76,10 @@ export const Navbar: React.FC = () => {
             {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
-              className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition text-sm font-medium"
+              className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition text-sm font-medium border border-white/20"
+              title={i18n.language === 'en' ? 'Switch to Spanish' : 'Cambiar a Inglés'}
             >
-              {i18n.language === 'en' ? 'ES' : 'EN'}
+              🌐 {i18n.language === 'en' ? 'ES' : 'EN'}
             </button>
 
             {/* Auth Links */}
@@ -105,7 +126,7 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden pb-4 border-t border-white/10">
+          <div className="md:hidden pb-4 border-t border-white/10 mt-4">
             <Link href="/" className="block py-2 text-white hover:text-gray-300">
               {t('nav.home')}
             </Link>
@@ -118,6 +139,14 @@ export const Navbar: React.FC = () => {
             <Link href="/contact" className="block py-2 text-white hover:text-gray-300">
               {t('nav.contact')}
             </Link>
+
+            {/* Language Toggle in Mobile Menu */}
+            <button
+              onClick={toggleLanguage}
+              className="w-full mt-4 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition text-sm font-medium text-left"
+            >
+              🌐 {i18n.language === 'en' ? 'Español (ES)' : 'English (EN)'}
+            </button>
           </div>
         )}
       </div>

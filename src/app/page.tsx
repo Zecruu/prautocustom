@@ -3,6 +3,7 @@
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { ProductVisualizer } from '@/components/ProductVisualizer';
+import { MapWidget } from '@/components/MapWidget';
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <ProductVisualizer />
+      <MapWidget />
     </main>
   );
 }

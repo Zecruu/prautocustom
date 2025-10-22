@@ -1,74 +1,44 @@
 export interface Rim {
   id: string;
   name: string;
-  size: string;
   style: string;
   color: string;
-  price: string;
-  image: string;
+  image: string; // Rim image
   description: string;
 }
 
 export const rims: Rim[] = [
   {
     id: 'rim-1',
-    name: 'Classic Chrome',
-    size: '18"',
+    name: 'Chrome Multi-Spoke',
     style: 'Classic',
     color: 'Chrome Silver',
-    price: '$450',
-    image: '/rims/classic-chrome.png',
-    description: 'Timeless chrome finish with classic design',
+    image: '/images/4163b269-8817-4864-ad5c-b4c010ffb273.jpg',
+    description: 'Classic chrome multi-spoke design with polished finish',
   },
   {
     id: 'rim-2',
-    name: 'Sport Black',
-    size: '19"',
+    name: 'Black Sport Mesh',
     style: 'Sport',
     color: 'Matte Black',
-    price: '$520',
-    image: '/rims/sport-black.png',
-    description: 'Aggressive sport design with matte black finish',
+    image: '/images/becf64e6-b32e-42cc-9da0-2e0630357ff7.jpg',
+    description: 'Aggressive black mesh sport design with deep concave',
   },
   {
     id: 'rim-3',
-    name: 'Luxury Gold',
-    size: '20"',
+    name: 'Silver Split-Spoke',
     style: 'Luxury',
-    color: 'Gold',
-    price: '$680',
-    image: '/rims/luxury-gold.png',
-    description: 'Premium luxury style with gold accents',
+    color: 'Silver',
+    image: '/images/cfd7cdae-e500-4e73-b81f-fbe791e235b8.jpg',
+    description: 'Premium silver split-spoke design with modern styling',
   },
   {
     id: 'rim-4',
-    name: 'Racing Red',
-    size: '19"',
+    name: 'Gunmetal Racing',
     style: 'Racing',
-    color: 'Candy Red',
-    price: '$550',
-    image: '/rims/racing-red.png',
-    description: 'High-performance racing design in vibrant red',
-  },
-  {
-    id: 'rim-5',
-    name: 'Modern White',
-    size: '18"',
-    style: 'Modern',
-    color: 'Pearl White',
-    price: '$480',
-    image: '/rims/modern-white.png',
-    description: 'Contemporary design with pearl white finish',
-  },
-  {
-    id: 'rim-6',
-    name: 'Titanium Gray',
-    size: '20"',
-    style: 'Premium',
-    color: 'Titanium Gray',
-    price: '$620',
-    image: '/rims/titanium-gray.png',
-    description: 'Premium titanium gray with brushed finish',
+    color: 'Gunmetal Gray',
+    image: '/images/f612cd15-1bfc-4c54-b41c-059ab0070079.jpg',
+    description: 'High-performance gunmetal racing wheels with bold design',
   },
 ];
 
