@@ -24,9 +24,50 @@ export const ProductVisualizer: React.FC = () => {
         <h2 className="text-4xl sm:text-5xl font-bold text-white text-center mb-4">
           {t('visualizer.title')}
         </h2>
-        <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+        <p className="text-gray-400 text-center mb-8 max-w-2xl mx-auto">
           {t('visualizer.selectRim')}
         </p>
+
+        {/* View More Products Button - Directly below heading */}
+        <div className="mb-12 text-center">
+          <Link
+            href="/products"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300"
+          >
+            {t('visualizer.viewMoreProducts')}
+          </Link>
+        </div>
+
+        {/* Horizontal Rim Selector - Mobile */}
+        <div className="mb-8 lg:hidden">
+          <h3 className="text-xl font-bold text-white mb-4">{t('visualizer.availableRims')}</h3>
+          <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+            {rims.map((rim) => (
+              <button
+                key={rim.id}
+                onClick={() => handleRimChange(rim)}
+                className={`flex-shrink-0 w-40 p-3 rounded-lg transition-all duration-300 snap-start ${
+                  selectedRim.id === rim.id
+                    ? 'bg-white text-black border-2 border-white'
+                    : 'bg-gray-700 text-white border-2 border-transparent hover:border-white/50'
+                }`}
+              >
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-600 mb-2">
+                  <Image
+                    src={rim.image}
+                    alt={rim.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-sm">{rim.name}</div>
+                  <div className="text-xs opacity-75 mt-1">{rim.color}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Preview Section */}
@@ -65,8 +106,8 @@ export const ProductVisualizer: React.FC = () => {
             </div>
           </div>
 
-          {/* Rim Selection */}
-          <div className="lg:col-span-1">
+          {/* Rim Selection - Desktop Only */}
+          <div className="hidden lg:block lg:col-span-1">
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-white/10">
               <h3 className="text-xl font-bold text-white mb-6">{t('visualizer.availableRims')}</h3>
               <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -107,13 +148,13 @@ export const ProductVisualizer: React.FC = () => {
           </div>
         </div>
 
-        {/* View More Products Button */}
-        <div className="mt-12 text-center">
+        {/* Request Quote Button - Mobile Only */}
+        <div className="mt-8 lg:hidden">
           <Link
-            href="/products"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300"
+            href={`/quote?rim=${selectedRim.id}`}
+            className="w-full px-6 py-3 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300 text-center block"
           >
-            {t('visualizer.viewMoreProducts')}
+            {t('visualizer.requestQuote')}
           </Link>
         </div>
       </div>
