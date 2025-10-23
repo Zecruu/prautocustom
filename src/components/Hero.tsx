@@ -6,21 +6,12 @@ export const Hero: React.FC = () => {
 
   return (
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Mobile Background Image */}
+      {/* Hero Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-no-repeat md:hidden"
+        className="absolute inset-0 bg-cover bg-no-repeat"
         style={{
-          backgroundImage: 'url(/images/mobile-hero.png)',
+          backgroundImage: 'url(/images/PR-AUTO-CUSTOM-CAR.png)',
           backgroundPosition: 'center',
-        }}
-      />
-
-      {/* Desktop Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-no-repeat hidden md:block"
-        style={{
-          backgroundImage: 'url(/images/IMG_1484.JPG)',
-          backgroundPosition: 'center 30%',
         }}
       />
 
