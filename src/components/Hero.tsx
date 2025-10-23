@@ -8,13 +8,25 @@ export const Hero: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <section
-      className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20 bg-cover bg-no-repeat"
-      style={{
-        backgroundImage: 'url(/images/IMG_1484.JPG)',
-        backgroundPosition: 'center 30%',
-      }}
-    >
+    <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
+      {/* Mobile Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-no-repeat md:hidden"
+        style={{
+          backgroundImage: 'url(/images/mobile-hero.png)',
+          backgroundPosition: 'center',
+        }}
+      />
+
+      {/* Desktop Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-no-repeat hidden md:block"
+        style={{
+          backgroundImage: 'url(/images/IMG_1484.JPG)',
+          backgroundPosition: 'center 30%',
+        }}
+      />
+
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40" />
 
