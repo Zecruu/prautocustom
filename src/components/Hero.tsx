@@ -8,11 +8,10 @@ export const Hero: React.FC = () => {
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Hero Background Image */}
       <div
-        className="absolute inset-0 bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-no-repeat"
         style={{
           backgroundImage: 'url(/images/PR-AUTO-CUSTOM-CAR.png)',
           backgroundPosition: 'center',
-          backgroundSize: 'contain',
         }}
       />
 
