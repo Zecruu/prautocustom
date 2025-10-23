@@ -38,38 +38,78 @@ export const ProductVisualizer: React.FC = () => {
           </Link>
         </div>
 
-        {/* Horizontal Rim Selector - Mobile */}
-        <div className="mb-8 lg:hidden">
-          <h3 className="text-xl font-bold text-white mb-4">{t('visualizer.availableRims')}</h3>
-          <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-            {rims.map((rim) => (
-              <button
-                key={rim.id}
-                onClick={() => handleRimChange(rim)}
-                className={`flex-shrink-0 w-40 p-3 rounded-lg transition-all duration-300 snap-start ${
-                  selectedRim.id === rim.id
-                    ? 'bg-white text-black border-2 border-white'
-                    : 'bg-gray-700 text-white border-2 border-transparent hover:border-white/50'
-                }`}
-              >
-                <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-gray-600 mb-2">
+        {/* Mobile Layout - Big Preview on Top */}
+        <div className="lg:hidden">
+          {/* Big Preview Image */}
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-white/10 mb-6">
+            <div className="relative w-full aspect-square mb-4">
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 rounded-lg z-10">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                </div>
+              )}
+              <Image
+                src={selectedRim.image}
+                alt={selectedRim.name}
+                fill
+                className={`object-contain p-4 transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}
+                priority
+              />
+            </div>
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {selectedRim.name}
+              </h3>
+              <p className="text-gray-400 mb-4">
+                {selectedRim.description}
+              </p>
+              <div className="flex justify-center gap-3 text-sm flex-wrap">
+                <span className="px-4 py-2 bg-gray-700 rounded-full text-white">
+                  <strong>{t('visualizer.style')}:</strong> {selectedRim.style}
+                </span>
+                <span className="px-4 py-2 bg-gray-700 rounded-full text-white">
+                  <strong>{t('visualizer.color')}:</strong> {selectedRim.color}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Small Rim Thumbnails - All Visible */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-white mb-3 text-center">{t('visualizer.availableRims')}</h3>
+            <div className="grid grid-cols-4 gap-2">
+              {rims.map((rim) => (
+                <button
+                  key={rim.id}
+                  onClick={() => handleRimChange(rim)}
+                  className={`relative aspect-square rounded-lg overflow-hidden transition-all duration-300 ${
+                    selectedRim.id === rim.id
+                      ? 'ring-4 ring-white scale-105'
+                      : 'ring-2 ring-gray-600 hover:ring-white/50'
+                  }`}
+                >
                   <Image
                     src={rim.image}
                     alt={rim.name}
                     fill
                     className="object-cover"
                   />
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-sm">{rim.name}</div>
-                  <div className="text-xs opacity-75 mt-1">{rim.color}</div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Request Quote Button - Mobile */}
+          <Link
+            href={`/quote?rim=${selectedRim.id}`}
+            className="w-full px-6 py-3 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300 text-center block mb-8"
+          >
+            {t('visualizer.requestQuote')}
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Desktop Layout - Side by Side */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-8">
           {/* Preview Section */}
           <div className="lg:col-span-2">
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-white/10 h-full flex flex-col items-center justify-center min-h-96">
@@ -107,7 +147,7 @@ export const ProductVisualizer: React.FC = () => {
           </div>
 
           {/* Rim Selection - Desktop Only */}
-          <div className="hidden lg:block lg:col-span-1">
+          <div className="lg:col-span-1">
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-white/10">
               <h3 className="text-xl font-bold text-white mb-6">{t('visualizer.availableRims')}</h3>
               <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -146,16 +186,6 @@ export const ProductVisualizer: React.FC = () => {
               </Link>
             </div>
           </div>
-        </div>
-
-        {/* Request Quote Button - Mobile Only */}
-        <div className="mt-8 lg:hidden">
-          <Link
-            href={`/quote?rim=${selectedRim.id}`}
-            className="w-full px-6 py-3 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300 text-center block"
-          >
-            {t('visualizer.requestQuote')}
-          </Link>
         </div>
       </div>
     </section>
