@@ -1,11 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
 
 export const Hero: React.FC = () => {
-  const { t } = useTranslation();
 
   return (
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
@@ -27,32 +24,20 @@ export const Hero: React.FC = () => {
         }}
       />
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      {/* Dark Overlay - Lighter to show image better */}
+      <div className="absolute inset-0 bg-black/20" />
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl">
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-          {t('hero.title')}
-        </h1>
-        <p className="text-xl sm:text-2xl text-gray-200 mb-8 drop-shadow-md">
-          {t('hero.subtitle')}
-        </p>
-
-        {/* CTA Button */}
-        <Link
-          href="/visualizer"
-          className="inline-block px-8 py-4 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
-        >
-          {t('hero.cta')}
-        </Link>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-        </svg>
+      {/* Animated Mouse Scroll Indicator */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="flex flex-col items-center gap-2">
+          {/* Mouse Icon */}
+          <div className="w-8 h-12 border-3 border-white rounded-full relative animate-bounce">
+            {/* Scroll Wheel */}
+            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-white rounded-full animate-scroll"></div>
+          </div>
+          {/* Scroll Text */}
+          <span className="text-white text-sm font-medium tracking-wider opacity-80">SCROLL</span>
+        </div>
       </div>
     </section>
   );
