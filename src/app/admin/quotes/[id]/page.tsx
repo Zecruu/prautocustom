@@ -8,6 +8,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import QuoteResponseForm from '@/components/admin/QuoteResponseForm';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

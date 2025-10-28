@@ -4,6 +4,8 @@ import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import QuotesTable from '@/components/admin/QuotesTable';
 
+export const dynamic = 'force-dynamic';
+
 export default async function QuotesPage() {
   await getServerSession(authOptions);
   await connectDB();

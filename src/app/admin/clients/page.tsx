@@ -4,6 +4,8 @@ import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 import Quote from '@/models/Quote';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ClientsPage() {
   await getServerSession(authOptions);
   await connectDB();

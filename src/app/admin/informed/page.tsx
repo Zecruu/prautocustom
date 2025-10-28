@@ -4,6 +4,8 @@ import connectDB from '@/lib/mongodb';
 import QuoteResponse from '@/models/QuoteResponse';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export default async function InformedPage() {
   await getServerSession(authOptions);
   await connectDB();

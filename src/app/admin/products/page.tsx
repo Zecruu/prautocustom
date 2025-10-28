@@ -6,6 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ProductActions from '@/components/admin/ProductActions';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductsPage() {
   await getServerSession(authOptions);
   await connectDB();

@@ -5,6 +5,8 @@ import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 import UserActions from '@/components/admin/UserActions';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UsersPage() {
   const session = await getServerSession(authOptions);
 

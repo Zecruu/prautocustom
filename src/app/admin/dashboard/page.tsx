@@ -6,6 +6,8 @@ import Product from '@/models/Product';
 import User from '@/models/User';
 import QuoteResponse from '@/models/QuoteResponse';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   await connectDB();
