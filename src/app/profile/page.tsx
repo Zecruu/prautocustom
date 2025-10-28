@@ -3,21 +3,21 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/context/AuthContext';
+import { useSession } from 'next-auth/react';
 import { Navbar } from '@/components/Navbar';
 
 export default function Profile() {
   const { t } = useTranslation();
-  const { user, loading } = useAuth();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (status === 'unauthenticated') {
       router.push('/signin');
     }
-  }, [user, loading, router]);
+  }, [status, router]);
 
-  if (loading) {
+  if (status === 'loading') {
     return (
       <>
         <Navbar />
@@ -28,9 +28,11 @@ export default function Profile() {
     );
   }
 
-  if (!user) {
+  if (!session?.user) {
     return null;
   }
+
+  const user = session.user;
 
   return (
     <>
@@ -50,15 +52,11 @@ export default function Profile() {
                 </div>
                 <div>
                   <label className="text-gray-400">User ID</label>
-                  <p className="text-white text-lg font-mono text-sm">{user.uid}</p>
+                  <p className="text-white text-lg font-mono text-sm">{user.id}</p>
                 </div>
                 <div>
-                  <label className="text-gray-400">Account Created</label>
-                  <p className="text-white text-lg">
-                    {user.metadata?.creationTime
-                      ? new Date(user.metadata.creationTime).toLocaleDateString()
-                      : 'N/A'}
-                  </p>
+                  <label className="text-gray-400">Role</label>
+                  <p className="text-white text-lg capitalize">{user.role}</p>
                 </div>
               </div>
             </div>

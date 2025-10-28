@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/context/AuthContext';
+import { signIn } from 'next-auth/react';
 import { Navbar } from '@/components/Navbar';
 
 export default function SignUp() {
   const { t } = useTranslation();
-  const { signUp, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,25 +33,47 @@ export default function SignUp() {
 
     try {
       setLoading(true);
-      await signUp(email, password);
-      router.push('/profile');
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Failed to create account');
+
+      // Create user account
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to create account');
+        return;
+      }
+
+      // Auto sign in after successful signup
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Account created but failed to sign in. Please sign in manually.');
+        router.push('/signin');
+      } else {
+        router.push('/profile');
+      }
+    } catch {
+      setError('Failed to create account');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSignUp = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      await signInWithGoogle();
-      router.push('/profile');
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Failed to sign up with Google');
-    } finally {
+      await signIn('google', { callbackUrl: '/profile' });
+    } catch {
+      setError('Failed to sign up with Google');
       setLoading(false);
     }
   };
@@ -79,6 +101,18 @@ export default function SignUp() {
             )}
 
             <form onSubmit={handleSignUp} className="space-y-4">
+              <div>
+                <label className="block text-white mb-2">Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-white"
+                  placeholder="Your Name"
+                  required
+                />
+              </div>
+
               <div>
                 <label className="block text-white mb-2">{t('auth.email')}</label>
                 <input

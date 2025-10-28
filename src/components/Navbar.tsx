@@ -4,11 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/context/AuthContext';
+import { useSession, signOut } from 'next-auth/react';
 
 export const Navbar: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const { user, logout } = useAuth();
+  const { data: session } = useSession();
+  const user = session?.user;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleLanguage = () => {
@@ -16,7 +17,7 @@ export const Navbar: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await logout();
+    await signOut({ callbackUrl: '/' });
   };
 
   return (

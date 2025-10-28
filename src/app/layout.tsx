@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
+import { SessionProvider } from "@/components/SessionProvider";
 import { I18nProvider } from "@/components/I18nProvider";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { Footer } from "@/components/Footer";
@@ -36,13 +36,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
-        <I18nProvider>
-          <AuthProvider>
+        <SessionProvider>
+          <I18nProvider>
             {children}
             <Footer />
             <WhatsAppFloat />
-          </AuthProvider>
-        </I18nProvider>
+          </I18nProvider>
+        </SessionProvider>
       </body>
     </html>
   );

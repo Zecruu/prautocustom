@@ -4,12 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/context/AuthContext';
+import { signIn } from 'next-auth/react';
 import { Navbar } from '@/components/Navbar';
 
 export default function SignIn() {
   const { t } = useTranslation();
-  const { signIn, signInWithGoogle } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,25 +21,30 @@ export default function SignIn() {
 
     try {
       setLoading(true);
-      await signIn(email, password);
-      router.push('/profile');
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Failed to sign in');
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError(result.error);
+      } else {
+        router.push('/profile');
+      }
+    } catch {
+      setError('Failed to sign in');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      await signInWithGoogle();
-      router.push('/profile');
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || 'Failed to sign in with Google');
-    } finally {
+      await signIn('google', { callbackUrl: '/profile' });
+    } catch {
+      setError('Failed to sign in with Google');
       setLoading(false);
     }
   };
