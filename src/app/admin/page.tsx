@@ -1,16 +1,8 @@
 import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-export default async function AdminPage() {
-  const session = await getServerSession(authOptions);
-
-  // If user is authenticated, redirect to dashboard
-  if (session) {
-    redirect('/admin/dashboard');
-  }
-
-  // If not authenticated, redirect to signin
+export default function AdminPage() {
+  // Always redirect to signin page
+  // The signin page will handle redirecting to dashboard if already authenticated
   redirect('/admin/signin');
 }
 
