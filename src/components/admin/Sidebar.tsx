@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -8,11 +8,12 @@ import { signOut } from 'next-auth/react';
 interface SidebarProps {
   userRole: 'admin' | 'employee' | 'client';
   userName: string;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (open: boolean) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName, isSidebarOpen, setIsSidebarOpen }) => {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
@@ -108,28 +109,34 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName }) => {
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Hamburger Toggle Button - Always Visible */}
       <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-zinc-900 rounded-lg text-white"
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className={`fixed top-4 z-50 p-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-black transition-all duration-300 shadow-lg ${
+          isSidebarOpen ? 'left-[272px]' : 'left-4'
+        }`}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          {isSidebarOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
         </svg>
       </button>
 
-      {/* Overlay for mobile */}
-      {isMobileMenuOpen && (
+      {/* Overlay for mobile when sidebar is open */}
+      {isSidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
@@ -151,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName }) => {
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => window.innerWidth < 1024 && setIsSidebarOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                       isActive(item.path)
                         ? 'bg-yellow-500 text-black font-semibold'

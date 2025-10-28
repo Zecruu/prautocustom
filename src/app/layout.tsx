@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/components/SessionProvider";
 import { I18nProvider } from "@/components/I18nProvider";
-import { WhatsAppFloat } from "@/components/WhatsAppFloat";
-import { Footer } from "@/components/Footer";
+import { ConditionalLayout } from "@/components/ConditionalLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,9 +37,7 @@ export default function RootLayout({
       >
         <SessionProvider>
           <I18nProvider>
-            {children}
-            <Footer />
-            <WhatsAppFloat />
+            <ConditionalLayout>{children}</ConditionalLayout>
           </I18nProvider>
         </SessionProvider>
       </body>
