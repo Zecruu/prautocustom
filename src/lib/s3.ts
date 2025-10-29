@@ -11,8 +11,8 @@ const s3Client = new S3Client({
   },
 });
 
-const BUCKET_NAME = process.env.S3_BUCKET_NAME || '';
-const CLOUDFRONT_URL = process.env.CLOUDFRONT_URL || ''; // Your CloudFront distribution URL
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'prautocustom-products';
+const CLOUDFRONT_URL = process.env.NEXT_PUBLIC_CLOUDFRONT_URL || 'https://d1jq7wgb95mzy3.cloudfront.net';
 
 /**
  * Upload image to S3/R2 with optimization

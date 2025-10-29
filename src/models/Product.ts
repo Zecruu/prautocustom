@@ -7,10 +7,12 @@ export interface IProduct extends Document {
     es: string;
   };
   category: string;
+  vehicleTypes?: string[]; // Array of vehicle type slugs (e.g., ['jeep', 'truck'])
   description?: {
     en?: string;
     es?: string;
   };
+  price?: number;
   images: string[]; // S3/Cloudflare URLs
   specifications?: Record<string, string>;
   stock: number;
@@ -49,6 +51,11 @@ const ProductSchema = new Schema<IProduct>(
       trim: true,
       index: true,
     },
+    vehicleTypes: {
+      type: [String],
+      default: [],
+      index: true,
+    },
     description: {
       en: {
         type: String,
@@ -58,6 +65,10 @@ const ProductSchema = new Schema<IProduct>(
         type: String,
         trim: true,
       },
+    },
+    price: {
+      type: Number,
+      min: 0,
     },
     images: {
       type: [String],
@@ -96,6 +107,7 @@ const ProductSchema = new Schema<IProduct>(
 
 // Indexes for search
 ProductSchema.index({ 'name.en': 'text', 'name.es': 'text', category: 'text' });
+ProductSchema.index({ category: 1, vehicleTypes: 1 });
 
 const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
 

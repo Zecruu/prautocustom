@@ -11,8 +11,8 @@
     "create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.917.0",
-    "@aws-sdk/s3-request-presigner": "^3.917.0",
+    "@aws-sdk/client-s3": "^3.919.0",
+    "@aws-sdk/s3-request-presigner": "^3.919.0",
     "@emailjs/browser": "^4.4.1",
     "bcryptjs": "^3.0.2",
     "emailjs-com": "^3.2.0",
