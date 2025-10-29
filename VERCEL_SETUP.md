@@ -59,7 +59,7 @@ G-0WQGS2FLKQ
 
 ### Test in Production (After Redeployment)
 
-1. **Visit your live site**: https://prautocustom.vercel.app
+1. **Visit your live site**: https://www.prautocustoms.com
 2. **Open Browser DevTools**: Press `F12`
 3. **Go to Console tab**
 4. **Look for**: Google Analytics messages (no errors)

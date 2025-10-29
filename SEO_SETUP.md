@@ -58,7 +58,7 @@ Your website is now optimized for search engines with:
 
 6. **Set Up Data Stream**:
    - Choose "Web"
-   - Website URL: `https://prautocustom.vercel.app` (or your domain)
+   - Website URL: `https://www.prautocustoms.com` (or your domain)
    - Stream name: "PR Auto Custom"
    - Click "Create stream"
 
@@ -91,7 +91,7 @@ Your website is now optimized for search engines with:
 2. **Add Property**:
    - Click "Add Property"
    - Choose "URL prefix"
-   - Enter: `https://prautocustom.vercel.app`
+   - Enter: `https://www.prautocustoms.com`
    - Click "Continue"
 
 ### Verify Ownership (Method 1: HTML Tag)
@@ -109,7 +109,7 @@ Your website is now optimized for search engines with:
 1. In Search Console, go to **Sitemaps** (left sidebar)
 2. Enter: `sitemap.xml`
 3. Click "Submit"
-4. Your sitemap URL: `https://prautocustom.vercel.app/sitemap.xml`
+4. Your sitemap URL: `https://www.prautocustoms.com/sitemap.xml`
 
 ---
 

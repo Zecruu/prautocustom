@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 // SEO-optimized metadata
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://prautocustom.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.prautocustoms.com'),
   title: {
     default: "PR Auto Custom - Premium Custom Rims & Wheels in Puerto Rico",
     template: "%s | PR Auto Custom"
@@ -101,11 +101,11 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "AutomotiveBusiness",
-    "@id": "https://prautocustom.vercel.app",
+    "@id": "https://www.prautocustoms.com",
     "name": "PR Auto Custom",
     "alternateName": "PR Auto Custom Rims & Wheels",
     "description": "Premium custom rims and wheels installation in Puerto Rico. Expert customization services with interactive rim visualizer.",
-    "url": "https://prautocustom.vercel.app",
+    "url": "https://www.prautocustoms.com",
     "telephone": "+1-787-420-5538",
     "email": "info@prautocustom.com",
     "address": {
@@ -136,8 +136,8 @@ export default function RootLayout({
       }
     ],
     "priceRange": "$$",
-    "image": "https://prautocustom.vercel.app/images/pr-auto-custom-hero-desktop.png",
-    "logo": "https://prautocustom.vercel.app/logos/logo.png",
+    "image": "https://www.prautocustoms.com/images/pr-auto-custom-hero-desktop.png",
+    "logo": "https://www.prautocustoms.com/logos/logo.png",
     "sameAs": [
       "https://www.facebook.com/prautocustom",
       "https://www.instagram.com/prautocustom"
