@@ -39,8 +39,8 @@ export default async function ProductsPage() {
 
   // Convert to plain objects
   const products = JSON.parse(JSON.stringify(productsRaw));
-  const vehicleTypes = settings?.vehicleTypes.filter((vt: any) => vt.active) || [];
-  const productCategories = settings?.productCategories.filter((pc: any) => pc.active) || [];
+  const vehicleTypes = settings?.vehicleTypes.filter((vt: { active: boolean }) => vt.active) || [];
+  const productCategories = settings?.productCategories.filter((pc: { active: boolean }) => pc.active) || [];
 
   return (
     <main className="w-full bg-black min-h-screen">
