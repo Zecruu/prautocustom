@@ -9,7 +9,6 @@ interface Product {
   name: { en: string; es: string };
   category: string;
   vehicleTypes?: string[];
-  price?: number;
   images: string[];
   stock: number;
   status: string;
@@ -256,13 +255,6 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
                         ) : null;
                       })}
                     </div>
-                  )}
-
-                  {/* Price */}
-                  {product.price && product.price > 0 && (
-                    <p className="text-2xl font-bold text-yellow-500">
-                      ${product.price.toFixed(2)}
-                    </p>
                   )}
                 </div>
               </div>

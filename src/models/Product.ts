@@ -12,7 +12,6 @@ export interface IProduct extends Document {
     en?: string;
     es?: string;
   };
-  price?: number;
   images: string[]; // S3/Cloudflare URLs
   specifications?: Record<string, string>;
   stock: number;
@@ -65,10 +64,6 @@ const ProductSchema = new Schema<IProduct>(
         type: String,
         trim: true,
       },
-    },
-    price: {
-      type: Number,
-      min: 0,
     },
     images: {
       type: [String],

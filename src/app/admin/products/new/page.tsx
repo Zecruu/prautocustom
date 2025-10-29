@@ -33,7 +33,6 @@ export default function NewProductPage() {
     descriptionEs: '',
     category: '',
     vehicleTypes: [] as string[],
-    price: '',
     stock: '',
     status: 'active',
     images: [] as string[],
@@ -98,7 +97,6 @@ export default function NewProductPage() {
           },
           category: formData.category,
           vehicleTypes: formData.vehicleTypes,
-          price: parseFloat(formData.price) || 0,
           stock: parseInt(formData.stock) || 0,
           status: formData.status,
           images: formData.images.filter(img => img !== ''),
@@ -254,26 +252,11 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        {/* Pricing & Inventory */}
+        {/* Inventory & Status */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-4">
-          <h2 className="text-xl font-bold text-white mb-4">Pricing & Inventory</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Price (USD) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                required
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-yellow-500"
-                placeholder="0.00"
-              />
-            </div>
+          <h2 className="text-xl font-bold text-white mb-4">Inventory & Status</h2>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Stock Quantity <span className="text-red-500">*</span>

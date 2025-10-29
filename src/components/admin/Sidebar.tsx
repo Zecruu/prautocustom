@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
@@ -112,11 +113,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName, isSidebarO
       {/* Hamburger Toggle Button - Always Visible */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className={`fixed top-4 z-50 p-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-black transition-all duration-300 shadow-lg ${
+        className={`fixed top-4 z-50 p-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-black transition-all duration-300 shadow-lg ${
           isSidebarOpen ? 'left-[272px]' : 'left-4'
         }`}
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {isSidebarOpen ? (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           ) : (
@@ -142,8 +143,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName, isSidebarO
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-6 border-b border-zinc-800">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-yellow-500 rounded"></div>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logos/logo.png"
+                alt="PR Auto Custom Logo"
+                width={40}
+                height={40}
+                className="rounded"
+              />
               <div>
                 <h1 className="text-white font-bold text-lg">PR Auto Custom</h1>
                 <p className="text-gray-400 text-xs">Admin Portal</p>
