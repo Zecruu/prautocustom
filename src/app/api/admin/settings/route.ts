@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import Settings from '@/models/Settings';
+import mongoose from 'mongoose';
 
 export const dynamic = 'force-dynamic';
 
@@ -70,7 +71,7 @@ export async function PUT(request: NextRequest) {
     } else {
       if (vehicleTypes) settings.vehicleTypes = vehicleTypes;
       if (productCategories) settings.productCategories = productCategories;
-      settings.updatedBy = session.user.id as any;
+      settings.updatedBy = session.user.id as unknown as mongoose.Types.ObjectId;
     }
 
     await settings.save();
