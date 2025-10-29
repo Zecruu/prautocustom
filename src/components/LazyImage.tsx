@@ -104,7 +104,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
  * Generate a tiny blur placeholder from image URL
  * This should be done server-side during upload
  */
-export function generateBlurPlaceholder(_imageUrl: string): string {
+export function generateBlurPlaceholder(): string {
   // In production, this would be a base64 encoded tiny version of the image
   // For now, return a simple gray placeholder
   return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2UwZTBlMCIvPjwvc3ZnPg==';

@@ -5,7 +5,7 @@ import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import User from '@/models/User';
 import Product from '@/models/Product';
-import QuoteResponse from '@/models/QuoteResponse';
+// import QuoteResponse from '@/models/QuoteResponse';
 
 export const dynamic = 'force-dynamic';
 
