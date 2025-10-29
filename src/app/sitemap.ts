@@ -1,67 +1,57 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.prautocustoms.com';
-
-  // Get current date for lastModified
-  const currentDate = new Date();
+  const baseUrl = 'https://www.prautocustoms.com'
 
   return [
-    // Homepage - Highest priority
     {
       url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 1.0,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 1,
     },
-
-    // Main customer pages - High priority
     {
       url: `${baseUrl}/products`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/visualizer`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/quote`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
-
-    // Authentication pages - Medium priority
     {
       url: `${baseUrl}/signin`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
       priority: 0.5,
     },
     {
       url: `${baseUrl}/signup`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
       priority: 0.5,
     },
     {
       url: `${baseUrl}/profile`,
-      lastModified: currentDate,
-      changeFrequency: 'monthly',
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
       priority: 0.4,
     },
-
-    // Admin signin - Low priority (not for customers)
     {
       url: `${baseUrl}/admin/signin`,
-      lastModified: currentDate,
-      changeFrequency: 'yearly',
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
       priority: 0.1,
     },
-  ];
+  ]
 }
 
