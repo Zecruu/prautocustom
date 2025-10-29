@@ -1,0 +1,13 @@
+# robots.txt for PR Auto Custom
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://prautocustom.vercel.app/sitemap.xml
+
