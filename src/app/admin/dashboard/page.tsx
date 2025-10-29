@@ -14,9 +14,9 @@ export default async function DashboardPage() {
 
   // Fetch dashboard statistics
   const [
-    _totalQuotes,
+    , // totalQuotes - not used yet
     pendingQuotes,
-    _totalProducts,
+    , // totalProducts - not used yet
     activeProducts,
     totalClients,
     respondedQuotes,

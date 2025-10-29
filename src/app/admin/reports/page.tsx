@@ -30,11 +30,11 @@ export default async function ReportsPage() {
   const respondedQuotes = await Quote.countDocuments({ status: 'responded' });
   const acceptedQuotes = await Quote.countDocuments({ status: 'accepted' });
   const rejectedQuotes = await Quote.countDocuments({ status: 'rejected' });
-  
-  const quotesLast30Days = await Quote.countDocuments({
-    createdAt: { $gte: thirtyDaysAgo },
-  });
-  
+
+  // const quotesLast30Days = await Quote.countDocuments({
+  //   createdAt: { $gte: thirtyDaysAgo },
+  // });
+
   const quotesLast7Days = await Quote.countDocuments({
     createdAt: { $gte: sevenDaysAgo },
   });
@@ -52,10 +52,10 @@ export default async function ReportsPage() {
   const inactiveProducts = await Product.countDocuments({ status: 'inactive' });
 
   // Response Statistics
-  const totalResponses = await QuoteResponse.countDocuments();
-  const responsesLast30Days = await QuoteResponse.countDocuments({
-    createdAt: { $gte: thirtyDaysAgo },
-  });
+  // const totalResponses = await QuoteResponse.countDocuments();
+  // const responsesLast30Days = await QuoteResponse.countDocuments({
+  //   createdAt: { $gte: thirtyDaysAgo },
+  // });
 
   // Calculate conversion rate
   const conversionRate = totalQuotes > 0 ? ((acceptedQuotes / totalQuotes) * 100).toFixed(1) : '0.0';
