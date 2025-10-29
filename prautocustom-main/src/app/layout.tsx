@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/components/SessionProvider";
 import { I18nProvider } from "@/components/I18nProvider";
-import { CartProvider } from "@/contexts/CartContext";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
@@ -19,7 +18,7 @@ const geistMono = Geist_Mono({
 
 // SEO-optimized metadata
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.prautocustoms.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://prautocustom.vercel.app'),
   title: {
     default: "PR Auto Custom - Premium Custom Rims & Wheels in Puerto Rico",
     template: "%s | PR Auto Custom"
@@ -102,11 +101,11 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "AutomotiveBusiness",
-    "@id": "https://www.prautocustoms.com",
+    "@id": "https://prautocustom.vercel.app",
     "name": "PR Auto Custom",
     "alternateName": "PR Auto Custom Rims & Wheels",
     "description": "Premium custom rims and wheels installation in Puerto Rico. Expert customization services with interactive rim visualizer.",
-    "url": "https://www.prautocustoms.com",
+    "url": "https://prautocustom.vercel.app",
     "telephone": "+1-787-420-5538",
     "email": "info@prautocustom.com",
     "address": {
@@ -137,8 +136,8 @@ export default function RootLayout({
       }
     ],
     "priceRange": "$$",
-    "image": "https://www.prautocustoms.com/images/pr-auto-custom-hero-desktop.png",
-    "logo": "https://www.prautocustoms.com/logos/logo.png",
+    "image": "https://prautocustom.vercel.app/images/pr-auto-custom-hero-desktop.png",
+    "logo": "https://prautocustom.vercel.app/logos/logo.png",
     "sameAs": [
       "https://www.facebook.com/prautocustom",
       "https://www.instagram.com/prautocustom"
@@ -188,9 +187,7 @@ export default function RootLayout({
 
         <SessionProvider>
           <I18nProvider>
-            <CartProvider>
-              <ConditionalLayout>{children}</ConditionalLayout>
-            </CartProvider>
+            <ConditionalLayout>{children}</ConditionalLayout>
           </I18nProvider>
         </SessionProvider>
       </body>
