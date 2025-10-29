@@ -18,6 +18,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName, isSidebarO
 
   const isActive = (path: string) => pathname === path;
 
+  // Debug log
+  React.useEffect(() => {
+    console.log('Sidebar state:', isSidebarOpen);
+  }, [isSidebarOpen]);
+
   const menuItems = [
     {
       name: 'Dashboard',
@@ -112,10 +117,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName, isSidebarO
     <>
       {/* Hamburger Toggle Button - Always Visible */}
       <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        onClick={() => {
+          console.log('Toggle clicked, current state:', isSidebarOpen);
+          setIsSidebarOpen(!isSidebarOpen);
+        }}
         className={`fixed top-4 z-50 p-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-black transition-all duration-300 shadow-lg ${
           isSidebarOpen ? 'left-[272px]' : 'left-4'
         }`}
+        aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {isSidebarOpen ? (

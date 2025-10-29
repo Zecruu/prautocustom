@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
+import { useCart } from '@/contexts/CartContext';
 
 interface Product {
   _id: string;
@@ -35,9 +37,13 @@ interface ProductsPageClientProps {
 }
 
 export function ProductsPageClient({ products, vehicleTypes, productCategories }: ProductsPageClientProps) {
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language as 'en' | 'es';
+  const { addToCart } = useCart();
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -58,6 +64,20 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
   const clearFilters = () => {
     setSelectedVehicleType(null);
     setSelectedCategory(null);
+  };
+
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      productId: product._id,
+      sku: product.sku,
+      name: product.name,
+      image: product.images[0] || '',
+      category: product.category,
+    });
+
+    // Show feedback
+    setAddedToCart(product._id);
+    setTimeout(() => setAddedToCart(null), 2000);
   };
 
   const activeFiltersCount = [selectedVehicleType, selectedCategory].filter(Boolean).length;
@@ -208,7 +228,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
                   {product.images && product.images.length > 0 ? (
                     <Image
                       src={product.images[0]}
-                      alt={product.name.en}
+                      alt={product.name[currentLang]}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -231,7 +251,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
                 {/* Product Info */}
                 <div className="p-4">
                   <h3 className="text-white font-semibold text-lg mb-1 line-clamp-2 group-hover:text-yellow-500 transition-colors">
-                    {product.name.en}
+                    {product.name[currentLang]}
                   </h3>
                   
                   <div className="flex items-center gap-2 mb-2">
@@ -256,6 +276,35 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
                       })}
                     </div>
                   )}
+
+                  {/* Add to Cart Button */}
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    disabled={product.stock === 0 || addedToCart === product._id}
+                    className={`w-full py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+                      addedToCart === product._id
+                        ? 'bg-green-500 text-white'
+                        : product.stock === 0
+                        ? 'bg-zinc-800 text-gray-500 cursor-not-allowed'
+                        : 'bg-yellow-500 hover:bg-yellow-600 text-black'
+                    }`}
+                  >
+                    {addedToCart === product._id ? (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Added to Cart
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             ))}

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "@/components/SessionProvider";
 import { I18nProvider } from "@/components/I18nProvider";
+import { CartProvider } from "@/contexts/CartContext";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 
 const geistSans = Geist({
@@ -37,7 +38,9 @@ export default function RootLayout({
       >
         <SessionProvider>
           <I18nProvider>
-            <ConditionalLayout>{children}</ConditionalLayout>
+            <CartProvider>
+              <ConditionalLayout>{children}</ConditionalLayout>
+            </CartProvider>
           </I18nProvider>
         </SessionProvider>
       </body>

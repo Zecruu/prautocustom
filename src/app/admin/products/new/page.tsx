@@ -117,13 +117,13 @@ export default function NewProductPage() {
   };
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="p-4 lg:p-8 max-w-7xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Create New Product</h1>
         <p className="text-gray-400">Add a new product to your catalog</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg">
             {error}
