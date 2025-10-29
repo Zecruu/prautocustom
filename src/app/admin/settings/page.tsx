@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
 import connectDB from '@/lib/mongodb';
-import Settings from '@/models/Settings';
+import Settings, { ISettings } from '@/models/Settings';
 import { SettingsClient } from '@/components/admin/SettingsClient';
 
 export const dynamic = 'force-dynamic';
@@ -18,11 +18,11 @@ export default async function SettingsPage() {
   await connectDB();
 
   // Fetch settings
-  let settings = await Settings.findOne().lean();
+  let settings = await Settings.findOne().lean() as ISettings | null;
 
   // Create default settings if none exist
   if (!settings) {
-    settings = await Settings.create({
+    await Settings.create({
       vehicleTypes: [
         { name: 'Jeep', slug: 'jeep', active: true },
         { name: 'Truck', slug: 'truck', active: true },
@@ -37,7 +37,7 @@ export default async function SettingsPage() {
         { name: 'Lift Kits', slug: 'lift-kits', active: true },
       ],
     });
-    settings = await Settings.findOne().lean();
+    settings = await Settings.findOne().lean() as ISettings | null;
   }
 
   return (

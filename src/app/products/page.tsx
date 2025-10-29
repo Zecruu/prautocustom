@@ -2,7 +2,7 @@ import { Navbar } from '@/components/Navbar';
 import { ProductsPageClient } from '@/components/ProductsPageClient';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
-import Settings from '@/models/Settings';
+import Settings, { ISettings } from '@/models/Settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,11 +15,11 @@ export default async function ProductsPage() {
     .lean();
 
   // Fetch settings for filters
-  let settings = await Settings.findOne().lean();
+  let settings = await Settings.findOne().lean() as ISettings | null;
 
   // Create default settings if none exist
   if (!settings) {
-    settings = await Settings.create({
+    await Settings.create({
       vehicleTypes: [
         { name: 'Jeep', slug: 'jeep', active: true },
         { name: 'Truck', slug: 'truck', active: true },
@@ -34,7 +34,7 @@ export default async function ProductsPage() {
         { name: 'Lift Kits', slug: 'lift-kits', active: true },
       ],
     });
-    settings = await Settings.findOne().lean();
+    settings = await Settings.findOne().lean() as ISettings | null;
   }
 
   // Convert to plain objects

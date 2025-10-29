@@ -16,14 +16,14 @@ interface Product {
 }
 
 interface VehicleType {
-  _id: string;
+  _id?: string;
   name: string;
   slug: string;
   active: boolean;
 }
 
 interface ProductCategory {
-  _id: string;
+  _id?: string;
   name: string;
   slug: string;
   active: boolean;

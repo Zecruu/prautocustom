@@ -95,7 +95,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories }
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Failed to save settings. Please try again.' });
     } finally {
       setLoading(false);
@@ -174,7 +174,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories }
           ))}
 
           {vehicleTypes.length === 0 && (
-            <p className="text-center text-gray-500 py-8">No vehicle types added yet. Click "Add Vehicle Type" to get started.</p>
+            <p className="text-center text-gray-500 py-8">No vehicle types added yet. Click &quot;Add Vehicle Type&quot; to get started.</p>
           )}
         </div>
       </div>
@@ -237,7 +237,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories }
           ))}
 
           {productCategories.length === 0 && (
-            <p className="text-center text-gray-500 py-8">No categories added yet. Click "Add Category" to get started.</p>
+            <p className="text-center text-gray-500 py-8">No categories added yet. Click &quot;Add Category&quot; to get started.</p>
           )}
         </div>
       </div>
