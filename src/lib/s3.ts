@@ -2,10 +2,12 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } fro
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // Dynamically import sharp to handle platform-specific builds
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let sharp: any = null;
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   sharp = require('sharp');
-} catch (error) {
+} catch {
   console.warn('Sharp module not available, image optimization will be skipped');
 }
 
