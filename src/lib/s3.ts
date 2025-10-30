@@ -1,6 +1,13 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import sharp from 'sharp';
+
+// Dynamically import sharp to handle platform-specific builds
+let sharp: any = null;
+try {
+  sharp = require('sharp');
+} catch (error) {
+  console.warn('Sharp module not available, image optimization will be skipped');
+}
 
 // Initialize S3 client for AWS S3
 const s3Client = new S3Client({
@@ -23,22 +30,36 @@ export async function uploadImage(
   folder: string = 'products'
 ): Promise<string> {
   try {
-    // Optimize image with sharp
-    const optimizedImage = await sharp(file)
-      .resize(1200, 1200, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .webp({ quality: 85 })
-      .toBuffer();
+    let imageBuffer = file;
+    let contentType = 'image/jpeg';
 
-    const key = `${folder}/${Date.now()}-${fileName.replace(/\.[^/.]+$/, '')}.webp`;
+    // Optimize image with sharp if available
+    if (sharp) {
+      try {
+        imageBuffer = await sharp(file)
+          .resize(1200, 1200, {
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .webp({ quality: 85 })
+          .toBuffer();
+        contentType = 'image/webp';
+      } catch (sharpError) {
+        console.warn('Sharp optimization failed, uploading original image:', sharpError);
+        imageBuffer = file;
+      }
+    } else {
+      console.log('Sharp not available, uploading original image');
+    }
+
+    const fileExtension = contentType === 'image/webp' ? '.webp' : '.jpg';
+    const key = `${folder}/${Date.now()}-${fileName.replace(/\.[^/.]+$/, '')}${fileExtension}`;
 
     const command = new PutObjectCommand({
       Bucket: BUCKET_NAME,
       Key: key,
-      Body: optimizedImage,
-      ContentType: 'image/webp',
+      Body: imageBuffer,
+      ContentType: contentType,
       CacheControl: 'public, max-age=31536000', // 1 year cache
     });
 
@@ -65,20 +86,33 @@ export async function uploadThumbnail(
   folder: string = 'products/thumbnails'
 ): Promise<string> {
   try {
-    const thumbnail = await sharp(file)
-      .resize(300, 300, {
-        fit: 'cover',
-      })
-      .webp({ quality: 80 })
-      .toBuffer();
+    let thumbnailBuffer = file;
+    let contentType = 'image/jpeg';
 
-    const key = `${folder}/${Date.now()}-${fileName.replace(/\.[^/.]+$/, '')}-thumb.webp`;
+    // Generate thumbnail with sharp if available
+    if (sharp) {
+      try {
+        thumbnailBuffer = await sharp(file)
+          .resize(300, 300, {
+            fit: 'cover',
+          })
+          .webp({ quality: 80 })
+          .toBuffer();
+        contentType = 'image/webp';
+      } catch (sharpError) {
+        console.warn('Sharp thumbnail generation failed, using original:', sharpError);
+        thumbnailBuffer = file;
+      }
+    }
+
+    const fileExtension = contentType === 'image/webp' ? '-thumb.webp' : '-thumb.jpg';
+    const key = `${folder}/${Date.now()}-${fileName.replace(/\.[^/.]+$/, '')}${fileExtension}`;
 
     const command = new PutObjectCommand({
       Bucket: BUCKET_NAME,
       Key: key,
-      Body: thumbnail,
-      ContentType: 'image/webp',
+      Body: thumbnailBuffer,
+      ContentType: contentType,
       CacheControl: 'public, max-age=31536000',
     });
 
