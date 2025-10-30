@@ -55,11 +55,28 @@ export default function CheckoutPage() {
     setSubmitting(true);
 
     try {
+      // Build shipping address string if any address fields are filled
+      let shippingAddress = '';
+      if (formData.address || formData.city || formData.state || formData.zipCode) {
+        const parts = [
+          formData.address,
+          formData.city,
+          formData.state,
+          formData.zipCode,
+        ].filter(Boolean);
+        shippingAddress = parts.join(', ');
+      }
+
       const response = await fetch('/api/quotes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          shippingAddress,
+          notes: formData.notes,
           products: cart.map((item) => ({
             productId: item.productId,
             sku: item.sku,
@@ -76,7 +93,8 @@ export default function CheckoutPage() {
           router.push('/profile');
         }, 3000);
       } else {
-        alert('Failed to submit quote request. Please try again.');
+        const errorData = await response.json();
+        alert(errorData.error || 'Failed to submit quote request. Please try again.');
       }
     } catch (error) {
       console.error('Error submitting quote:', error);
