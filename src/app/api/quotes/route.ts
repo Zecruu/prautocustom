@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Format products for Quote model
-    const quoteProducts = products.map((p: any) => ({
+    const quoteProducts = products.map((p: { productId: string; quantity?: number; notes?: string }) => ({
       product: p.productId,
       quantity: p.quantity || 1,
       notes: p.notes || '',
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET - Get user's quotes
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
