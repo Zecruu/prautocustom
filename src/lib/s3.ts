@@ -1,14 +1,23 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-// Dynamically import sharp to handle platform-specific builds
+// Lazy load sharp to handle platform-specific builds
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let sharp: any = null;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  sharp = require('sharp');
-} catch {
-  console.warn('Sharp module not available, image optimization will be skipped');
+let sharpModule: any = null;
+let sharpLoadAttempted = false;
+
+function getSharp() {
+  if (!sharpLoadAttempted) {
+    sharpLoadAttempted = true;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      sharpModule = require('sharp');
+      console.log('Sharp module loaded successfully');
+    } catch {
+      console.warn('Sharp module not available, image optimization will be skipped');
+    }
+  }
+  return sharpModule;
 }
 
 // Initialize S3 client for AWS S3
@@ -36,6 +45,7 @@ export async function uploadImage(
     let contentType = 'image/jpeg';
 
     // Optimize image with sharp if available
+    const sharp = getSharp();
     if (sharp) {
       try {
         imageBuffer = await sharp(file)
@@ -92,6 +102,7 @@ export async function uploadThumbnail(
     let contentType = 'image/jpeg';
 
     // Generate thumbnail with sharp if available
+    const sharp = getSharp();
     if (sharp) {
       try {
         thumbnailBuffer = await sharp(file)
