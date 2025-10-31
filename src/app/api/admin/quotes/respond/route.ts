@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
+import Product from '@/models/Product';
 
 export const dynamic = 'force-dynamic';
 
