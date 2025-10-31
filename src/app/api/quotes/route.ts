@@ -116,8 +116,10 @@ export async function GET() {
 
     await connectDB();
 
-    // Ensure Product model is registered
-    Product;
+    // Ensure Product model is registered before populate
+    if (!Product) {
+      throw new Error('Product model not loaded');
+    }
 
     // Get all quotes for the user
     const quotes = await Quote.find({ client: session.user.id })

@@ -18,8 +18,10 @@ export async function GET() {
 
     await connectDB();
 
-    // Ensure Product model is registered
-    Product;
+    // Ensure Product model is registered before populate
+    if (!Product) {
+      throw new Error('Product model not loaded');
+    }
 
     // Get all quote responses for the user
     const responses = await QuoteResponse.find({ client: session.user.id })
