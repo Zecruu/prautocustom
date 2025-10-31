@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized. Please sign in.' }, { status: 401 });
     }
 
+    // Ensure Product model is registered
+    Product;
+
     const data = await request.json();
     const { products, firstName, lastName, email, phone, shippingAddress, notes } = data;
 
@@ -112,6 +115,9 @@ export async function GET() {
     }
 
     await connectDB();
+
+    // Ensure Product model is registered
+    Product;
 
     // Get all quotes for the user
     const quotes = await Quote.find({ client: session.user.id })

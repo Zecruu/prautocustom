@@ -26,6 +26,9 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
 
+    // Ensure Product model is registered
+    Product;
+
     // Check if quote exists and get client ID
     const existingQuote = await Quote.findById(quote);
     if (!existingQuote) {

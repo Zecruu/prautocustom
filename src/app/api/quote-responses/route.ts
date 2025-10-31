@@ -18,6 +18,9 @@ export async function GET() {
 
     await connectDB();
 
+    // Ensure Product model is registered
+    Product;
+
     // Get all quote responses for the user
     const responses = await QuoteResponse.find({ client: session.user.id })
       .populate('products.product', 'name sku')
