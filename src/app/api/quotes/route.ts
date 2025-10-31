@@ -121,8 +121,9 @@ export async function GET() {
     return NextResponse.json({ quotes }, { status: 200 });
   } catch (error) {
     console.error('Get quotes error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to fetch quotes' },
+      { error: 'Failed to fetch quotes', details: errorMessage },
       { status: 500 }
     );
   }

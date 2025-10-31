@@ -81,6 +81,9 @@ export default function Profile() {
       if (response.ok) {
         const data = await response.json();
         setQuotes(data.quotes || []);
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to fetch quotes:', errorData);
       }
     } catch (error) {
       console.error('Error fetching quotes:', error);
@@ -95,6 +98,9 @@ export default function Profile() {
       if (response.ok) {
         const data = await response.json();
         setQuoteResponses(data.responses || []);
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to fetch quote responses:', errorData);
       }
     } catch (error) {
       console.error('Error fetching quote responses:', error);
