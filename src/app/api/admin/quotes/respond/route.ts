@@ -5,6 +5,8 @@ import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
 
-    // Check if quote exists
+    // Check if quote exists and get client ID
     const existingQuote = await Quote.findById(quote);
     if (!existingQuote) {
       return NextResponse.json({ error: 'Quote not found' }, { status: 404 });
@@ -33,15 +35,25 @@ export async function POST(request: NextRequest) {
     const validUntil = new Date();
     validUntil.setDate(validUntil.getDate() + (validityDays || 15));
 
+    // Format products with totalPrice calculation
+    const formattedProducts = products.map((p: { product: string; unitPrice: number; quantity: number; notes?: string }) => ({
+      product: p.product,
+      quantity: p.quantity,
+      unitPrice: p.unitPrice,
+      totalPrice: p.unitPrice * p.quantity,
+      notes: p.notes || '',
+    }));
+
     // Create quote response
     const quoteResponse = await QuoteResponse.create({
       quote,
+      client: existingQuote.client, // Add client from the quote
       respondedBy,
-      products,
+      products: formattedProducts,
       subtotal,
       tax,
       total,
-      notes,
+      message: notes,
       status: 'sent',
       validUntil,
     });
@@ -50,6 +62,7 @@ export async function POST(request: NextRequest) {
     await Quote.findByIdAndUpdate(quote, {
       status: 'responded',
       assignedTo: respondedBy,
+      respondedAt: new Date(),
     });
 
     return NextResponse.json(
