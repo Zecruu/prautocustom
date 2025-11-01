@@ -24,7 +24,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    notes: '',
+    message: '',
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -55,16 +55,15 @@ export default function CheckoutPage() {
     setSubmitting(true);
 
     try {
-      // Build shipping address string if any address fields are filled
-      let shippingAddress = '';
+      // Build shipping address object if any address fields are filled
+      let shippingAddress = undefined;
       if (formData.address || formData.city || formData.state || formData.zipCode) {
-        const parts = [
-          formData.address,
-          formData.city,
-          formData.state,
-          formData.zipCode,
-        ].filter(Boolean);
-        shippingAddress = parts.join(', ');
+        shippingAddress = {
+          address: formData.address || undefined,
+          city: formData.city || undefined,
+          state: formData.state || undefined,
+          zipCode: formData.zipCode || undefined,
+        };
       }
 
       const response = await fetch('/api/quotes', {
@@ -76,7 +75,7 @@ export default function CheckoutPage() {
           email: formData.email,
           phone: formData.phone,
           shippingAddress,
-          notes: formData.notes,
+          message: formData.message || undefined,
           products: cart.map((item) => ({
             productId: item.productId,
             sku: item.sku,
@@ -327,11 +326,11 @@ export default function CheckoutPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Additional Notes</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Message (Optional)</label>
                   <textarea
                     rows={4}
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-yellow-500"
                     placeholder="Any special requests or questions..."
                   />

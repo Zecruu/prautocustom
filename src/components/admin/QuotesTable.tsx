@@ -13,6 +13,12 @@ interface Quote {
   }>;
   status: string;
   message?: string;
+  shippingAddress?: {
+    address?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+  };
   assignedTo?: { name: string } | null;
   createdAt: string;
   expiresAt: string;

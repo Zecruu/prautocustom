@@ -29,6 +29,7 @@ export default async function QuotesPage() {
     }>,
     status: q.status as string,
     message: q.message as string | undefined,
+    shippingAddress: q.shippingAddress as { address?: string; city?: string; state?: string; zipCode?: string } | undefined,
     assignedTo: q.assignedTo as unknown as { name: string } | null | undefined,
     createdAt: q.createdAt.toISOString(),
     expiresAt: q.expiresAt?.toISOString() || '',

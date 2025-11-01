@@ -121,8 +121,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, userName, isSidebarO
           console.log('Toggle clicked, current state:', isSidebarOpen);
           setIsSidebarOpen(!isSidebarOpen);
         }}
-        className={`fixed top-4 z-50 p-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-black transition-all duration-300 shadow-lg ${
-          isSidebarOpen ? 'left-[272px]' : 'left-4'
+        className={`fixed z-50 p-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-black transition-all duration-300 shadow-lg ${
+          isSidebarOpen ? 'top-6 left-[220px]' : 'top-4 left-4'
         }`}
         aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
       >

@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     Product;
 
     const data = await request.json();
-    const { products, firstName, lastName, email, phone, shippingAddress, notes } = data;
+    const { products, firstName, lastName, email, phone, shippingAddress, message } = data;
 
     // Validate required fields
     if (!products || products.length === 0) {
@@ -65,25 +65,13 @@ export async function POST(request: NextRequest) {
       notes: p.notes || '',
     }));
 
-    // Build message with contact details and shipping info
-    let message = `Contact: ${firstName} ${lastName}\n`;
-    message += `Email: ${email}\n`;
-    message += `Phone: ${phone}\n`;
-    
-    if (shippingAddress) {
-      message += `\nShipping Address: ${shippingAddress}\n`;
-    }
-    
-    if (notes) {
-      message += `\nAdditional Notes: ${notes}`;
-    }
-
-    // Create quote
+    // Create quote with separate fields
     const quote = await Quote.create({
       client: session.user.id,
       products: quoteProducts,
       status: 'pending',
-      message,
+      message: message || undefined,
+      shippingAddress: shippingAddress || undefined,
     });
 
     return NextResponse.json(
