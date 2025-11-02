@@ -54,13 +54,29 @@ interface QuoteResponse {
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const currentLang = i18n.language as 'en' | 'es';
 
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quoteResponses, setQuoteResponses] = useState<QuoteResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Edit Profile Modal States
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState('');
+  
+  // Change Password Modal States
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -104,6 +120,98 @@ export default function Profile() {
       }
     } catch (error) {
       console.error('Error fetching quote responses:', error);
+    }
+  };
+
+  // Open edit modal with current data
+  const openEditModal = () => {
+    setEditName(user.name || '');
+    setEditPhone(''); // Phone not in session, will fetch if needed
+    setEditError('');
+    setShowEditModal(true);
+  };
+
+  // Handle edit profile
+  const handleEditProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditError('');
+    setEditLoading(true);
+
+    try {
+      const response = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editName,
+          phone: editPhone,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update session
+        await update({ name: editName });
+        setShowEditModal(false);
+        alert('Profile updated successfully!');
+      } else {
+        setEditError(data.error || 'Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      setEditError('An error occurred while updating profile');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  // Handle change password
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      return;
+    }
+
+    setPasswordLoading(true);
+
+    try {
+      const response = await fetch('/api/user/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setPasswordSuccess('Password changed successfully!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setTimeout(() => {
+          setShowPasswordModal(false);
+          setPasswordSuccess('');
+        }, 2000);
+      } else {
+        setPasswordError(data.error || 'Failed to change password');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      setPasswordError('An error occurred while changing password');
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -294,10 +402,14 @@ export default function Profile() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">{t('profile.settings')}</h2>
               <div className="space-y-4">
-                <button className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-all duration-300">
+                <button 
+                  onClick={openEditModal}
+                  className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-all duration-300">
                   {t('profile.editProfile')}
                 </button>
-                <button className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-all duration-300">
+                <button 
+                  onClick={() => setShowPasswordModal(true)}
+                  className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-all duration-300">
                   Change Password
                 </button>
               </div>
@@ -305,6 +417,131 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold text-white mb-6">Edit Profile</h2>
+            <form onSubmit={handleEditProfile} className="space-y-4">
+              {editError && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded">
+                  {editError}
+                </div>
+              )}
+              <div>
+                <label className="block text-gray-300 mb-2">Name</label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">Phone (Optional)</label>
+                <input
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                  placeholder="+1 (555) 123-4567"
+                />
+              </div>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editLoading}
+                  className="flex-1 px-6 py-3 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 text-black font-bold rounded-lg transition-colors"
+                >
+                  {editLoading ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold text-white mb-6">Change Password</h2>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              {passwordError && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded">
+                  {passwordError}
+                </div>
+              )}
+              {passwordSuccess && (
+                <div className="bg-green-500/10 border border-green-500 text-green-500 px-4 py-3 rounded">
+                  {passwordSuccess}
+                </div>
+              )}
+              <div>
+                <label className="block text-gray-300 mb-2">Current Password</label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                  required
+                  minLength={6}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                  required
+                  minLength={6}
+                />
+              </div>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPasswordModal(false);
+                    setPasswordError('');
+                    setPasswordSuccess('');
+                  }}
+                  className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={passwordLoading}
+                  className="flex-1 px-6 py-3 bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 text-black font-bold rounded-lg transition-colors"
+                >
+                  {passwordLoading ? 'Changing...' : 'Change Password'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }
