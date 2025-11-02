@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
+import { sendWelcomeEmail, initEmailJS } from '@/lib/emailjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,6 +40,19 @@ export async function POST(request: NextRequest) {
       name,
       role: 'client', // Default role for new signups
     });
+
+    // Send welcome email (don't fail signup if email fails)
+    try {
+      initEmailJS();
+      await sendWelcomeEmail({
+        userEmail: user.email,
+        userName: user.name,
+      });
+      console.log('Welcome email sent to:', user.email);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Continue - account is still created
+    }
 
     return NextResponse.json(
       {

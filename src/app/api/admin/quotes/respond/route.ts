@@ -5,6 +5,8 @@ import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
 import Product from '@/models/Product';
+import User from '@/models/User';
+import { sendQuoteResponseEmail, initEmailJS } from '@/lib/emailjs';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,6 +70,48 @@ export async function POST(request: NextRequest) {
       assignedTo: respondedBy,
       respondedAt: new Date(),
     });
+
+    // Send quote response email to client
+    try {
+      // Get client details
+      const client = await User.findById(existingQuote.client).select('name email');
+      
+      // Get product details for email
+      const populatedProducts = await Promise.all(
+        formattedProducts.map(async (p) => {
+          const product = await Product.findById(p.product).select('name');
+          return {
+            name: product?.name?.en || 'Product',
+            quantity: p.quantity,
+            unitPrice: p.unitPrice,
+            totalPrice: p.totalPrice,
+          };
+        })
+      );
+
+      // Format product details as HTML list
+      const productDetails = populatedProducts.map(p => 
+        `<li><strong>${p.name}</strong> (x${p.quantity}) - $${p.unitPrice.toFixed(2)} each = <strong>$${p.totalPrice.toFixed(2)}</strong></li>`
+      ).join('');
+
+      initEmailJS();
+      await sendQuoteResponseEmail({
+        clientEmail: client?.email || '',
+        clientName: client?.name || 'Customer',
+        quoteNumber: String(existingQuote._id).slice(-8).toUpperCase(),
+        validUntil: validUntil.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+        productDetails: `<ul style="list-style: none; padding: 0;">${productDetails}</ul>`,
+        subtotal: subtotal.toFixed(2),
+        tax: tax.toFixed(2),
+        total: total.toFixed(2),
+        notes: notes || '',
+      });
+      
+      console.log('Quote response email sent to:', client?.email);
+    } catch (emailError) {
+      console.error('Failed to send quote response email:', emailError);
+      // Continue - quote response is still saved
+    }
 
     return NextResponse.json(
       {
