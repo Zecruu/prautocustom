@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
+import { sendWelcomeEmailServer } from '@/lib/emailjs-server';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -61,6 +62,9 @@ export const authOptions: NextAuthOptions = {
         const existingUser = await User.findOne({ email: user.email });
 
         if (existingUser) {
+          // Existing user logging in with Google
+          console.log('🔄 Existing user logged in with Google:', existingUser.email);
+          
           // Update Google ID if not set
           if (!existingUser.googleId && account.providerAccountId) {
             existingUser.googleId = account.providerAccountId;
@@ -72,7 +76,9 @@ export const authOptions: NextAuthOptions = {
           await existingUser.save();
         } else {
           // Create new user with Google OAuth
-          await User.create({
+          console.log('✨ Creating new user with Google OAuth:', user.email);
+          
+          const newUser = await User.create({
             email: user.email,
             name: user.name || 'User',
             googleId: account.providerAccountId,
@@ -80,6 +86,18 @@ export const authOptions: NextAuthOptions = {
             role: 'client', // Default role for new users
             lastLogin: new Date(),
           });
+
+          // Send welcome email for new Google OAuth users
+          try {
+            await sendWelcomeEmailServer({
+              userEmail: newUser.email,
+              userName: newUser.name,
+            });
+            console.log('✅ Welcome email sent to new Google OAuth user:', newUser.email);
+          } catch (emailError) {
+            console.error('❌ Failed to send welcome email to Google OAuth user:', emailError);
+            // Continue - account is still created
+          }
         }
       }
       return true;
