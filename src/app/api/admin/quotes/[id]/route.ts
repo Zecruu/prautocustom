@@ -4,6 +4,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
+import Product from '@/models/Product';
+import User from '@/models/User';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -22,6 +24,10 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     const { id } = await context.params;
 
     await connectDB();
+
+    // Ensure models are registered (needed for Quote populate references)
+    Product;
+    User;
 
     // Delete the quote
     const quote = await Quote.findByIdAndDelete(id);
