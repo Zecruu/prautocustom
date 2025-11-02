@@ -6,7 +6,7 @@ import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
 import Product from '@/models/Product';
 import User from '@/models/User';
-import { sendQuoteResponseEmail, initEmailJS } from '@/lib/emailjs';
+import { sendQuoteResponseEmailServer } from '@/lib/emailjs-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,8 +94,7 @@ export async function POST(request: NextRequest) {
         `<li><strong>${p.name}</strong> (x${p.quantity}) - $${p.unitPrice.toFixed(2)} each = <strong>$${p.totalPrice.toFixed(2)}</strong></li>`
       ).join('');
 
-      initEmailJS();
-      await sendQuoteResponseEmail({
+      await sendQuoteResponseEmailServer({
         clientEmail: client?.email || '',
         clientName: client?.name || 'Customer',
         quoteNumber: String(existingQuote._id).slice(-8).toUpperCase(),
@@ -107,7 +106,7 @@ export async function POST(request: NextRequest) {
         notes: notes || '',
       });
       
-      console.log('Quote response email sent to:', client?.email);
+      console.log('✅ Quote response email sent to:', client?.email);
     } catch (emailError) {
       console.error('Failed to send quote response email:', emailError);
       // Continue - quote response is still saved
