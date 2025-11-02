@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       
       // Get product details for email
       const populatedProducts = await Promise.all(
-        formattedProducts.map(async (p) => {
+        formattedProducts.map(async (p: { product: string; quantity: number; unitPrice: number; totalPrice: number; notes: string }) => {
           const product = await Product.findById(p.product).select('name');
           return {
             name: product?.name?.en || 'Product',
