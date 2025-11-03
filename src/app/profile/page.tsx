@@ -77,6 +77,9 @@ export default function Profile() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+  
+  // Cancel Quote States
+  const [cancellingQuoteId, setCancellingQuoteId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -215,6 +218,36 @@ export default function Profile() {
     }
   };
 
+  // Handle cancel quote
+  const handleCancelQuote = async (quoteId: string) => {
+    if (!confirm('Are you sure you want to cancel this quote request? This action cannot be undone.')) {
+      return;
+    }
+
+    setCancellingQuoteId(quoteId);
+
+    try {
+      const response = await fetch(`/api/quotes/${quoteId}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Remove the cancelled quote from the list
+        setQuotes(quotes.filter(q => q._id !== quoteId));
+        alert('Quote cancelled successfully!');
+      } else {
+        alert(data.error || 'Failed to cancel quote');
+      }
+    } catch (error) {
+      console.error('Error cancelling quote:', error);
+      alert('An error occurred while cancelling the quote');
+    } finally {
+      setCancellingQuoteId(null);
+    }
+  };
+
   if (status === 'loading') {
     return (
       <>
@@ -289,15 +322,36 @@ export default function Profile() {
                               Submitted: {new Date(quote.createdAt).toLocaleDateString()}
                             </p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            isExpired ? 'bg-red-500/20 text-red-400' :
-                            quote.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                            quote.status === 'responded' ? 'bg-blue-500/20 text-blue-400' :
-                            quote.status === 'accepted' ? 'bg-green-500/20 text-green-400' :
-                            'bg-gray-500/20 text-gray-400'
-                          }`}>
-                            {isExpired ? 'Expired' : quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
-                          </span>
+                          <div className="flex items-center gap-3">
+                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              isExpired ? 'bg-red-500/20 text-red-400' :
+                              quote.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                              quote.status === 'responded' ? 'bg-blue-500/20 text-blue-400' :
+                              quote.status === 'accepted' ? 'bg-green-500/20 text-green-400' :
+                              'bg-gray-500/20 text-gray-400'
+                            }`}>
+                              {isExpired ? 'Expired' : quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
+                            </span>
+                            {quote.status === 'pending' && (
+                              <button
+                                onClick={() => handleCancelQuote(quote._id)}
+                                disabled={cancellingQuoteId === quote._id}
+                                className="text-red-400 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                title="Cancel quote request"
+                              >
+                                {cancellingQuoteId === quote._id ? (
+                                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                  </svg>
+                                ) : (
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                )}
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {/* Products */}
