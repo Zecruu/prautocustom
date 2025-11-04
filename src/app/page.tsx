@@ -2,7 +2,7 @@
 
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
-import { ProductVisualizer } from '@/components/ProductVisualizer';
+import { CarBrochure } from '@/components/CarBrochure';
 import { MapWidget } from '@/components/MapWidget';
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
     <main className="w-full bg-black">
       <Navbar />
       <Hero />
-      <ProductVisualizer />
+      <CarBrochure />
       <MapWidget />
     </main>
   );
