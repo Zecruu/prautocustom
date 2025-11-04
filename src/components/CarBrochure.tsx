@@ -14,7 +14,7 @@ export const CarBrochure: React.FC = () => {
   const [flipProgress, setFlipProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [mouseX, setMouseX] = useState(0);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   const pages = brochurePages;
   const totalPages = pages.length;
