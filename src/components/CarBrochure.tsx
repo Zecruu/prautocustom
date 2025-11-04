@@ -214,12 +214,32 @@ export const CarBrochure: React.FC = () => {
   };
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const centerX = rect.width / 2;
     
+    console.log('Canvas clicked at:', clickX, 'Center:', centerX);
+    
     if (clickX > centerX) {
+      flipToPage('next');
+    } else {
+      flipToPage('prev');
+    }
+  };
+  
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!canvasRef.current || e.touches.length === 0) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    const centerX = rect.width / 2;
+    
+    console.log('Canvas touched at:', touchX, 'Center:', centerX);
+    
+    if (touchX > centerX) {
       flipToPage('next');
     } else {
       flipToPage('prev');
@@ -232,10 +252,10 @@ export const CarBrochure: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Our Work Portfolio
+            {t('brochure.title')}
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Explore our custom automotive transformations. Click or drag to flip pages.
+            {t('brochure.subtitle')}
           </p>
         </div>
 
@@ -248,17 +268,26 @@ export const CarBrochure: React.FC = () => {
           <canvas
             ref={canvasRef}
             onClick={handleCanvasClick}
+            onTouchStart={handleTouchStart}
+            width={1024}
+            height={600}
             className="w-full h-[600px] cursor-pointer rounded-lg shadow-2xl"
-            style={{ background: '#1a1a1a' }}
+            style={{ 
+              background: '#1a1a1a', 
+              touchAction: 'manipulation',
+              pointerEvents: 'auto',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+            }}
           />
           
           {/* Page Info Overlay */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-sm px-6 py-3 rounded-full">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-sm px-6 py-3 rounded-full pointer-events-none">
             <p className="text-white font-semibold">
               {pages[currentPage]?.title}
             </p>
             <p className="text-gray-400 text-sm text-center">
-              Page {currentPage + 1} of {totalPages}
+              {t('brochure.pageCount', { current: currentPage + 1, total: totalPages })}
             </p>
           </div>
         </div>
@@ -273,7 +302,7 @@ export const CarBrochure: React.FC = () => {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Previous
+            {t('brochure.previous')}
           </button>
           
           <div className="flex gap-2">
@@ -299,7 +328,7 @@ export const CarBrochure: React.FC = () => {
             disabled={currentPage === totalPages - 1 || isFlipping}
             className="px-8 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            Next
+            {t('brochure.next')}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

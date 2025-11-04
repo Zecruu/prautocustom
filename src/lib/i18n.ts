@@ -98,6 +98,13 @@ const resources = {
         getDirections: 'Get Directions',
         openMaps: 'Open Google Maps',
       },
+      brochure: {
+        title: 'Our Work Portfolio',
+        subtitle: 'Browse through our custom car projects and see what we can do for your vehicle',
+        previous: 'Previous',
+        next: 'Next',
+        pageCount: 'Page {{current}} of {{total}}',
+      },
     },
   },
   es: {
@@ -195,6 +202,13 @@ const resources = {
         phoneNote: 'Llamar o WhatsApp',
         getDirections: 'Obtener Direcciones',
         openMaps: 'Abrir Google Maps',
+      },
+      brochure: {
+        title: 'Nuestro Portafolio de Trabajos',
+        subtitle: 'Explora nuestros proyectos de autos personalizados y mira lo que podemos hacer por tu vehículo',
+        previous: 'Anterior',
+        next: 'Siguiente',
+        pageCount: 'Página {{current}} de {{total}}',
       },
     },
   },
