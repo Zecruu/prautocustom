@@ -15,19 +15,36 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
+        username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
+        isAdminLogin: { label: 'Is Admin Login', type: 'text' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password required');
+        if (!credentials?.password) {
+          throw new Error('Password required');
         }
 
         await connectDB();
 
-        const user = await User.findOne({ email: credentials.email });
-
-        if (!user) {
-          throw new Error('No user found with this email');
+        let user;
+        
+        // If admin login, use username. Otherwise, use email.
+        if (credentials.isAdminLogin === 'true' && credentials.username) {
+          user = await User.findOne({ username: credentials.username.toLowerCase() });
+          if (!user) {
+            throw new Error('No user found with this username');
+          }
+          // Verify user is admin or employee
+          if (user.role === 'client') {
+            throw new Error('Unauthorized access');
+          }
+        } else if (credentials.email) {
+          user = await User.findOne({ email: credentials.email });
+          if (!user) {
+            throw new Error('No user found with this email');
+          }
+        } else {
+          throw new Error('Email or username required');
         }
 
         const isValid = await user.comparePassword(credentials.password);
