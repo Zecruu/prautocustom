@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Sidebar } from '@/components/admin/Sidebar';
 
 interface User {
   id: string;
@@ -208,8 +207,7 @@ export default function UsersManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex">
-        <Sidebar />
+      <div className="min-h-screen bg-black">
         <div className="flex-1 p-8">
           <div className="text-white text-center">Loading...</div>
         </div>
@@ -218,8 +216,7 @@ export default function UsersManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex">
-      <Sidebar />
+    <>
       <div className="flex-1 p-8 overflow-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -522,6 +519,6 @@ export default function UsersManagement() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
