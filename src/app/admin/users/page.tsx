@@ -43,7 +43,7 @@ export default function UsersManagement() {
       const response = await fetch('/api/admin/users');
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.users.map((u: any) => ({
+        setUsers(data.users.map((u: { _id: string; email: string; name: string; username?: string; role: 'admin' | 'employee' | 'client'; isActive: boolean; createdAt: string; lastLogin?: string }) => ({
           id: String(u._id),
           email: u.email,
           name: u.name,
@@ -106,7 +106,13 @@ export default function UsersManagement() {
     setFormLoading(true);
 
     try {
-      const updateData: any = {
+      const updateData: {
+        name: string;
+        username?: string;
+        role: 'admin' | 'employee' | 'client';
+        isActive: boolean;
+        password?: string;
+      } = {
         name: formData.name,
         username: formData.username || undefined,
         role: formData.role,

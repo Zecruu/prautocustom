@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Ensure Product model is registered
-    Product;
+    void Product;
 
     const data = await request.json();
     const { products, firstName, lastName, email, phone, shippingAddress, message } = data;

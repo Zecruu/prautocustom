@@ -25,8 +25,8 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     await connectDB();
 
     // Ensure models are registered
-    Product;
-    User;
+    void Product;
+    void User;
 
     // Find the quote
     const quote = await Quote.findById(id);
