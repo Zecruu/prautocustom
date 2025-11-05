@@ -14,6 +14,8 @@ export const CarBrochure: React.FC = () => {
   const [flipProgress, setFlipProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [mouseX, setMouseX] = useState(0);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragDirection, setDragDirection] = useState<'next' | 'prev' | null>(null);
   const animationRef = useRef<number | undefined>(undefined);
 
   const pages = brochurePages;
@@ -208,8 +210,8 @@ export const CarBrochure: React.FC = () => {
       
       ctx.restore();
       
-      // Page corner curl hint
-      if (!isFlipping && mouseX > rect.width / 2 + pageWidth / 2 - 60) {
+      // Page corner curl hint (only show when not flipping or dragging)
+      if (!isFlipping && !isDragging && mouseX > rect.width / 2 + pageWidth / 2 - 60) {
         ctx.save();
         ctx.translate(centerX + 20 + pageWidth - 40, centerY - pageHeight / 2 + 20);
         ctx.beginPath();
@@ -242,18 +244,137 @@ export const CarBrochure: React.FC = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [currentPage, isFlipping, flipProgress, mouseX]);
+  }, [currentPage, isFlipping, flipProgress, mouseX, isDragging]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    setMouseX(e.clientX - rect.left);
+  // Handle drag start
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isFlipping) return;
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const centerX = rect.width / 2;
+    
+    // Determine direction based on which side was clicked
+    const direction = clickX > centerX ? 'next' : 'prev';
+    
+    // Check if we can flip in that direction
+    if (direction === 'next' && currentPage >= totalPages - 1) return;
+    if (direction === 'prev' && currentPage <= 0) return;
+    
+    console.log('Starting drag from:', clickX, 'Direction:', direction);
+    
+    setIsDragging(true);
+    setDragStartX(clickX);
+    setDragDirection(direction);
+    setIsFlipping(true);
+    setFlipProgress(0);
+    
+    // Cancel any existing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  };
+  
+  // Handle drag move
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const currentX = e.clientX - rect.left;
+    setMouseX(currentX);
+    
+    if (isDragging && dragDirection) {
+      e.preventDefault();
+      
+      // Calculate drag distance
+      const dragDistance = dragDirection === 'next' 
+        ? dragStartX - currentX  // Dragging left for next
+        : currentX - dragStartX; // Dragging right for prev
+      
+      // Convert drag distance to progress (0 to 1)
+      // Use pageWidth as the reference (about 40% of canvas width)
+      const maxDragDistance = rect.width * 0.4;
+      const progress = Math.max(0, Math.min(1, dragDistance / maxDragDistance));
+      
+      console.log('Dragging - Distance:', dragDistance, 'Progress:', progress);
+      setFlipProgress(progress);
+    }
+  };
+  
+  // Handle drag end
+  const handleMouseUp = () => {
+    if (!isDragging || !dragDirection) return;
+    
+    console.log('Drag ended - Progress:', flipProgress, 'Direction:', dragDirection);
+    
+    setIsDragging(false);
+    
+    // If dragged more than 30%, complete the flip
+    if (flipProgress > 0.3) {
+      // Animate to completion
+      const startProgress = flipProgress;
+      const startTime = Date.now();
+      const remainingDuration = (1 - startProgress) * 800; // Scale duration based on remaining distance
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const rawProgress = Math.min(elapsed / remainingDuration, 1);
+        const easedProgress = easeInOutCubic(rawProgress);
+        const newProgress = startProgress + (1 - startProgress) * easedProgress;
+        
+        setFlipProgress(newProgress);
+        
+        if (rawProgress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        } else {
+          // Complete the flip
+          const newPage = dragDirection === 'next' 
+            ? Math.min(currentPage + 1, totalPages - 1)
+            : Math.max(currentPage - 1, 0);
+          setCurrentPage(newPage);
+          setFlipProgress(0);
+          setIsFlipping(false);
+          setDragDirection(null);
+        }
+      };
+      
+      animationRef.current = requestAnimationFrame(animate);
+    } else {
+      // Snap back - animate back to 0
+      const startProgress = flipProgress;
+      const startTime = Date.now();
+      const snapDuration = startProgress * 400; // Faster snap back
+      
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const rawProgress = Math.min(elapsed / snapDuration, 1);
+        const easedProgress = easeInOutCubic(rawProgress);
+        const newProgress = startProgress * (1 - easedProgress);
+        
+        setFlipProgress(newProgress);
+        
+        if (rawProgress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        } else {
+          setFlipProgress(0);
+          setIsFlipping(false);
+          setDragDirection(null);
+        }
+      };
+      
+      animationRef.current = requestAnimationFrame(animate);
+    }
   };
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Only handle as click if not dragging
+    if (isDragging) return;
+    
     e.preventDefault();
     e.stopPropagation();
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || isFlipping) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const centerX = rect.width / 2;
@@ -268,19 +389,50 @@ export const CarBrochure: React.FC = () => {
   };
   
   const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (isFlipping) return;
     e.preventDefault();
+    
     if (!canvasRef.current || e.touches.length === 0) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const touchX = e.touches[0].clientX - rect.left;
     const centerX = rect.width / 2;
     
-    console.log('Canvas touched at:', touchX, 'Center:', centerX);
+    const direction = touchX > centerX ? 'next' : 'prev';
     
-    if (touchX > centerX) {
-      flipToPage('next');
-    } else {
-      flipToPage('prev');
+    if (direction === 'next' && currentPage >= totalPages - 1) return;
+    if (direction === 'prev' && currentPage <= 0) return;
+    
+    console.log('Touch drag started at:', touchX, 'Direction:', direction);
+    
+    setIsDragging(true);
+    setDragStartX(touchX);
+    setDragDirection(direction);
+    setIsFlipping(true);
+    setFlipProgress(0);
+    
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
     }
+  };
+  
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current || !isDragging || !dragDirection || e.touches.length === 0) return;
+    
+    const rect = canvasRef.current.getBoundingClientRect();
+    const currentX = e.touches[0].clientX - rect.left;
+    
+    const dragDistance = dragDirection === 'next' 
+      ? dragStartX - currentX
+      : currentX - dragStartX;
+    
+    const maxDragDistance = rect.width * 0.4;
+    const progress = Math.max(0, Math.min(1, dragDistance / maxDragDistance));
+    
+    setFlipProgress(progress);
+  };
+  
+  const handleTouchEnd = () => {
+    handleMouseUp(); // Reuse the same logic
   };
 
   return (
@@ -300,18 +452,23 @@ export const CarBrochure: React.FC = () => {
         <div 
           ref={containerRef}
           className="relative w-full max-w-5xl mx-auto mb-12"
-          onMouseMove={handleMouseMove}
         >
           <canvas
             ref={canvasRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
             onClick={handleCanvasClick}
             onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             width={1024}
             height={600}
-            className="w-full h-[600px] cursor-pointer rounded-lg shadow-2xl"
+            className="w-full h-[600px] cursor-grab active:cursor-grabbing rounded-lg shadow-2xl"
             style={{ 
               background: '#1a1a1a', 
-              touchAction: 'manipulation',
+              touchAction: 'none',
               pointerEvents: 'auto',
               userSelect: 'none',
               WebkitUserSelect: 'none',
