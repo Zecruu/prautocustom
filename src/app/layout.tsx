@@ -49,10 +49,20 @@ export const metadata: Metadata = {
     telephone: true,
   },
   icons: {
-    icon: "/logos/logo.png",
+    icon: [
+      { url: "/logos/logo.png", sizes: "any" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
     shortcut: "/logos/logo.png",
     apple: "/logos/logo.png",
+    other: [
+      {
+        rel: "apple-touch-icon",
+        url: "/logos/logo.png",
+      },
+    ],
   },
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -99,10 +109,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // Structured Data for Local Business (JSON-LD)
-  const structuredData = {
+  const businessData = {
     "@context": "https://schema.org",
     "@type": "AutomotiveBusiness",
-    "@id": "https://www.prautocustoms.com",
+    "@id": "https://www.prautocustoms.com/#business",
     "name": "PR Auto Custom",
     "alternateName": "PR Auto Custom Rims & Wheels",
     "description": "Premium custom rims and wheels installation in Puerto Rico. Expert customization services with interactive rim visualizer.",
@@ -137,7 +147,7 @@ export default function RootLayout({
       }
     ],
     "priceRange": "$$",
-    "image": "https://www.prautocustoms.com/images/pr-auto-custom-hero-desktop.png",
+    "image": "https://www.prautocustoms.com/logos/logo.png",
     "logo": "https://www.prautocustoms.com/logos/logo.png",
     "sameAs": [
       "https://www.facebook.com/prautocustom",
@@ -171,14 +181,54 @@ export default function RootLayout({
     }
   };
 
+  // Organization Schema for Google Knowledge Graph (this shows the logo in search)
+  const organizationData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://www.prautocustoms.com/#organization",
+    "name": "PR Auto Custom",
+    "legalName": "PR Auto Custom",
+    "url": "https://www.prautocustoms.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.prautocustoms.com/logos/logo.png",
+      "width": "512",
+      "height": "512"
+    },
+    "image": "https://www.prautocustoms.com/logos/logo.png",
+    "description": "Premium custom rims and wheels in Puerto Rico. Expert installation and personalized service.",
+    "telephone": "+1-787-420-5538",
+    "email": "info@prautocustom.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Carr 190 RR2 Box 327",
+      "addressLocality": "Carolina",
+      "addressRegion": "PR",
+      "postalCode": "00983",
+      "addressCountry": "US"
+    },
+    "sameAs": [
+      "https://www.facebook.com/prautocustom",
+      "https://www.instagram.com/prautocustom"
+    ]
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Structured Data */}
+        {/* Structured Data - Business */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(businessData) }}
         />
+        {/* Structured Data - Organization (for logo in Google search) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
+        />
+        {/* Additional meta tags for logo */}
+        <link rel="icon" type="image/png" href="/logos/logo.png" />
+        <link rel="apple-touch-icon" href="/logos/logo.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
