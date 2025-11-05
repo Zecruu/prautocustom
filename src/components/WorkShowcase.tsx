@@ -16,55 +16,55 @@ const showcaseImages: ShowcaseImage[] = [
   {
     src: '/images/porsche-macan-custom-wheels-pr-auto.jpg',
     alt: 'Porsche Macan with 21" BMF Custom Wheels in Carolina PR',
-    title: 'Porsche Macan 🔥',
+    title: 'Porsche Macan',
     description: 'Stunning 21" BMF wheels with aggressive stance and perfect fitment',
   },
   {
     src: '/images/porsche-boxster-custom-wheels-orange.jpg',
     alt: 'Orange Porsche Boxster with 20" Centerlock Style Wheels',
-    title: 'Porsche Boxster 🔥',
+    title: 'Porsche Boxster',
     description: 'Centerlock style 20" wheels with racing-inspired design and yellow brake calipers',
   },
   {
     src: '/images/red-mercedes-custom-wheels-carolina-pr.jpg',
     alt: 'Red Mercedes-Benz C-Class with 19" BMF Custom Wheels Puerto Rico',
-    title: 'Mercedes-Benz C-Class 🔥',
+    title: 'Mercedes-Benz C-Class',
     description: 'Premium 19" BMF wheels with elegant multi-spoke design and perfect offset',
   },
   {
     src: '/images/custom-luxury-sedan-wheels-puerto-rico.jpg',
     alt: 'Audi Q8 with 22" GB Custom Wheels Installation PR',
-    title: 'Audi Q8 🔥',
+    title: 'Audi Q8',
     description: 'Massive 22" GB wheels with gloss black finish and luxury presence',
   },
   {
     src: '/images/black-sport-rims-custom-installation.jpg',
     alt: 'Volkswagen GTI with 19" GM Sport Rims Carolina',
-    title: 'Volkswagen GTI 🔥',
+    title: 'Volkswagen GTI',
     description: 'Aggressive 19" GM wheels with gunmetal finish and performance-oriented design',
   },
   {
     src: '/images/performance-wheels-custom-fitment.jpg',
     alt: 'Mercedes-Benz G63 AMG with 22" SB-M Performance Wheels Puerto Rico',
-    title: 'Mercedes-Benz G63 🔥',
+    title: 'Mercedes-Benz G63',
     description: 'Beast mode with 22" SB-M wheels, matte black finish, and commanding presence',
   },
   {
     src: '/images/luxury-suv-aftermarket-wheels-pr.jpg',
     alt: 'Toyota Tundra with 22" 4Play Aftermarket Wheels PR Auto Custom',
-    title: 'Toyota Tundra 🔥',
+    title: 'Toyota Tundra',
     description: 'Powerful 22" 4Play wheels built for durability and off-road capability',
   },
   {
     src: '/images/custom-sport-wheels-installation-puerto-rico.jpg',
     alt: 'BMW 4 Series with 19" GB Custom Sport Wheels Puerto Rico',
-    title: 'BMW 4 Series 🔥',
+    title: 'BMW 4 Series',
     description: 'Sleek 19" GB wheels with gloss black finish and sport-tuned stance',
   },
   {
     src: '/images/premium-car-wheels-pr-auto-custom.jpg',
     alt: 'Jeep Gladiator with 17" BR Wheels and 37" Tires Carolina',
-    title: 'Jeep Gladiator 🔥',
+    title: 'Jeep Gladiator',
     description: 'Rugged 17" BR wheels wrapped in massive 37" tires for ultimate off-road domination',
   },
 ];
@@ -149,26 +149,6 @@ export const WorkShowcase: React.FC = () => {
             >
               {t('showcase.cta.requestQuote', 'Request a Quote')}
             </Link>
-          </div>
-        </div>
-
-        {/* Stats Section */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-5xl font-bold text-yellow-500 mb-2">500+</div>
-            <div className="text-gray-400 text-sm uppercase tracking-wider">{t('showcase.stats.installations', 'Installations')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-5xl font-bold text-yellow-500 mb-2">50+</div>
-            <div className="text-gray-400 text-sm uppercase tracking-wider">{t('showcase.stats.brands', 'Premium Brands')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-5xl font-bold text-yellow-500 mb-2">10+</div>
-            <div className="text-gray-400 text-sm uppercase tracking-wider">{t('showcase.stats.experience', 'Years Experience')}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-5xl font-bold text-yellow-500 mb-2">100%</div>
-            <div className="text-gray-400 text-sm uppercase tracking-wider">{t('showcase.stats.satisfaction', 'Satisfaction')}</div>
           </div>
         </div>
       </div>
