@@ -41,6 +41,11 @@ export const CarBrochure: React.FC = () => {
     loadImages();
   }, [pages]);
 
+  // Easing function for smooth animation
+  const easeInOutCubic = (t: number): number => {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  };
+
   // Handle page flip
   const flipToPage = (direction: 'next' | 'prev') => {
     if (isFlipping) return;
@@ -51,23 +56,30 @@ export const CarBrochure: React.FC = () => {
     
     if (newPage === currentPage) return;
     
+    console.log('Starting flip animation to page:', newPage);
     setIsFlipping(true);
-    let progress = 0;
+    
+    const startTime = Date.now();
+    const duration = 800; // 800ms animation
     
     const animate = () => {
-      progress += 0.05;
-      setFlipProgress(Math.min(progress, 1));
+      const elapsed = Date.now() - startTime;
+      const rawProgress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeInOutCubic(rawProgress);
       
-      if (progress < 1) {
+      setFlipProgress(easedProgress);
+      
+      if (rawProgress < 1) {
         animationRef.current = requestAnimationFrame(animate);
       } else {
+        console.log('Flip animation complete');
         setCurrentPage(newPage);
         setFlipProgress(0);
         setIsFlipping(false);
       }
     };
     
-    animate();
+    animationRef.current = requestAnimationFrame(animate);
   };
 
   // Render 3D page flip on canvas
@@ -122,37 +134,62 @@ export const CarBrochure: React.FC = () => {
       ctx.save();
       ctx.translate(centerX + 20, centerY - pageHeight / 2);
       
-      if (isFlipping) {
-        // Flip animation
-        const angle = flipProgress * Math.PI;
-        const segments = 20;
-        const segmentWidth = pageWidth / segments;
+      if (isFlipping && flipProgress > 0) {
+        // Dramatic page flip animation - page curls from right to left
+        ctx.save();
         
-        for (let i = 0; i < segments; i++) {
-          const segmentAngle = (i / segments) * angle;
-          const x = i * segmentWidth;
-          const rotateAmount = Math.cos(segmentAngle);
-          const currentWidth = segmentWidth * Math.abs(rotateAmount);
-          
-          ctx.save();
-          ctx.translate(x + segmentWidth / 2, pageHeight / 2);
-          ctx.scale(rotateAmount, 1);
-          ctx.translate(-segmentWidth / 2, -pageHeight / 2);
-          
-          // Shadow gradient during flip
-          const shadowAlpha = Math.abs(Math.sin(segmentAngle)) * 0.5;
-          const gradient = ctx.createLinearGradient(0, 0, currentWidth, 0);
-          gradient.addColorStop(0, `rgba(0, 0, 0, ${shadowAlpha})`);
-          gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          
+        // The flipping page shrinks horizontally to create perspective
+        ctx.translate(pageWidth / 2, pageHeight / 2);
+        ctx.scale(1 - flipProgress, 1); // Squeeze horizontally
+        ctx.translate(-pageWidth / 2, -pageHeight / 2);
+        
+        // Shadow gets darker as page flips more
+        const shadowAlpha = 0.3 + (flipProgress * 0.4);
+        ctx.fillStyle = `rgba(0, 0, 0, ${shadowAlpha})`;
+        ctx.fillRect(5, 5, pageWidth, pageHeight);
+        
+        // The page itself - gets darker on the back side
+        if (flipProgress < 0.5) {
+          // Front side (white)
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, segmentWidth, pageHeight);
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, segmentWidth, pageHeight);
+        } else {
+          // Back side (light gray)
+          ctx.fillStyle = '#e0e0e0';
+        }
+        ctx.fillRect(0, 0, pageWidth, pageHeight);
+        
+        // Add gradient shadow during flip
+        const gradient = ctx.createLinearGradient(0, 0, pageWidth, 0);
+        gradient.addColorStop(0, `rgba(0, 0, 0, ${flipProgress * 0.5})`);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, pageWidth, pageHeight);
+        
+        // Border
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, 0, pageWidth, pageHeight);
+        
+        ctx.restore();
+        
+        // Show the new page emerging from behind
+        if (flipProgress > 0.2) {
+          ctx.save();
+          const emergeAlpha = (flipProgress - 0.2) / 0.8; // Fade in from 20% to 100%
+          ctx.globalAlpha = emergeAlpha;
           
+          // Shadow
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+          ctx.fillRect(5, 5, pageWidth, pageHeight);
+          
+          // New page
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, pageWidth, pageHeight);
+          
+          // Border
           ctx.strokeStyle = '#333';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(0, 0, segmentWidth, pageHeight);
+          ctx.lineWidth = 2;
+          ctx.strokeRect(0, 0, pageWidth, pageHeight);
           
           ctx.restore();
         }
