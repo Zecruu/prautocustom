@@ -1,13 +1,16 @@
 # robots.txt for PR Auto Custom
-# Allow all search engines to crawl the site
+# https://www.prautocustoms.com
 
 User-agent: *
 Allow: /
 
-# Disallow admin and API routes
+# Sitemaps
+Sitemap: https://www.prautocustoms.com/sitemap.xml
+
+# Block admin areas
 Disallow: /admin/
 Disallow: /api/
 
-# Sitemap location
-Sitemap: https://www.prautocustoms.com/sitemap.xml
-
+# Allow search engines to index images
+Allow: /images/
+Allow: /logos/

@@ -98,6 +98,22 @@ const resources = {
         getDirections: 'Get Directions',
         openMaps: 'Open Google Maps',
       },
+      showcase: {
+        title: 'Our Work',
+        subtitle: 'Premium custom wheel installations showcasing our expertise in fitment, style, and performance. Each build is a masterpiece.',
+        cta: {
+          title: 'Ready to Transform Your Ride?',
+          subtitle: 'Let our experts help you find the perfect wheels for your vehicle. Premium brands, expert installation, guaranteed satisfaction.',
+          viewProducts: 'View Products',
+          requestQuote: 'Request a Quote',
+        },
+        stats: {
+          installations: 'Installations',
+          brands: 'Premium Brands',
+          experience: 'Years Experience',
+          satisfaction: 'Satisfaction',
+        },
+      },
     },
   },
   es: {
@@ -195,6 +211,22 @@ const resources = {
         phoneNote: 'Llamar o WhatsApp',
         getDirections: 'Obtener Direcciones',
         openMaps: 'Abrir Google Maps',
+      },
+      showcase: {
+        title: 'Nuestros Trabajos',
+        subtitle: 'Instalaciones premium de rines personalizados que demuestran nuestra experiencia en ajuste, estilo y rendimiento. Cada proyecto es una obra maestra.',
+        cta: {
+          title: '¿Listo para Transformar Tu Auto?',
+          subtitle: 'Deja que nuestros expertos te ayuden a encontrar los rines perfectos para tu vehículo. Marcas premium, instalación experta, satisfacción garantizada.',
+          viewProducts: 'Ver Productos',
+          requestQuote: 'Solicitar Cotización',
+        },
+        stats: {
+          installations: 'Instalaciones',
+          brands: 'Marcas Premium',
+          experience: 'Años de Experiencia',
+          satisfaction: 'Satisfacción',
+        },
       },
     },
   },

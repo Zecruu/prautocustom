@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   name: string;
+  username?: string; // For admin/employee login
   role: 'admin' | 'employee' | 'client';
   googleId?: string;
   avatar?: string;
@@ -38,6 +39,14 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: true,
       trim: true,
+    },
+    username: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows multiple null values (for clients)
+      trim: true,
+      lowercase: true,
+      index: true,
     },
     role: {
       type: String,

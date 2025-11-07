@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
+import { sendWelcomeEmailServer } from '@/lib/emailjs-server';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,19 +15,36 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
+        username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
+        isAdminLogin: { label: 'Is Admin Login', type: 'text' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email and password required');
+        if (!credentials?.password) {
+          throw new Error('Password required');
         }
 
         await connectDB();
 
-        const user = await User.findOne({ email: credentials.email });
-
-        if (!user) {
-          throw new Error('No user found with this email');
+        let user;
+        
+        // If admin login, use username. Otherwise, use email.
+        if (credentials.isAdminLogin === 'true' && credentials.username) {
+          user = await User.findOne({ username: credentials.username.toLowerCase() });
+          if (!user) {
+            throw new Error('No user found with this username');
+          }
+          // Verify user is admin or employee
+          if (user.role === 'client') {
+            throw new Error('Unauthorized access');
+          }
+        } else if (credentials.email) {
+          user = await User.findOne({ email: credentials.email });
+          if (!user) {
+            throw new Error('No user found with this email');
+          }
+        } else {
+          throw new Error('Email or username required');
         }
 
         const isValid = await user.comparePassword(credentials.password);
@@ -61,6 +79,9 @@ export const authOptions: NextAuthOptions = {
         const existingUser = await User.findOne({ email: user.email });
 
         if (existingUser) {
+          // Existing user logging in with Google
+          console.log('🔄 Existing user logged in with Google:', existingUser.email);
+          
           // Update Google ID if not set
           if (!existingUser.googleId && account.providerAccountId) {
             existingUser.googleId = account.providerAccountId;
@@ -72,7 +93,9 @@ export const authOptions: NextAuthOptions = {
           await existingUser.save();
         } else {
           // Create new user with Google OAuth
-          await User.create({
+          console.log('✨ Creating new user with Google OAuth:', user.email);
+          
+          const newUser = await User.create({
             email: user.email,
             name: user.name || 'User',
             googleId: account.providerAccountId,
@@ -80,6 +103,18 @@ export const authOptions: NextAuthOptions = {
             role: 'client', // Default role for new users
             lastLogin: new Date(),
           });
+
+          // Send welcome email for new Google OAuth users
+          try {
+            await sendWelcomeEmailServer({
+              userEmail: newUser.email,
+              userName: newUser.name,
+            });
+            console.log('✅ Welcome email sent to new Google OAuth user:', newUser.email);
+          } catch (emailError) {
+            console.error('❌ Failed to send welcome email to Google OAuth user:', emailError);
+            // Continue - account is still created
+          }
         }
       }
       return true;
@@ -108,8 +143,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/admin/signin',
-    error: '/admin/signin',
+    signIn: '/signin',
+    error: '/signin',
   },
   session: {
     strategy: 'jwt',

@@ -6,11 +6,19 @@ export interface IQuoteProduct {
   notes?: string;
 }
 
+export interface IShippingAddress {
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+}
+
 export interface IQuote extends Document {
   client: mongoose.Types.ObjectId;
   products: IQuoteProduct[];
   status: 'pending' | 'responded' | 'accepted' | 'rejected' | 'expired';
   message?: string;
+  shippingAddress?: IShippingAddress;
   assignedTo?: mongoose.Types.ObjectId; // Employee who handled the quote
   respondedAt?: Date;
   expiresAt?: Date;
@@ -67,6 +75,12 @@ const QuoteSchema = new Schema<IQuote>(
     message: {
       type: String,
       trim: true,
+    },
+    shippingAddress: {
+      address: { type: String, trim: true },
+      city: { type: String, trim: true },
+      state: { type: String, trim: true },
+      zipCode: { type: String, trim: true },
     },
     assignedTo: {
       type: Schema.Types.ObjectId,

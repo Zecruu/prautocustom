@@ -1,0 +1,25 @@
+{
+  "name": "PR Auto Custom - Premium Rims & Wheels",
+  "short_name": "PR Auto Custom",
+  "description": "Premium custom rims and wheels in Puerto Rico. Interactive visualizer and expert installation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#EAB308",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logos/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logos/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

@@ -47,6 +47,12 @@ export default async function QuoteDetailPage({ params }: PageProps) {
     }>;
     status: string;
     message?: string;
+    shippingAddress?: {
+      address?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+    };
     assignedTo?: { name: string; email: string } | null;
     createdAt: Date;
     expiresAt: Date;
@@ -112,10 +118,29 @@ export default async function QuoteDetailPage({ params }: PageProps) {
                 </div>
               )}
             </div>
+            
+            {/* Shipping Address */}
+            {quote.shippingAddress && (quote.shippingAddress.address || quote.shippingAddress.city || quote.shippingAddress.state || quote.shippingAddress.zipCode) && (
+              <div className="mt-4 pt-4 border-t border-zinc-800">
+                <p className="text-gray-400 text-sm mb-2">Shipping Address</p>
+                <div className="text-white space-y-1">
+                  {quote.shippingAddress.address && <p>{quote.shippingAddress.address}</p>}
+                  {(quote.shippingAddress.city || quote.shippingAddress.state || quote.shippingAddress.zipCode) && (
+                    <p>
+                      {[quote.shippingAddress.city, quote.shippingAddress.state, quote.shippingAddress.zipCode]
+                        .filter(Boolean)
+                        .join(', ')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Message */}
             {quote.message && (
               <div className="mt-4 pt-4 border-t border-zinc-800">
                 <p className="text-gray-400 text-sm mb-1">Message</p>
-                <p className="text-white">{quote.message}</p>
+                <p className="text-white whitespace-pre-wrap">{quote.message}</p>
               </div>
             )}
           </div>
