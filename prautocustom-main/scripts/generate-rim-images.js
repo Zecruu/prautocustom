@@ -77,7 +77,7 @@ async function generateWithReplicate() {
         "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
         {
           input: {
-            prompt: `${style}, ${baseCarDescription} with ${rim.color} ${rim.description}, ${viewAngle}, ${cameraAngle}, ${lighting}, ${background}, ultra detailed wheels, sharp focus, 8k resolution, ${rim.style} style wheels, professional car photography, wheels in focus`,
+            prompt: `${style}, ${baseCarDescription} with ${rim.description}, ${viewAngle}, ${cameraAngle}, ${lighting}, ${background}, ultra detailed wheels, sharp focus, 8k resolution, ${rim.style} style wheels, professional car photography, wheels in focus`,
             negative_prompt: "blurry, low quality, distorted, deformed wheels, multiple cars, text, watermark, bad anatomy, front view only, wheels hidden, wheels not visible, different angles, inconsistent perspective, motion blur",
             width: 1024,
             height: 768,
