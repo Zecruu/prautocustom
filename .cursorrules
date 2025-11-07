@@ -40,7 +40,7 @@ Implement sub-filters feature that allows:
 
 ### Changes Made:
 1. **Models Updated:**
-   - Settings.ts: Added ISubFilter interface and subFilters array
+   - Settings.ts: Added ISubFilter interface with categorySlug field
    - Product.ts: Added subFilters field (Record<string, string>)
 
 2. **API Routes Updated:**
@@ -48,19 +48,17 @@ Implement sub-filters feature that allows:
    - /api/admin/products: Accepts and stores subFilters in products
 
 3. **Admin UI Updated:**
-   - Settings page: New sub-filters management section with options management
-   - Product categories: Simple management (no sub-filter linking)
+   - Settings page: Sub-filters management with category selection
+     * When creating sub-filter, select which category it belongs to
+     * Sub-filters are category-specific
    - Add Product page: Manual sub-filter assignment with checkbox
      * Admin checks "Add Sub-Filters to this product?"
-     * Click "+ Add Sub-Filter" to add slots
-     * Each slot has dropdown showing ALL available sub-filters
-     * Admin selects which sub-filters to add to product
+     * Shows only sub-filters that belong to selected category
      * Can add multiple sub-filters per product
-     * Can remove individual sub-filters
 
 4. **Client UI Updated:**
-   - ProductsPageClient: Added sub-filters filtering UI and logic
-   - Sub-filters appear dynamically based on which products in that category have them
+   - ProductsPageClient: Added sub-filters filtering UI
+   - Sub-filters appear automatically based on selected category
+   - Only shows sub-filters that belong to that category
    - Products filtered by selected sub-filter options
-   - No category-to-subfilter linking needed
 
