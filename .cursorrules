@@ -49,15 +49,18 @@ Implement sub-filters feature that allows:
 
 3. **Admin UI Updated:**
    - Settings page: New sub-filters management section with options management
-   - Product categories: Can link sub-filters to specific categories (optional)
+   - Product categories: Simple management (no sub-filter linking)
    - Add Product page: Manual sub-filter assignment with checkbox
      * Admin checks "Add Sub-Filters to this product?"
-     * Dropdown shows ALL available sub-filters
+     * Click "+ Add Sub-Filter" to add slots
+     * Each slot has dropdown showing ALL available sub-filters
      * Admin selects which sub-filters to add to product
      * Can add multiple sub-filters per product
+     * Can remove individual sub-filters
 
 4. **Client UI Updated:**
    - ProductsPageClient: Added sub-filters filtering UI and logic
-   - Filters dynamically appear after selecting a category with linked sub-filters
+   - Sub-filters appear dynamically based on which products in that category have them
    - Products filtered by selected sub-filter options
+   - No category-to-subfilter linking needed
 
