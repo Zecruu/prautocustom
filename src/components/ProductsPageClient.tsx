@@ -70,6 +70,16 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       }
     });
     
+    // Debug logging
+    console.log('🔍 Sub-Filter Debug:', {
+      selectedCategory,
+      totalProducts: products.length,
+      categoryProducts: categoryProducts.length,
+      productsWithSubFilters: categoryProducts.filter(p => p.subFilters && Object.keys(p.subFilters).length > 0),
+      availableSubFilters: Array.from(subFilterSlugs),
+      allSubFilters: subFilters.map(sf => sf.slug)
+    });
+    
     // Return sub-filters that are actually used in this category
     return subFilters.filter(sf => subFilterSlugs.has(sf.slug));
   }, [selectedCategory, products, subFilters]);
