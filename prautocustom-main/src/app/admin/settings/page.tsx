@@ -36,6 +36,7 @@ export default async function SettingsPage() {
         { name: 'Bumpers', slug: 'bumpers', active: true },
         { name: 'Lift Kits', slug: 'lift-kits', active: true },
       ],
+      subFilters: [],
     });
     settings = await Settings.findOne().lean() as ISettings | null;
   }
@@ -51,6 +52,7 @@ export default async function SettingsPage() {
       <SettingsClient
         initialVehicleTypes={settings?.vehicleTypes || []}
         initialProductCategories={settings?.productCategories || []}
+        initialSubFilters={settings?.subFilters || []}
       />
     </div>
   );

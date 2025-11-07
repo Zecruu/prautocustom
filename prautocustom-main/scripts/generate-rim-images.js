@@ -57,56 +57,7 @@ const cameraAngle = "eye level, wheels clearly visible, centered composition";
 const style = "photorealistic automotive photography, high detail on wheels";
 
 // ============================================================================
-// METHOD 1: REPLICATE (RECOMMENDED)
-// ============================================================================
-
-async function generateWithReplicate() {
-  const Replicate = require('replicate');
-  
-  const replicate = new Replicate({
-    auth: process.env.REPLICATE_API_TOKEN,
-  });
-
-  console.log('🎨 Generating images with Replicate SDXL...\n');
-
-  for (const rim of rims) {
-    console.log(`📸 Generating: ${rim.id}...`);
-    
-    try {
-      const output = await replicate.run(
-        "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
-        {
-          input: {
-            prompt: `${style}, ${baseCarDescription} with ${rim.description}, ${viewAngle}, ${cameraAngle}, ${lighting}, ${background}, ultra detailed wheels, sharp focus, 8k resolution, ${rim.style} style wheels, professional car photography, wheels in focus`,
-            negative_prompt: "blurry, low quality, distorted, deformed wheels, multiple cars, text, watermark, bad anatomy, front view only, wheels hidden, wheels not visible, different angles, inconsistent perspective, motion blur",
-            width: 1024,
-            height: 768,
-            num_outputs: 1,
-            scheduler: "K_EULER",
-            num_inference_steps: 50,
-            guidance_scale: 7.5,
-            seed: 12345,
-          }
-        }
-      );
-
-      // Download and save the image
-      const response = await fetch(output[0]);
-      const buffer = await response.arrayBuffer();
-      const outputPath = path.join(__dirname, '../public/generated', `car-${rim.id}.png`);
-      fs.writeFileSync(outputPath, Buffer.from(buffer));
-      
-      console.log(`✅ Saved: car-${rim.id}.png\n`);
-    } catch (error) {
-      console.error(`❌ Error generating ${rim.id}:`, error.message);
-    }
-  }
-
-  console.log('🎉 All images generated successfully!');
-}
-
-// ============================================================================
-// METHOD 2: OPENAI DALL-E 3
+// METHOD 1: OPENAI DALL-E 3
 // ============================================================================
 
 async function generateWithDallE() {
@@ -148,7 +99,7 @@ async function generateWithDallE() {
 }
 
 // ============================================================================
-// METHOD 3: FAL.AI (FASTEST)
+// METHOD 2: FAL.AI (FASTEST)
 // ============================================================================
 
 async function generateWithFal() {
@@ -201,10 +152,7 @@ async function main() {
   }
 
   // Auto-detect which API key is available and use that method
-  if (process.env.REPLICATE_API_TOKEN) {
-    console.log('🔑 Using Replicate API...\n');
-    await generateWithReplicate();
-  } else if (process.env.OPENAI_API_KEY) {
+  if (process.env.OPENAI_API_KEY) {
     console.log('🔑 Using OpenAI DALL-E 3...\n');
     await generateWithDallE();
   } else if (process.env.FAL_KEY) {
@@ -214,10 +162,9 @@ async function main() {
 }
 
 // Check for API key
-if (!process.env.REPLICATE_API_TOKEN && !process.env.OPENAI_API_KEY && !process.env.FAL_KEY) {
+if (!process.env.OPENAI_API_KEY && !process.env.FAL_KEY) {
   console.error('\n❌ ERROR: No API key found!');
   console.log('\nPlease create a .env.local file with one of these:');
-  console.log('  REPLICATE_API_TOKEN=your_token_here');
   console.log('  OPENAI_API_KEY=your_key_here');
   console.log('  FAL_KEY=your_key_here\n');
   process.exit(1);
