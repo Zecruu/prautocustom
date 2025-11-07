@@ -49,7 +49,7 @@ async function createAdmin() {
 
     // Connect to MongoDB
     console.log('📡 Connecting to MongoDB...');
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI!); // Non-null assertion: we've already checked and exited if undefined
     console.log('✅ Connected to MongoDB\n');
 
     // Get admin details
