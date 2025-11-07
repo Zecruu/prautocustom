@@ -22,6 +22,7 @@ interface SubFilter {
   _id: string;
   name: string;
   slug: string;
+  categorySlug: string;
   options: string[];
   active: boolean;
 }
@@ -263,7 +264,7 @@ export default function NewProductPage() {
           </div>
 
           {/* Add Sub-Filters Option */}
-          {formData.category && subFilters.length > 0 && (
+          {formData.category && subFilters.filter(sf => sf.categorySlug === formData.category).length > 0 && (
             <div className="border-t border-zinc-700 pt-4">
               <label className="flex items-center gap-3 cursor-pointer group">
                 <input
@@ -320,7 +321,7 @@ export default function NewProductPage() {
                                 className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
                               >
                                 <option value="">Choose a sub-filter...</option>
-                                {subFilters.map((sf) => (
+                                {subFilters.filter(sf => sf.categorySlug === formData.category).map((sf) => (
                                   <option 
                                     key={sf._id || sf.slug} 
                                     value={sf.slug}

@@ -35,6 +35,7 @@ interface SubFilter {
   _id?: string;
   name: string;
   slug: string;
+  categorySlug: string;
   options: string[];
   active: boolean;
 }
@@ -56,34 +57,24 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const [showFilters, setShowFilters] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
-  // Get available sub-filters for selected category based on products that have them
+  // Get available sub-filters for selected category
   const availableSubFilters = useMemo(() => {
     if (!selectedCategory) return [];
     
-    // Get all unique sub-filter slugs from products in this category
-    const categoryProducts = products.filter(p => p.category === selectedCategory);
-    const subFilterSlugs = new Set<string>();
-    
-    categoryProducts.forEach(product => {
-      if (product.subFilters) {
-        Object.keys(product.subFilters).forEach(slug => subFilterSlugs.add(slug));
-      }
-    });
+    // Filter sub-filters by category
+    const categorySubFilters = subFilters.filter(sf => sf.categorySlug === selectedCategory);
     
     // Debug logging
     console.log('🔍 Sub-Filter Debug:', {
       selectedCategory,
-      totalProducts: products.length,
-      categoryProducts: categoryProducts.length,
-      productsWithSubFilters: categoryProducts.filter(p => p.subFilters && Object.keys(p.subFilters).length > 0),
-      productSubFiltersData: categoryProducts.map(p => ({ sku: p.sku, subFilters: p.subFilters })),
-      availableSubFilters: Array.from(subFilterSlugs),
-      allSubFilters: subFilters.map(sf => sf.slug)
+      totalSubFilters: subFilters.length,
+      categorySubFilters: categorySubFilters.length,
+      subFiltersForCategory: categorySubFilters.map(sf => ({ name: sf.name, slug: sf.slug })),
+      allSubFilters: subFilters.map(sf => ({ name: sf.name, slug: sf.slug, category: sf.categorySlug }))
     });
     
-    // Return sub-filters that are actually used in this category
-    return subFilters.filter(sf => subFilterSlugs.has(sf.slug));
-  }, [selectedCategory, products, subFilters]);
+    return categorySubFilters;
+  }, [selectedCategory, subFilters]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {

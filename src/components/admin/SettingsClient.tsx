@@ -79,6 +79,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
       {
         name: '',
         slug: '',
+        categorySlug: '',
         options: [],
         active: true,
       },
@@ -310,9 +311,9 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
         <div className="space-y-4">
           {subFilters.map((subFilter, subFilterIndex) => (
             <div key={subFilterIndex} className="p-4 bg-zinc-800 rounded-lg border border-zinc-700 space-y-3">
-              {/* Sub-filter Name and Slug */}
+              {/* Sub-filter Name, Category, and Slug */}
               <div className="flex items-center gap-3">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                   <input
                     type="text"
                     value={subFilter.name}
@@ -320,6 +321,18 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
                     placeholder="Sub-Filter Name (e.g., Wheel Size)"
                     className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
                   />
+                  <select
+                    value={subFilter.categorySlug}
+                    onChange={(e) => updateSubFilter(subFilterIndex, 'categorySlug', e.target.value)}
+                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
+                  >
+                    <option value="">Select Category</option>
+                    {productCategories.map((cat) => (
+                      <option key={cat._id || cat.slug} value={cat.slug}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
                   <input
                     type="text"
                     value={subFilter.slug}

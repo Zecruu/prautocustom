@@ -24,6 +24,7 @@ export interface ISubFilter {
   _id?: string;
   name: string;
   slug: string;
+  categorySlug: string; // Which category this sub-filter belongs to
   options: string[]; // Array of options for this sub-filter (e.g., ["5 hole", "6 hole", "8 hole"])
   active: boolean;
   createdAt?: Date;
@@ -55,6 +56,7 @@ const ProductCategorySchema = new Schema({
 const SubFilterSchema = new Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true },
+  categorySlug: { type: String, required: true }, // Which category this sub-filter belongs to
   options: [{ type: String }], // Array of options
   active: { type: Boolean, default: true },
 }, { timestamps: true });
