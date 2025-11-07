@@ -33,6 +33,7 @@ export default async function ProductsPage() {
         { name: 'Bumpers', slug: 'bumpers', active: true },
         { name: 'Lift Kits', slug: 'lift-kits', active: true },
       ],
+      subFilters: [],
     });
     settings = await Settings.findOne().lean() as ISettings | null;
   }
@@ -41,6 +42,7 @@ export default async function ProductsPage() {
   const products = JSON.parse(JSON.stringify(productsRaw));
   const vehicleTypes = settings?.vehicleTypes.filter((vt: { active: boolean }) => vt.active) || [];
   const productCategories = settings?.productCategories.filter((pc: { active: boolean }) => pc.active) || [];
+  const subFilters = settings?.subFilters?.filter((sf: { active: boolean }) => sf.active) || [];
 
   return (
     <main className="w-full bg-black min-h-screen">
@@ -50,6 +52,7 @@ export default async function ProductsPage() {
           products={products}
           vehicleTypes={vehicleTypes}
           productCategories={productCategories}
+          subFilters={subFilters}
         />
       </div>
     </main>

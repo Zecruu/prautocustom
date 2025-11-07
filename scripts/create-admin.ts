@@ -8,7 +8,13 @@ import bcrypt from 'bcryptjs';
 import * as readline from 'readline';
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://nomnk5138:Redzone12@prautocustom.icfoprm.mongodb.net/?appName=Prautocustom';
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('❌ ERROR: MONGODB_URI environment variable is not set!');
+  console.log('\nPlease set MONGODB_URI in your .env.local file or as an environment variable.\n');
+  process.exit(1);
+}
 
 // User Schema (inline for script)
 const UserSchema = new mongoose.Schema({
