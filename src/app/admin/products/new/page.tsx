@@ -34,7 +34,6 @@ export default function NewProductPage() {
   const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
   const [productCategories, setProductCategories] = useState<ProductCategory[]>([]);
   const [subFilters, setSubFilters] = useState<SubFilter[]>([]);
-  const [availableSubFilters, setAvailableSubFilters] = useState<SubFilter[]>([]); // Sub-filters for selected category
 
   const [formData, setFormData] = useState({
     sku: '',
@@ -49,6 +48,9 @@ export default function NewProductPage() {
     status: 'active',
     images: [] as string[],
   });
+
+  const [enableSubFilters, setEnableSubFilters] = useState(false);
+  const [selectedSubFilterSlugs, setSelectedSubFilterSlugs] = useState<string[]>([]); // Which sub-filters are being used
 
   // Fetch settings on mount
   useEffect(() => {
@@ -68,24 +70,12 @@ export default function NewProductPage() {
     fetchSettings();
   }, []);
 
-  // Update available sub-filters when category changes
+  // Reset sub-filters when category changes
   useEffect(() => {
-    if (formData.category) {
-      const selectedCategory = productCategories.find(cat => cat.slug === formData.category);
-      if (selectedCategory && selectedCategory.subFilterIds) {
-        const linked = subFilters.filter(sf => 
-          selectedCategory.subFilterIds?.includes(sf._id || sf.slug)
-        );
-        setAvailableSubFilters(linked);
-      } else {
-        setAvailableSubFilters([]);
-      }
-      // Reset sub-filter selections when category changes
-      setFormData(prev => ({ ...prev, subFilters: {} }));
-    } else {
-      setAvailableSubFilters([]);
-    }
-  }, [formData.category, productCategories, subFilters]);
+    setEnableSubFilters(false);
+    setSelectedSubFilterSlugs([]);
+    setFormData(prev => ({ ...prev, subFilters: {} }));
+  }, [formData.category]);
 
   const handleImageUpload = (url: string, index: number) => {
     const newImages = [...formData.images];
@@ -108,7 +98,40 @@ export default function NewProductPage() {
     setFormData({ ...formData, vehicleTypes: newVehicleTypes });
   };
 
-  const handleSubFilterChange = (subFilterSlug: string, optionValue: string) => {
+  const addSubFilterSlot = () => {
+    setSelectedSubFilterSlugs([...selectedSubFilterSlugs, '']);
+  };
+
+  const updateSubFilterSelection = (index: number, subFilterSlug: string) => {
+    const updated = [...selectedSubFilterSlugs];
+    const oldSlug = updated[index];
+    
+    // Remove old sub-filter value if changing
+    if (oldSlug && oldSlug !== subFilterSlug) {
+      const newSubFilters = { ...formData.subFilters };
+      delete newSubFilters[oldSlug];
+      setFormData({ ...formData, subFilters: newSubFilters });
+    }
+    
+    updated[index] = subFilterSlug;
+    setSelectedSubFilterSlugs(updated);
+  };
+
+  const removeSubFilterSlot = (index: number) => {
+    const slugToRemove = selectedSubFilterSlugs[index];
+    
+    // Remove from selections
+    setSelectedSubFilterSlugs(selectedSubFilterSlugs.filter((_, i) => i !== index));
+    
+    // Remove value from formData
+    if (slugToRemove) {
+      const newSubFilters = { ...formData.subFilters };
+      delete newSubFilters[slugToRemove];
+      setFormData({ ...formData, subFilters: newSubFilters });
+    }
+  };
+
+  const handleSubFilterOptionChange = (subFilterSlug: string, optionValue: string) => {
     setFormData({
       ...formData,
       subFilters: {
@@ -240,31 +263,120 @@ export default function NewProductPage() {
             )}
           </div>
 
-          {/* Sub-Filters (shown only when category is selected and has sub-filters) */}
-          {availableSubFilters.length > 0 && (
+          {/* Add Sub-Filters Option */}
+          {formData.category && subFilters.length > 0 && (
             <div className="border-t border-zinc-700 pt-4">
-              <h3 className="text-lg font-semibold text-white mb-3">Sub-Filters for {formData.category}</h3>
-              <div className="space-y-4">
-                {availableSubFilters.map((subFilter) => (
-                  <div key={subFilter._id}>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      {subFilter.name}
-                    </label>
-                    <select
-                      value={formData.subFilters[subFilter.slug] || ''}
-                      onChange={(e) => handleSubFilterChange(subFilter.slug, e.target.value)}
-                      className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={enableSubFilters}
+                  onChange={(e) => {
+                    setEnableSubFilters(e.target.checked);
+                    if (!e.target.checked) {
+                      setSelectedSubFilterSlugs([]);
+                      setFormData({ ...formData, subFilters: {} });
+                    }
+                  }}
+                  className="w-5 h-5 text-yellow-500 bg-zinc-800 border-zinc-700 rounded focus:ring-yellow-500"
+                />
+                <div>
+                  <span className="text-base font-medium text-white group-hover:text-yellow-500 transition-colors">
+                    Add Sub-Filters to this product?
+                  </span>
+                  <p className="text-sm text-gray-400 mt-0.5">
+                    Enable to add specific sub-filters like size, color, or other attributes
+                  </p>
+                </div>
+              </label>
+
+              {/* Sub-Filters Selection */}
+              {enableSubFilters && (
+                <div className="mt-4 space-y-4 pl-8 border-l-2 border-yellow-500/30">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-sm font-semibold text-white">Product Sub-Filters</h4>
+                    <button
+                      type="button"
+                      onClick={addSubFilterSlot}
+                      className="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-black text-sm font-medium rounded-lg transition-colors"
                     >
-                      <option value="">Select {subFilter.name}</option>
-                      {subFilter.options.map((option, idx) => (
-                        <option key={idx} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
+                      + Add Sub-Filter
+                    </button>
                   </div>
-                ))}
-              </div>
+
+                  {selectedSubFilterSlugs.map((selectedSlug, index) => {
+                    const selectedSubFilter = subFilters.find(sf => sf.slug === selectedSlug);
+                    
+                    return (
+                      <div key={index} className="p-4 bg-zinc-800 rounded-lg border border-zinc-700 space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1 space-y-3">
+                            {/* Sub-Filter Selection Dropdown */}
+                            <div>
+                              <label className="block text-xs font-medium text-gray-400 mb-2">
+                                Select Sub-Filter Type
+                              </label>
+                              <select
+                                value={selectedSlug}
+                                onChange={(e) => updateSubFilterSelection(index, e.target.value)}
+                                className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
+                              >
+                                <option value="">Choose a sub-filter...</option>
+                                {subFilters.map((sf) => (
+                                  <option 
+                                    key={sf._id || sf.slug} 
+                                    value={sf.slug}
+                                    disabled={selectedSubFilterSlugs.includes(sf.slug) && sf.slug !== selectedSlug}
+                                  >
+                                    {sf.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Options for Selected Sub-Filter */}
+                            {selectedSubFilter && (
+                              <div>
+                                <label className="block text-xs font-medium text-gray-400 mb-2">
+                                  Select {selectedSubFilter.name} Option
+                                </label>
+                                <select
+                                  value={formData.subFilters[selectedSlug] || ''}
+                                  onChange={(e) => handleSubFilterOptionChange(selectedSlug, e.target.value)}
+                                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
+                                >
+                                  <option value="">Select {selectedSubFilter.name}</option>
+                                  {selectedSubFilter.options.map((option, idx) => (
+                                    <option key={idx} value={option}>
+                                      {option}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => removeSubFilterSlot(index)}
+                            className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-colors mt-6"
+                            title="Remove Sub-Filter"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {selectedSubFilterSlugs.length === 0 && (
+                    <p className="text-sm text-gray-500 italic py-4 text-center">
+                      No sub-filters added yet. Click &quot;Add Sub-Filter&quot; to get started.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
