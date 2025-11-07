@@ -11,6 +11,7 @@ interface Product {
   name: { en: string; es: string };
   category: string;
   vehicleTypes?: string[];
+  subFilters?: Record<string, string>;
   images: string[];
   stock: number;
   status: string;
@@ -28,22 +29,41 @@ interface ProductCategory {
   name: string;
   slug: string;
   active: boolean;
+  subFilterIds?: string[];
+}
+
+interface SubFilter {
+  _id?: string;
+  name: string;
+  slug: string;
+  options: string[];
+  active: boolean;
 }
 
 interface ProductsPageClientProps {
   products: Product[];
   vehicleTypes: VehicleType[];
   productCategories: ProductCategory[];
+  subFilters: SubFilter[];
 }
 
-export function ProductsPageClient({ products, vehicleTypes, productCategories }: ProductsPageClientProps) {
+export function ProductsPageClient({ products, vehicleTypes, productCategories, subFilters }: ProductsPageClientProps) {
   const { i18n } = useTranslation();
   const currentLang = i18n.language as 'en' | 'es';
   const { addToCart } = useCart();
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({}); // Map of subFilterSlug -> selectedOption
   const [showFilters, setShowFilters] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
+
+  // Get available sub-filters for selected category
+  const availableSubFilters = useMemo(() => {
+    if (!selectedCategory) return [];
+    const category = productCategories.find(c => c.slug === selectedCategory);
+    if (!category || !category.subFilterIds) return [];
+    return subFilters.filter(sf => category.subFilterIds?.includes(sf._id || sf.slug));
+  }, [selectedCategory, productCategories, subFilters]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -57,13 +77,31 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
         return false;
       }
 
+      // Filter by sub-filters
+      for (const [subFilterSlug, selectedOption] of Object.entries(selectedSubFilters)) {
+        if (selectedOption && selectedOption !== '') {
+          const productSubFilterValue = product.subFilters?.[subFilterSlug];
+          if (productSubFilterValue !== selectedOption) {
+            return false;
+          }
+        }
+      }
+
       return true;
     });
-  }, [products, selectedVehicleType, selectedCategory]);
+  }, [products, selectedVehicleType, selectedCategory, selectedSubFilters]);
 
   const clearFilters = () => {
     setSelectedVehicleType(null);
     setSelectedCategory(null);
+    setSelectedSubFilters({});
+  };
+
+  const handleSubFilterChange = (subFilterSlug: string, value: string) => {
+    setSelectedSubFilters(prev => ({
+      ...prev,
+      [subFilterSlug]: value,
+    }));
   };
 
   const handleAddToCart = (product: Product) => {
@@ -80,7 +118,11 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
     setTimeout(() => setAddedToCart(null), 2000);
   };
 
-  const activeFiltersCount = [selectedVehicleType, selectedCategory].filter(Boolean).length;
+  const activeFiltersCount = [
+    selectedVehicleType, 
+    selectedCategory,
+    ...Object.values(selectedSubFilters).filter(v => v && v !== '')
+  ].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-black">
@@ -183,6 +225,39 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories }
                 ))}
               </div>
             </div>
+
+            {/* Sub-Filters (shown when category is selected and has sub-filters) */}
+            {availableSubFilters.length > 0 && (
+              <div className="border-t border-zinc-700 pt-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">Sub-Filters</h3>
+                </div>
+                <div className="space-y-3">
+                  {availableSubFilters.map((subFilter) => (
+                    <div key={subFilter._id || subFilter.slug}>
+                      <label className="block text-xs font-medium text-gray-400 mb-2">
+                        {subFilter.name}
+                      </label>
+                      <select
+                        value={selectedSubFilters[subFilter.slug] || ''}
+                        onChange={(e) => handleSubFilterChange(subFilter.slug, e.target.value)}
+                        className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
+                      >
+                        <option value="">All {subFilter.name}</option>
+                        {subFilter.options.map((option, idx) => (
+                          <option key={idx} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Clear Filters */}
             {activeFiltersCount > 0 && (

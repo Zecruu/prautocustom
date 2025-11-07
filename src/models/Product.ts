@@ -8,6 +8,7 @@ export interface IProduct extends Document {
   };
   category: string;
   vehicleTypes?: string[]; // Array of vehicle type slugs (e.g., ['jeep', 'truck'])
+  subFilters?: Record<string, string>; // Map of subFilterSlug -> selectedOption (e.g., {'wheel-size': '5 hole'})
   description?: {
     en?: string;
     es?: string;
@@ -54,6 +55,10 @@ const ProductSchema = new Schema<IProduct>(
       type: [String],
       default: [],
       index: true,
+    },
+    subFilters: {
+      type: Map,
+      of: String,
     },
     description: {
       en: {

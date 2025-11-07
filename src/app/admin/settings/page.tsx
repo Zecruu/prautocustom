@@ -51,6 +51,7 @@ export default async function SettingsPage() {
       <SettingsClient
         initialVehicleTypes={settings?.vehicleTypes || []}
         initialProductCategories={settings?.productCategories || []}
+        initialSubFilters={settings?.subFilters || []}
       />
     </div>
   );

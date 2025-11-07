@@ -30,6 +30,7 @@ export async function GET() {
           { name: 'Bumpers', slug: 'bumpers', active: true },
           { name: 'Lift Kits', slug: 'lift-kits', active: true },
         ],
+        subFilters: [],
       });
     }
 
@@ -58,7 +59,7 @@ export async function PUT(request: NextRequest) {
     await connectDB();
 
     const body = await request.json();
-    const { vehicleTypes, productCategories } = body;
+    const { vehicleTypes, productCategories, subFilters } = body;
 
     let settings = await Settings.findOne();
 
@@ -66,11 +67,13 @@ export async function PUT(request: NextRequest) {
       settings = new Settings({
         vehicleTypes: vehicleTypes || [],
         productCategories: productCategories || [],
+        subFilters: subFilters || [],
         updatedBy: session.user.id,
       });
     } else {
       if (vehicleTypes) settings.vehicleTypes = vehicleTypes;
       if (productCategories) settings.productCategories = productCategories;
+      if (subFilters !== undefined) settings.subFilters = subFilters;
       settings.updatedBy = session.user.id as unknown as mongoose.Types.ObjectId;
     }
 

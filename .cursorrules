@@ -1,0 +1,59 @@
+# Lessons
+
+## User Specified Lessons
+
+- You have a python venv in ./venv. Use it.
+- Include info useful for debugging in the program output.
+- Read the file before you try to edit it.
+- Due to Cursor's limit, when you use `git` and `gh` and need to submit a multiline commit message, first write the message in a file, and then use `git commit -F <filename>` or similar command to commit. And then remove the file. Include "[Cursor] " in the commit message and PR title.
+
+## Cursor learned
+
+- For search results, ensure proper handling of different character encodings (UTF-8) for international queries
+- Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
+- When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
+- Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+
+# Scratchpad
+
+## Current Task: Add Sub-Filters Functionality ✅ COMPLETED
+
+### Task Description:
+Implement sub-filters feature that allows:
+1. In Admin Add Product Page: Add unlimited sub-filters to categories ✅
+2. In Settings: Sub-filter management section where users can create/edit sub-filters ✅
+3. Client Side (Products Page): Filter products by sub-filters ✅
+
+### Example Flow:
+- User selects "Jeep" (vehicle type)
+- User selects "Wheels" (category)
+- Sub-filter appears: "Wheel Size" with options like "5 hole wheels"
+
+### Implementation Completed:
+[X] 1. Update Settings model to add subFilters schema
+[X] 2. Update Product model to add subFilters field
+[X] 3. Update Settings API to handle sub-filters CRUD
+[X] 4. Update Settings Client UI to manage sub-filters
+[X] 5. Update Admin Add Product page to support sub-filters selection
+[X] 6. Update Products API to handle sub-filters
+[X] 7. Update Client Products page to filter by sub-filters
+
+### Changes Made:
+1. **Models Updated:**
+   - Settings.ts: Added ISubFilter interface and subFilters array
+   - Product.ts: Added subFilters field (Record<string, string>)
+
+2. **API Routes Updated:**
+   - /api/admin/settings: Now handles sub-filters CRUD operations
+   - /api/admin/products: Accepts and stores subFilters in products
+
+3. **Admin UI Updated:**
+   - Settings page: New sub-filters management section with options management
+   - Product categories: Can now link sub-filters to specific categories
+   - Add Product page: Dynamically shows sub-filters based on selected category
+
+4. **Client UI Updated:**
+   - ProductsPageClient: Added sub-filters filtering UI and logic
+   - Filters dynamically appear after selecting a category with linked sub-filters
+   - Products filtered by selected sub-filter options
+

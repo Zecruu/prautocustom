@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
-    const { sku, name, description, category, vehicleTypes, images, stock, status } = data;
+    const { sku, name, description, category, vehicleTypes, subFilters, images, stock, status } = data;
 
     // Validate required fields
     if (!sku || !name?.en || !category) {
@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
       description,
       category,
       vehicleTypes: vehicleTypes || [],
+      subFilters: subFilters || {},
       images: images || [],
       stock: stock || 0,
       status: status || 'active',

@@ -16,6 +16,17 @@ export interface IProductCategory {
   slug: string;
   icon?: string;
   active: boolean;
+  subFilterIds?: string[]; // Array of sub-filter IDs linked to this category
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ISubFilter {
+  _id?: string;
+  name: string;
+  slug: string;
+  options: string[]; // Array of options for this sub-filter (e.g., ["5 hole", "6 hole", "8 hole"])
+  active: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -23,6 +34,7 @@ export interface IProductCategory {
 export interface ISettings extends Document {
   vehicleTypes: IVehicleType[];
   productCategories: IProductCategory[];
+  subFilters: ISubFilter[];
   updatedBy?: mongoose.Types.ObjectId;
   updatedAt: Date;
 }
@@ -39,11 +51,20 @@ const ProductCategorySchema = new Schema({
   slug: { type: String, required: true },
   icon: { type: String },
   active: { type: Boolean, default: true },
+  subFilterIds: [{ type: String }], // Array of sub-filter IDs
+}, { timestamps: true });
+
+const SubFilterSchema = new Schema({
+  name: { type: String, required: true },
+  slug: { type: String, required: true },
+  options: [{ type: String }], // Array of options
+  active: { type: Boolean, default: true },
 }, { timestamps: true });
 
 const SettingsSchema = new Schema({
   vehicleTypes: [VehicleTypeSchema],
   productCategories: [ProductCategorySchema],
+  subFilters: [SubFilterSchema],
   updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 

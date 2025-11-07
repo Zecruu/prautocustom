@@ -16,6 +16,15 @@ interface ProductCategory {
   name: string;
   slug: string;
   active: boolean;
+  subFilterIds?: string[];
+}
+
+interface SubFilter {
+  _id: string;
+  name: string;
+  slug: string;
+  options: string[];
+  active: boolean;
 }
 
 export default function NewProductPage() {
@@ -24,6 +33,8 @@ export default function NewProductPage() {
   const [error, setError] = useState<string | null>(null);
   const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
   const [productCategories, setProductCategories] = useState<ProductCategory[]>([]);
+  const [subFilters, setSubFilters] = useState<SubFilter[]>([]);
+  const [availableSubFilters, setAvailableSubFilters] = useState<SubFilter[]>([]); // Sub-filters for selected category
 
   const [formData, setFormData] = useState({
     sku: '',
@@ -33,6 +44,7 @@ export default function NewProductPage() {
     descriptionEs: '',
     category: '',
     vehicleTypes: [] as string[],
+    subFilters: {} as Record<string, string>, // Map of subFilterSlug -> selectedOption
     stock: '',
     status: 'active',
     images: [] as string[],
@@ -47,6 +59,7 @@ export default function NewProductPage() {
           const data = await response.json();
           setVehicleTypes(data.vehicleTypes.filter((vt: VehicleType) => vt.active));
           setProductCategories(data.productCategories.filter((pc: ProductCategory) => pc.active));
+          setSubFilters(data.subFilters.filter((sf: SubFilter) => sf.active));
         }
       } catch (err) {
         console.error('Failed to fetch settings:', err);
@@ -54,6 +67,25 @@ export default function NewProductPage() {
     };
     fetchSettings();
   }, []);
+
+  // Update available sub-filters when category changes
+  useEffect(() => {
+    if (formData.category) {
+      const selectedCategory = productCategories.find(cat => cat.slug === formData.category);
+      if (selectedCategory && selectedCategory.subFilterIds) {
+        const linked = subFilters.filter(sf => 
+          selectedCategory.subFilterIds?.includes(sf._id || sf.slug)
+        );
+        setAvailableSubFilters(linked);
+      } else {
+        setAvailableSubFilters([]);
+      }
+      // Reset sub-filter selections when category changes
+      setFormData(prev => ({ ...prev, subFilters: {} }));
+    } else {
+      setAvailableSubFilters([]);
+    }
+  }, [formData.category, productCategories, subFilters]);
 
   const handleImageUpload = (url: string, index: number) => {
     const newImages = [...formData.images];
@@ -74,6 +106,16 @@ export default function NewProductPage() {
       ? formData.vehicleTypes.filter(vt => vt !== slug)
       : [...formData.vehicleTypes, slug];
     setFormData({ ...formData, vehicleTypes: newVehicleTypes });
+  };
+
+  const handleSubFilterChange = (subFilterSlug: string, optionValue: string) => {
+    setFormData({
+      ...formData,
+      subFilters: {
+        ...formData.subFilters,
+        [subFilterSlug]: optionValue,
+      },
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,6 +139,7 @@ export default function NewProductPage() {
           },
           category: formData.category,
           vehicleTypes: formData.vehicleTypes,
+          subFilters: formData.subFilters,
           stock: parseInt(formData.stock) || 0,
           status: formData.status,
           images: formData.images.filter(img => img !== ''),
@@ -196,6 +239,34 @@ export default function NewProductPage() {
               </p>
             )}
           </div>
+
+          {/* Sub-Filters (shown only when category is selected and has sub-filters) */}
+          {availableSubFilters.length > 0 && (
+            <div className="border-t border-zinc-700 pt-4">
+              <h3 className="text-lg font-semibold text-white mb-3">Sub-Filters for {formData.category}</h3>
+              <div className="space-y-4">
+                {availableSubFilters.map((subFilter) => (
+                  <div key={subFilter._id}>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      {subFilter.name}
+                    </label>
+                    <select
+                      value={formData.subFilters[subFilter.slug] || ''}
+                      onChange={(e) => handleSubFilterChange(subFilter.slug, e.target.value)}
+                      className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-yellow-500"
+                    >
+                      <option value="">Select {subFilter.name}</option>
+                      {subFilter.options.map((option, idx) => (
+                        <option key={idx} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">

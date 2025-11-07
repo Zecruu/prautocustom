@@ -1,16 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { IVehicleType, IProductCategory } from '@/models/Settings';
+import { IVehicleType, IProductCategory, ISubFilter } from '@/models/Settings';
 
 interface SettingsClientProps {
   initialVehicleTypes: IVehicleType[];
   initialProductCategories: IProductCategory[];
+  initialSubFilters: ISubFilter[];
 }
 
-export function SettingsClient({ initialVehicleTypes, initialProductCategories }: SettingsClientProps) {
+export function SettingsClient({ initialVehicleTypes, initialProductCategories, initialSubFilters }: SettingsClientProps) {
   const [vehicleTypes, setVehicleTypes] = useState<IVehicleType[]>(initialVehicleTypes);
   const [productCategories, setProductCategories] = useState<IProductCategory[]>(initialProductCategories);
+  const [subFilters, setSubFilters] = useState<ISubFilter[]>(initialSubFilters);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -70,6 +72,74 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories }
     setProductCategories(productCategories.filter((_, i) => i !== index));
   };
 
+  const toggleSubFilterForCategory = (categoryIndex: number, subFilterId: string) => {
+    const updated = [...productCategories];
+    const category = updated[categoryIndex];
+    const currentIds = category.subFilterIds || [];
+    
+    if (currentIds.includes(subFilterId)) {
+      category.subFilterIds = currentIds.filter(id => id !== subFilterId);
+    } else {
+      category.subFilterIds = [...currentIds, subFilterId];
+    }
+    
+    setProductCategories(updated);
+  };
+
+  // Sub-Filters Management
+  const addSubFilter = () => {
+    setSubFilters([
+      ...subFilters,
+      {
+        name: '',
+        slug: '',
+        options: [],
+        active: true,
+      },
+    ]);
+  };
+
+  const updateSubFilter = (index: number, field: keyof ISubFilter, value: string | boolean | string[]) => {
+    const updated = [...subFilters];
+    updated[index] = { ...updated[index], [field]: value };
+    
+    // Auto-generate slug from name
+    if (field === 'name' && typeof value === 'string') {
+      updated[index].slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+    
+    setSubFilters(updated);
+  };
+
+  const addSubFilterOption = (subFilterIndex: number) => {
+    const updated = [...subFilters];
+    updated[subFilterIndex].options = [...updated[subFilterIndex].options, ''];
+    setSubFilters(updated);
+  };
+
+  const updateSubFilterOption = (subFilterIndex: number, optionIndex: number, value: string) => {
+    const updated = [...subFilters];
+    updated[subFilterIndex].options[optionIndex] = value;
+    setSubFilters(updated);
+  };
+
+  const removeSubFilterOption = (subFilterIndex: number, optionIndex: number) => {
+    const updated = [...subFilters];
+    updated[subFilterIndex].options = updated[subFilterIndex].options.filter((_, i) => i !== optionIndex);
+    setSubFilters(updated);
+  };
+
+  const removeSubFilter = (index: number) => {
+    const removedFilter = subFilters[index];
+    // Remove this sub-filter from all categories
+    const updatedCategories = productCategories.map(cat => ({
+      ...cat,
+      subFilterIds: (cat.subFilterIds || []).filter(id => id !== removedFilter._id),
+    }));
+    setProductCategories(updatedCategories);
+    setSubFilters(subFilters.filter((_, i) => i !== index));
+  };
+
   // Save Settings
   const handleSave = async () => {
     setLoading(true);
@@ -82,6 +152,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories }
         body: JSON.stringify({
           vehicleTypes,
           productCategories,
+          subFilters,
         }),
       });
 
@@ -196,48 +267,177 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories }
 
         <div className="space-y-3">
           {productCategories.map((category, index) => (
-            <div key={index} className="flex items-center gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  value={category.name}
-                  onChange={(e) => updateProductCategory(index, 'name', e.target.value)}
-                  placeholder="Category Name (e.g., Rims)"
-                  className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
-                />
-                <input
-                  type="text"
-                  value={category.slug}
-                  onChange={(e) => updateProductCategory(index, 'slug', e.target.value)}
-                  placeholder="Slug (auto-generated)"
-                  className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-gray-400 focus:outline-none focus:border-yellow-500"
-                  readOnly
-                />
-              </div>
-              
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={category.active}
-                  onChange={(e) => updateProductCategory(index, 'active', e.target.checked)}
-                  className="w-4 h-4 text-yellow-500 bg-zinc-900 border-zinc-700 rounded focus:ring-yellow-500"
-                />
-                <span className="text-sm text-gray-400">Active</span>
-              </label>
+            <div key={index} className="p-4 bg-zinc-800 rounded-lg border border-zinc-700 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    value={category.name}
+                    onChange={(e) => updateProductCategory(index, 'name', e.target.value)}
+                    placeholder="Category Name (e.g., Rims)"
+                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
+                  />
+                  <input
+                    type="text"
+                    value={category.slug}
+                    onChange={(e) => updateProductCategory(index, 'slug', e.target.value)}
+                    placeholder="Slug (auto-generated)"
+                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-gray-400 focus:outline-none focus:border-yellow-500"
+                    readOnly
+                  />
+                </div>
+                
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={category.active}
+                    onChange={(e) => updateProductCategory(index, 'active', e.target.checked)}
+                    className="w-4 h-4 text-yellow-500 bg-zinc-900 border-zinc-700 rounded focus:ring-yellow-500"
+                  />
+                  <span className="text-sm text-gray-400">Active</span>
+                </label>
 
-              <button
-                onClick={() => removeProductCategory(index)}
-                className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
+                <button
+                  onClick={() => removeProductCategory(index)}
+                  className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Sub-filters for this category */}
+              {subFilters.length > 0 && (
+                <div className="pl-4 border-l-2 border-yellow-500/30">
+                  <p className="text-xs text-gray-400 mb-2 font-medium">Linked Sub-Filters:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {subFilters.map((subFilter) => (
+                      <button
+                        key={subFilter._id || subFilter.slug}
+                        type="button"
+                        onClick={() => toggleSubFilterForCategory(index, subFilter._id || subFilter.slug)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          (category.subFilterIds || []).includes(subFilter._id || subFilter.slug)
+                            ? 'bg-yellow-500 text-black'
+                            : 'bg-zinc-700 text-gray-300 hover:bg-zinc-600'
+                        }`}
+                      >
+                        {subFilter.name || 'Unnamed Sub-Filter'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
 
           {productCategories.length === 0 && (
             <p className="text-center text-gray-500 py-8">No categories added yet. Click &quot;Add Category&quot; to get started.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Sub-Filters Section */}
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1">Sub-Filters</h2>
+            <p className="text-sm text-gray-400">Create sub-filters with options (e.g., Wheel Size: 5 hole, 6 hole, 8 hole)</p>
+          </div>
+          <button
+            onClick={addSubFilter}
+            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
+          >
+            + Add Sub-Filter
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {subFilters.map((subFilter, subFilterIndex) => (
+            <div key={subFilterIndex} className="p-4 bg-zinc-800 rounded-lg border border-zinc-700 space-y-3">
+              {/* Sub-filter Name and Slug */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    value={subFilter.name}
+                    onChange={(e) => updateSubFilter(subFilterIndex, 'name', e.target.value)}
+                    placeholder="Sub-Filter Name (e.g., Wheel Size)"
+                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
+                  />
+                  <input
+                    type="text"
+                    value={subFilter.slug}
+                    placeholder="Slug (auto-generated)"
+                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-gray-400 focus:outline-none focus:border-yellow-500"
+                    readOnly
+                  />
+                </div>
+                
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={subFilter.active}
+                    onChange={(e) => updateSubFilter(subFilterIndex, 'active', e.target.checked)}
+                    className="w-4 h-4 text-yellow-500 bg-zinc-900 border-zinc-700 rounded focus:ring-yellow-500"
+                  />
+                  <span className="text-sm text-gray-400">Active</span>
+                </label>
+
+                <button
+                  onClick={() => removeSubFilter(subFilterIndex)}
+                  className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-colors"
+                  title="Delete Sub-Filter"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Options for this sub-filter */}
+              <div className="pl-4 border-l-2 border-yellow-500/30">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-gray-400 font-medium">Options:</p>
+                  <button
+                    onClick={() => addSubFilterOption(subFilterIndex)}
+                    className="px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-white text-xs rounded transition-colors"
+                  >
+                    + Add Option
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {subFilter.options.map((option, optionIndex) => (
+                    <div key={optionIndex} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={option}
+                        onChange={(e) => updateSubFilterOption(subFilterIndex, optionIndex, e.target.value)}
+                        placeholder="Option value (e.g., 5 hole)"
+                        className="flex-1 px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded text-white text-sm focus:outline-none focus:border-yellow-500"
+                      />
+                      <button
+                        onClick={() => removeSubFilterOption(subFilterIndex, optionIndex)}
+                        className="p-1.5 text-red-500 hover:bg-red-500/10 rounded transition-colors"
+                        title="Remove Option"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                  {subFilter.options.length === 0 && (
+                    <p className="text-xs text-gray-500 italic">No options added yet.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {subFilters.length === 0 && (
+            <p className="text-center text-gray-500 py-8">No sub-filters added yet. Click &quot;Add Sub-Filter&quot; to get started.</p>
           )}
         </div>
       </div>
