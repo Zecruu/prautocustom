@@ -8,32 +8,6 @@ interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-// GET - Fetch a single product
-export async function GET(_request: NextRequest, context: RouteContext) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session || (session.user.role !== 'admin' && session.user.role !== 'employee')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { id } = await context.params;
-
-    await connectDB();
-
-    const product = await Product.findById(id).lean();
-
-    if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(product);
-  } catch (error) {
-    console.error('Product fetch error:', error);
-    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
-  }
-}
-
 // PATCH - Update product
 export async function PATCH(request: NextRequest, context: RouteContext) {
   try {

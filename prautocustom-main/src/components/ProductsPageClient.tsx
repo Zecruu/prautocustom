@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
-import { useCart } from '@/contexts/CartContext';
 
 interface Product {
   _id: string;
@@ -11,7 +9,6 @@ interface Product {
   name: { en: string; es: string };
   category: string;
   vehicleTypes?: string[];
-  subFilters?: Record<string, string>;
   images: string[];
   stock: number;
   status: string;
@@ -31,58 +28,19 @@ interface ProductCategory {
   active: boolean;
 }
 
-interface SubFilter {
-  _id?: string;
-  name: string;
-  slug: string;
-  categorySlug: string;
-  options: string[];
-  active: boolean;
-}
-
 interface ProductsPageClientProps {
   products: Product[];
   vehicleTypes: VehicleType[];
   productCategories: ProductCategory[];
-  subFilters: SubFilter[];
 }
 
-export function ProductsPageClient({ products, vehicleTypes, productCategories, subFilters }: ProductsPageClientProps) {
-  const { i18n } = useTranslation();
-  const currentLang = i18n.language as 'en' | 'es';
-  const { addToCart } = useCart();
+export function ProductsPageClient({ products, vehicleTypes, productCategories }: ProductsPageClientProps) {
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({});
   const [showFilters, setShowFilters] = useState(false);
-  const [addedToCart, setAddedToCart] = useState<string | null>(null);
-
-  // Get available sub-filters for selected category
-  const availableSubFilters = useMemo(() => {
-    if (!selectedCategory) return [];
-    
-    // Filter sub-filters by category
-    const categorySubFilters = subFilters.filter(sf => sf.categorySlug === selectedCategory);
-    
-    // Debug logging
-    console.log('🔍 Sub-Filter Debug:', {
-      selectedCategory,
-      totalSubFilters: subFilters.length,
-      categorySubFilters: categorySubFilters.length,
-      subFiltersForCategory: categorySubFilters.map(sf => ({ name: sf.name, slug: sf.slug })),
-      allSubFilters: subFilters.map(sf => ({ name: sf.name, slug: sf.slug, category: sf.categorySlug }))
-    });
-    
-    return categorySubFilters;
-  }, [selectedCategory, subFilters]);
-
-  // Clear sub-filter selections when category changes
-  useEffect(() => {
-    setSelectedSubFilters({});
-  }, [selectedCategory]);
 
   const filteredProducts = useMemo(() => {
-    const filtered = products.filter((product) => {
+    return products.filter((product) => {
       // Filter by vehicle type
       if (selectedVehicleType && (!product.vehicleTypes || !product.vehicleTypes.includes(selectedVehicleType))) {
         return false;
@@ -93,67 +51,16 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
         return false;
       }
 
-      // Filter by sub-filters - product must have ALL selected sub-filters
-      for (const subFilterSlug of Object.keys(selectedSubFilters)) {
-        // Check if product has this sub-filter
-        if (!product.subFilters || !product.subFilters[subFilterSlug]) {
-          console.log('🚫 Product filtered out:', {
-            productSku: product.sku,
-            productName: product.name.en,
-            productSubFilters: product.subFilters,
-            requiredSubFilterSlug: subFilterSlug,
-            hasSubFilter: !!product.subFilters?.[subFilterSlug]
-          });
-          return false;
-        }
-      }
-
       return true;
     });
-
-    // Debug logging
-    if (Object.keys(selectedSubFilters).length > 0) {
-      console.log('📊 Sub-Filter Results:', {
-        selectedSubFilters,
-        totalProducts: products.length,
-        filteredCount: filtered.length,
-        productsWithSubFilters: products.filter(p => p.subFilters && Object.keys(p.subFilters).length > 0).map(p => ({
-          sku: p.sku,
-          name: p.name.en,
-          subFilters: p.subFilters
-        }))
-      });
-    }
-
-    return filtered;
-  }, [products, selectedVehicleType, selectedCategory, selectedSubFilters]);
+  }, [products, selectedVehicleType, selectedCategory]);
 
   const clearFilters = () => {
     setSelectedVehicleType(null);
     setSelectedCategory(null);
-    setSelectedSubFilters({});
   };
 
-
-  const handleAddToCart = (product: Product) => {
-    addToCart({
-      productId: product._id,
-      sku: product.sku,
-      name: product.name,
-      image: product.images[0] || '',
-      category: product.category,
-    });
-
-    // Show feedback
-    setAddedToCart(product._id);
-    setTimeout(() => setAddedToCart(null), 2000);
-  };
-
-  const activeFiltersCount = [
-    selectedVehicleType, 
-    selectedCategory,
-    ...Object.values(selectedSubFilters).filter(v => v && v !== '')
-  ].filter(Boolean).length;
+  const activeFiltersCount = [selectedVehicleType, selectedCategory].filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-black">
@@ -257,47 +164,6 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
               </div>
             </div>
 
-            {/* Sub-Filters (shown when category is selected and has sub-filters) */}
-            {availableSubFilters.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                  </svg>
-                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">Sub-Filters</h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {availableSubFilters.map((subFilter) => (
-                    <button
-                      key={subFilter._id || subFilter.slug}
-                      onClick={() => {
-                        // Toggle this sub-filter on/off
-                        if (selectedSubFilters[subFilter.slug]) {
-                          // Remove this sub-filter
-                          const newFilters = { ...selectedSubFilters };
-                          delete newFilters[subFilter.slug];
-                          setSelectedSubFilters(newFilters);
-                        } else {
-                          // Add this sub-filter (set to "active" to indicate it's selected)
-                          setSelectedSubFilters({
-                            ...selectedSubFilters,
-                            [subFilter.slug]: 'active',
-                          });
-                        }
-                      }}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                        selectedSubFilters[subFilter.slug]
-                          ? 'bg-yellow-500 text-black'
-                          : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
-                      }`}
-                    >
-                      {subFilter.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Clear Filters */}
             {activeFiltersCount > 0 && (
               <button
@@ -342,7 +208,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   {product.images && product.images.length > 0 ? (
                     <Image
                       src={product.images[0]}
-                      alt={product.name[currentLang]}
+                      alt={product.name.en}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -365,7 +231,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                 {/* Product Info */}
                 <div className="p-4">
                   <h3 className="text-white font-semibold text-lg mb-1 line-clamp-2 group-hover:text-yellow-500 transition-colors">
-                    {product.name[currentLang]}
+                    {product.name.en}
                   </h3>
                   
                   <div className="flex items-center gap-2 mb-2">
@@ -390,35 +256,6 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                       })}
                     </div>
                   )}
-
-                  {/* Add to Cart Button */}
-                  <button
-                    onClick={() => handleAddToCart(product)}
-                    disabled={product.stock === 0 || addedToCart === product._id}
-                    className={`w-full py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                      addedToCart === product._id
-                        ? 'bg-green-500 text-white'
-                        : product.stock === 0
-                        ? 'bg-zinc-800 text-gray-500 cursor-not-allowed'
-                        : 'bg-yellow-500 hover:bg-yellow-600 text-black'
-                    }`}
-                  >
-                    {addedToCart === product._id ? (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Added to Cart
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                      </>
-                    )}
-                  </button>
                 </div>
               </div>
             ))}
@@ -428,3 +265,4 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     </div>
   );
 }
+
