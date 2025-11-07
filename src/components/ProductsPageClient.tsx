@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '@/contexts/CartContext';
@@ -75,6 +75,11 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     
     return categorySubFilters;
   }, [selectedCategory, subFilters]);
+
+  // Clear sub-filter selections when category changes
+  useEffect(() => {
+    setSelectedSubFilters({});
+  }, [selectedCategory]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -238,41 +243,37 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
             </div>
 
             {/* Sub-Filters (shown when category is selected and has sub-filters) */}
-            {availableSubFilters.map((subFilter) => (
-              <div key={subFilter._id || subFilter.slug}>
+            {availableSubFilters.length > 0 && (
+              <div className="border-t border-zinc-700 pt-4">
                 <div className="flex items-center gap-2 mb-3">
                   <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                   </svg>
-                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">{subFilter.name}</h3>
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">Sub-Filters</h3>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => handleSubFilterChange(subFilter.slug, '')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                      !selectedSubFilters[subFilter.slug] || selectedSubFilters[subFilter.slug] === ''
-                        ? 'bg-yellow-500 text-black'
-                        : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
-                    }`}
-                  >
-                    All {subFilter.name}
-                  </button>
-                  {subFilter.options.map((option, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleSubFilterChange(subFilter.slug, option)}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                        selectedSubFilters[subFilter.slug] === option
-                          ? 'bg-yellow-500 text-black'
-                          : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
-                      }`}
-                    >
-                      {option}
-                    </button>
+                <div className="space-y-3">
+                  {availableSubFilters.map((subFilter) => (
+                    <div key={subFilter._id || subFilter.slug}>
+                      <label className="block text-xs font-medium text-gray-400 mb-2">
+                        {subFilter.name}
+                      </label>
+                      <select
+                        value={selectedSubFilters[subFilter.slug] || ''}
+                        onChange={(e) => handleSubFilterChange(subFilter.slug, e.target.value)}
+                        className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
+                      >
+                        <option value="">All {subFilter.name}</option>
+                        {subFilter.options.map((option, idx) => (
+                          <option key={idx} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   ))}
                 </div>
               </div>
-            ))}
+            )}
 
             {/* Clear Filters */}
             {activeFiltersCount > 0 && (
