@@ -52,7 +52,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const { addToCart } = useCart();
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({}); // Map of subFilterSlug -> selectedOption
+  const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({});
   const [showFilters, setShowFilters] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
@@ -76,6 +76,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       totalProducts: products.length,
       categoryProducts: categoryProducts.length,
       productsWithSubFilters: categoryProducts.filter(p => p.subFilters && Object.keys(p.subFilters).length > 0),
+      productSubFiltersData: categoryProducts.map(p => ({ sku: p.sku, subFilters: p.subFilters })),
       availableSubFilters: Array.from(subFilterSlugs),
       allSubFilters: subFilters.map(sf => sf.slug)
     });
@@ -408,4 +409,3 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     </div>
   );
 }
-
