@@ -29,7 +29,6 @@ interface ProductCategory {
   name: string;
   slug: string;
   active: boolean;
-  subFilterIds?: string[];
 }
 
 interface SubFilter {
@@ -57,13 +56,23 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const [showFilters, setShowFilters] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
-  // Get available sub-filters for selected category
+  // Get available sub-filters for selected category based on products that have them
   const availableSubFilters = useMemo(() => {
     if (!selectedCategory) return [];
-    const category = productCategories.find(c => c.slug === selectedCategory);
-    if (!category || !category.subFilterIds) return [];
-    return subFilters.filter(sf => category.subFilterIds?.includes(sf._id || sf.slug));
-  }, [selectedCategory, productCategories, subFilters]);
+    
+    // Get all unique sub-filter slugs from products in this category
+    const categoryProducts = products.filter(p => p.category === selectedCategory);
+    const subFilterSlugs = new Set<string>();
+    
+    categoryProducts.forEach(product => {
+      if (product.subFilters) {
+        Object.keys(product.subFilters).forEach(slug => subFilterSlugs.add(slug));
+      }
+    });
+    
+    // Return sub-filters that are actually used in this category
+    return subFilters.filter(sf => subFilterSlugs.has(sf.slug));
+  }, [selectedCategory, products, subFilters]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {

@@ -16,7 +16,6 @@ export interface IProductCategory {
   slug: string;
   icon?: string;
   active: boolean;
-  subFilterIds?: string[]; // Array of sub-filter IDs linked to this category
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -51,7 +50,6 @@ const ProductCategorySchema = new Schema({
   slug: { type: String, required: true },
   icon: { type: String },
   active: { type: Boolean, default: true },
-  subFilterIds: [{ type: String }], // Array of sub-filter IDs
 }, { timestamps: true });
 
 const SubFilterSchema = new Schema({

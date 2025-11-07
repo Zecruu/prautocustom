@@ -72,20 +72,6 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
     setProductCategories(productCategories.filter((_, i) => i !== index));
   };
 
-  const toggleSubFilterForCategory = (categoryIndex: number, subFilterId: string) => {
-    const updated = [...productCategories];
-    const category = updated[categoryIndex];
-    const currentIds = category.subFilterIds || [];
-    
-    if (currentIds.includes(subFilterId)) {
-      category.subFilterIds = currentIds.filter(id => id !== subFilterId);
-    } else {
-      category.subFilterIds = [...currentIds, subFilterId];
-    }
-    
-    setProductCategories(updated);
-  };
-
   // Sub-Filters Management
   const addSubFilter = () => {
     setSubFilters([
@@ -130,13 +116,6 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
   };
 
   const removeSubFilter = (index: number) => {
-    const removedFilter = subFilters[index];
-    // Remove this sub-filter from all categories
-    const updatedCategories = productCategories.map(cat => ({
-      ...cat,
-      subFilterIds: (cat.subFilterIds || []).filter(id => id !== removedFilter._id),
-    }));
-    setProductCategories(updatedCategories);
     setSubFilters(subFilters.filter((_, i) => i !== index));
   };
 
@@ -267,68 +246,43 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
 
         <div className="space-y-3">
           {productCategories.map((category, index) => (
-            <div key={index} className="p-4 bg-zinc-800 rounded-lg border border-zinc-700 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    value={category.name}
-                    onChange={(e) => updateProductCategory(index, 'name', e.target.value)}
-                    placeholder="Category Name (e.g., Rims)"
-                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
-                  />
-                  <input
-                    type="text"
-                    value={category.slug}
-                    onChange={(e) => updateProductCategory(index, 'slug', e.target.value)}
-                    placeholder="Slug (auto-generated)"
-                    className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-gray-400 focus:outline-none focus:border-yellow-500"
-                    readOnly
-                  />
-                </div>
-                
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={category.active}
-                    onChange={(e) => updateProductCategory(index, 'active', e.target.checked)}
-                    className="w-4 h-4 text-yellow-500 bg-zinc-900 border-zinc-700 rounded focus:ring-yellow-500"
-                  />
-                  <span className="text-sm text-gray-400">Active</span>
-                </label>
-
-                <button
-                  onClick={() => removeProductCategory(index)}
-                  className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
+            <div key={index} className="flex items-center gap-3 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  value={category.name}
+                  onChange={(e) => updateProductCategory(index, 'name', e.target.value)}
+                  placeholder="Category Name (e.g., Rims)"
+                  className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
+                />
+                <input
+                  type="text"
+                  value={category.slug}
+                  onChange={(e) => updateProductCategory(index, 'slug', e.target.value)}
+                  placeholder="Slug (auto-generated)"
+                  className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-gray-400 focus:outline-none focus:border-yellow-500"
+                  readOnly
+                />
               </div>
+              
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={category.active}
+                  onChange={(e) => updateProductCategory(index, 'active', e.target.checked)}
+                  className="w-4 h-4 text-yellow-500 bg-zinc-900 border-zinc-700 rounded focus:ring-yellow-500"
+                />
+                <span className="text-sm text-gray-400">Active</span>
+              </label>
 
-              {/* Sub-filters for this category */}
-              {subFilters.length > 0 && (
-                <div className="pl-4 border-l-2 border-yellow-500/30">
-                  <p className="text-xs text-gray-400 mb-2 font-medium">Linked Sub-Filters:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {subFilters.map((subFilter) => (
-                      <button
-                        key={subFilter._id || subFilter.slug}
-                        type="button"
-                        onClick={() => toggleSubFilterForCategory(index, subFilter._id || subFilter.slug)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          (category.subFilterIds || []).includes(subFilter._id || subFilter.slug)
-                            ? 'bg-yellow-500 text-black'
-                            : 'bg-zinc-700 text-gray-300 hover:bg-zinc-600'
-                        }`}
-                      >
-                        {subFilter.name || 'Unnamed Sub-Filter'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <button
+                onClick={() => removeProductCategory(index)}
+                className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
             </div>
           ))}
 

@@ -16,7 +16,6 @@ interface ProductCategory {
   name: string;
   slug: string;
   active: boolean;
-  subFilterIds?: string[];
 }
 
 interface SubFilter {
