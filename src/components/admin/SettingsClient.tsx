@@ -295,10 +295,10 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
 
       {/* Sub-Filters Section */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-xl font-bold text-white mb-1">Sub-Filters</h2>
-            <p className="text-sm text-gray-400">Create sub-filters with options (e.g., Wheel Size: 5 hole, 6 hole, 8 hole)</p>
+            <p className="text-sm text-gray-400">Create sub-filters with multiple options for advanced filtering</p>
           </div>
           <button
             onClick={addSubFilter}
@@ -306,6 +306,25 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
           >
             + Add Sub-Filter
           </button>
+        </div>
+
+        {/* Example Box */}
+        <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="text-sm">
+              <p className="text-blue-300 font-medium mb-2">How to use Sub-Filters:</p>
+              <div className="text-blue-200/80 space-y-1">
+                <p><strong className="text-blue-300">Example for Wheels:</strong></p>
+                <p className="pl-4">• Sub-Filter Name: <span className="text-white">&quot;Wheel Size&quot;</span></p>
+                <p className="pl-4">• Category: <span className="text-white">&quot;Wheels&quot;</span></p>
+                <p className="pl-4">• Options: <span className="text-white">&quot;BMW 17&quot;&quot;, &quot;BMW 18&quot;&quot;, &quot;BMW 19&quot;&quot;, &quot;BMW 20&quot;&quot;, &quot;BMW 21&quot;&quot;, &quot;BMW 22&quot;&quot;</span></p>
+                <p className="mt-2 text-xs text-blue-300/70">This creates ONE dropdown with 6 selectable options on the products page.</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -318,7 +337,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
                     type="text"
                     value={subFilter.name}
                     onChange={(e) => updateSubFilter(subFilterIndex, 'name', e.target.value)}
-                    placeholder="Sub-Filter Name (e.g., Wheel Size)"
+                    placeholder="Sub-Filter Name (e.g., Wheel Size, Bolt Pattern)"
                     className="px-3 py-2 bg-zinc-900 border border-zinc-700 rounded text-white focus:outline-none focus:border-yellow-500"
                   />
                   <select
@@ -381,7 +400,7 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
                         type="text"
                         value={option}
                         onChange={(e) => updateSubFilterOption(subFilterIndex, optionIndex, e.target.value)}
-                        placeholder="Option value (e.g., 5 hole)"
+                        placeholder='Option value (e.g., BMW 17", 5 hole, Black)'
                         className="flex-1 px-3 py-1.5 bg-zinc-900 border border-zinc-700 rounded text-white text-sm focus:outline-none focus:border-yellow-500"
                       />
                       <button
