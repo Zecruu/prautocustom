@@ -494,6 +494,20 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                     </div>
                   )}
 
+                  {/* Sub-Filters Tags */}
+                  {product.subFilters && Object.keys(product.subFilters).length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {Object.entries(product.subFilters).map(([slug, value]) => (
+                        <span
+                          key={slug}
+                          className="text-xs bg-zinc-800 text-gray-300 px-2 py-1 rounded-full border border-zinc-700"
+                        >
+                          {value}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Add to Cart Button */}
                   <button
                     onClick={() => handleAddToCart(product)}
