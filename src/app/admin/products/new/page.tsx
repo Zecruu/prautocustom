@@ -351,18 +351,31 @@ export default function NewProductPage() {
                                 <label className="block text-xs font-medium text-gray-400 mb-2">
                                   Select {selectedSubFilter.name} Option
                                 </label>
-                                <select
-                                  value={formData.subFilters[selectedSlug] || ''}
-                                  onChange={(e) => handleSubFilterOptionChange(selectedSlug, e.target.value)}
-                                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white text-sm focus:outline-none focus:border-yellow-500"
-                                >
-                                  <option value="">Select {selectedSubFilter.name}</option>
+                                <div className="space-y-2">
+                                  {/* Checkboxes for each option */}
                                   {selectedSubFilter.options.map((option, idx) => (
-                                    <option key={idx} value={option}>
-                                      {option}
-                                    </option>
+                                    <label key={idx} className="flex items-center gap-2 cursor-pointer group">
+                                      <input
+                                        type="checkbox"
+                                        checked={formData.subFilters[selectedSlug] === option}
+                                        onChange={(e) => {
+                                          if (e.target.checked) {
+                                            handleSubFilterOptionChange(selectedSlug, option);
+                                          } else {
+                                            // Uncheck - remove the sub-filter value
+                                            const newSubFilters = { ...formData.subFilters };
+                                            delete newSubFilters[selectedSlug];
+                                            setFormData({ ...formData, subFilters: newSubFilters });
+                                          }
+                                        }}
+                                        className="w-4 h-4 text-yellow-500 bg-zinc-900 border-zinc-700 rounded focus:ring-yellow-500"
+                                      />
+                                      <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
+                                        {option}
+                                      </span>
+                                    </label>
                                   ))}
-                                </select>
+                                </div>
                               </div>
                             )}
 
