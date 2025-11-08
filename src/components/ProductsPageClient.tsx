@@ -301,10 +301,13 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                           key={option}
                           className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group"
                         >
-                          <input
-                            type="checkbox"
-                            checked={isOptionSelected}
-                            onChange={() => {
+                          <div
+                            className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
+                              isOptionSelected
+                                ? 'bg-yellow-500 border-yellow-500'
+                                : 'border-zinc-600 group-hover:border-zinc-500'
+                            }`}
+                            onClick={() => {
                               const newFilters = { ...selectedSubFilters };
                               if (isOptionSelected) {
                                 delete newFilters[subFilter.slug];
@@ -313,8 +316,13 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                               }
                               setSelectedSubFilters(newFilters);
                             }}
-                            className="w-4 h-4 rounded border-2 border-zinc-600 bg-transparent checked:bg-yellow-500 checked:border-yellow-500 focus:ring-yellow-500 focus:ring-offset-0 cursor-pointer"
-                          />
+                          >
+                            {isOptionSelected && (
+                              <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
                           <span className="text-sm">{option}</span>
                         </label>
                       );
