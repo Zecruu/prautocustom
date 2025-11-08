@@ -312,7 +312,35 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                     return (
                       <div key={subFilter.slug} className="space-y-2">
                         {/* Sub-filter name checkbox */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          {/* Expand arrow if has options - MOVED TO LEFT */}
+                          {hasOptions && (
+                            <button
+                              onClick={() => {
+                                const newExpanded = new Set(expandedSubFilters);
+                                if (isSubFilterExpanded) {
+                                  newExpanded.delete(subFilter.slug);
+                                } else {
+                                  newExpanded.add(subFilter.slug);
+                                }
+                                setExpandedSubFilters(newExpanded);
+                              }}
+                              className="p-1 hover:bg-zinc-700 rounded transition-colors"
+                            >
+                              <svg
+                                className={`w-4 h-4 text-gray-400 hover:text-white transition-all ${isSubFilterExpanded ? 'rotate-90' : ''}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          )}
+
+                          {/* Spacer if no options */}
+                          {!hasOptions && <div className="w-6" />}
+
                           <label className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group flex-1">
                             <div
                               className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
@@ -339,31 +367,6 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                             </div>
                             <span className="text-sm">{subFilter.name}</span>
                           </label>
-
-                          {/* Expand arrow if has options */}
-                          {hasOptions && (
-                            <button
-                              onClick={() => {
-                                const newExpanded = new Set(expandedSubFilters);
-                                if (isSubFilterExpanded) {
-                                  newExpanded.delete(subFilter.slug);
-                                } else {
-                                  newExpanded.add(subFilter.slug);
-                                }
-                                setExpandedSubFilters(newExpanded);
-                              }}
-                              className="p-1 hover:bg-zinc-800 rounded transition-colors"
-                            >
-                              <svg
-                                className={`w-3 h-3 text-gray-400 transition-transform ${isSubFilterExpanded ? 'rotate-180' : ''}`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                            </button>
-                          )}
                         </div>
 
                         {/* Options (nested under sub-filter) */}
