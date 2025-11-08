@@ -234,20 +234,6 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
               </div>
             </button>
             <div className="space-y-2 pl-2">
-              <label className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group">
-                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
-                  selectedCategory === null
-                    ? 'bg-yellow-500 border-yellow-500'
-                    : 'border-zinc-600 group-hover:border-zinc-500'
-                }`}>
-                  {selectedCategory === null && (
-                    <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
-                </div>
-                <span className="text-sm" onClick={() => setSelectedCategory(null)}>Wheels</span>
-              </label>
               {productCategories.map((cat) => (
                 <label key={cat._id} className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group">
                   <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
