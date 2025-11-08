@@ -107,14 +107,24 @@ export default function EditProductPage() {
     fetchData();
   }, [productId]);
 
-  // Reset sub-filters when category changes
+  // Reset sub-filters when category changes (but not on initial load)
+  const [initialCategory, setInitialCategory] = React.useState<string | null>(null);
+
   useEffect(() => {
-    if (!fetching) {
-      setEnableSubFilters(false);
-      setSelectedSubFilterSlugs([]);
-      setFormData(prev => ({ ...prev, subFilters: {} }));
+    if (!fetching && formData.category) {
+      // Set initial category on first load
+      if (initialCategory === null) {
+        setInitialCategory(formData.category);
+      }
+      // Only reset if category actually changed from initial
+      else if (initialCategory !== formData.category) {
+        setEnableSubFilters(false);
+        setSelectedSubFilterSlugs([]);
+        setFormData(prev => ({ ...prev, subFilters: {} }));
+        setInitialCategory(formData.category);
+      }
     }
-  }, [formData.category, fetching]);
+  }, [formData.category, fetching, initialCategory]);
 
   const handleImageUpload = (url: string, index: number) => {
     const newImages = [...formData.images];
