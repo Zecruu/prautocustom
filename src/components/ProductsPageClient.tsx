@@ -271,20 +271,30 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   <h3 className="text-xs font-semibold text-white uppercase tracking-wide">{subFilter.name}</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      // Clear this sub-filter selection
+                      const newFilters = { ...selectedSubFilters };
+                      delete newFilters[subFilter.slug];
+                      setSelectedSubFilters(newFilters);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
+                      !selectedSubFilters[subFilter.slug]
+                        ? 'bg-yellow-500 text-black'
+                        : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
+                    }`}
+                  >
+                    All {subFilter.name}
+                  </button>
                   {subFilter.options.map((option) => (
                     <button
                       key={option}
                       onClick={() => {
-                        // Toggle this specific option
-                        const newFilters = { ...selectedSubFilters };
-                        if (selectedSubFilters[subFilter.slug] === option) {
-                          // If already selected, deselect it
-                          delete newFilters[subFilter.slug];
-                        } else {
-                          // Otherwise, select it
-                          newFilters[subFilter.slug] = option;
-                        }
-                        setSelectedSubFilters(newFilters);
+                        // Select this specific option
+                        setSelectedSubFilters({
+                          ...selectedSubFilters,
+                          [subFilter.slug]: option,
+                        });
                       }}
                       className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                         selectedSubFilters[subFilter.slug] === option
