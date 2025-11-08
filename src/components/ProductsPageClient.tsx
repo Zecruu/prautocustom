@@ -54,6 +54,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({});
+  const [expandedSubFilters, setExpandedSubFilters] = useState<Set<string>>(new Set());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
@@ -76,9 +77,10 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     return categorySubFilters;
   }, [selectedCategory, subFilters]);
 
-  // Clear sub-filter selections when category changes
+  // Clear sub-filter selections and expanded state when category changes
   useEffect(() => {
     setSelectedSubFilters({});
+    setExpandedSubFilters(new Set());
   }, [selectedCategory]);
 
   const filteredProducts = useMemo(() => {
@@ -136,6 +138,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     setSelectedVehicleType(null);
     setSelectedCategory(null);
     setSelectedSubFilters({});
+    setExpandedSubFilters(new Set());
   };
 
 
@@ -254,49 +257,73 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
           </div>
 
           {/* Sub-Filters (shown when category is selected and has sub-filters) */}
-          {availableSubFilters.length > 0 && availableSubFilters.map((subFilter) => (
-            <div key={subFilter._id || subFilter.slug} className="mb-6">
-              <button className="w-full text-left mb-2">
-                <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
-                  <span className="font-medium">{subFilter.name}</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </button>
-              <div className="space-y-2 pl-2">
-                {subFilter.options.map((option) => (
-                  <label key={option} className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group">
-                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
-                      selectedSubFilters[subFilter.slug] === option
-                        ? 'bg-yellow-500 border-yellow-500'
-                        : 'border-zinc-600 group-hover:border-zinc-500'
-                    }`}>
-                      {selectedSubFilters[subFilter.slug] === option && (
-                        <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </div>
-                    <span
-                      className="text-sm"
-                      onClick={() => {
-                        const newFilters = { ...selectedSubFilters };
-                        if (selectedSubFilters[subFilter.slug] === option) {
-                          delete newFilters[subFilter.slug];
-                        } else {
-                          newFilters[subFilter.slug] = option;
-                        }
-                        setSelectedSubFilters(newFilters);
-                      }}
-                    >
-                      {option}
+          {availableSubFilters.length > 0 && availableSubFilters.map((subFilter) => {
+            const isExpanded = expandedSubFilters.has(subFilter.slug);
+            const isSelected = selectedSubFilters[subFilter.slug] !== undefined;
+
+            return (
+              <div key={subFilter._id || subFilter.slug} className="mb-4">
+                <button
+                  className="w-full text-left mb-2"
+                  onClick={() => {
+                    const newExpanded = new Set(expandedSubFilters);
+                    if (isExpanded) {
+                      newExpanded.delete(subFilter.slug);
+                    } else {
+                      newExpanded.add(subFilter.slug);
+                    }
+                    setExpandedSubFilters(newExpanded);
+                  }}
+                >
+                  <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
+                    <span className={`font-medium ${isSelected ? 'text-yellow-500' : ''}`}>
+                      {subFilter.name}
+                      {isSelected && ` (${selectedSubFilters[subFilter.slug]})`}
                     </span>
-                  </label>
-                ))}
+                    <svg
+                      className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div className="space-y-2 pl-2">
+                    {subFilter.options.map((option) => {
+                      const isOptionSelected = selectedSubFilters[subFilter.slug] === option;
+
+                      return (
+                        <label
+                          key={option}
+                          className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isOptionSelected}
+                            onChange={() => {
+                              const newFilters = { ...selectedSubFilters };
+                              if (isOptionSelected) {
+                                delete newFilters[subFilter.slug];
+                              } else {
+                                newFilters[subFilter.slug] = option;
+                              }
+                              setSelectedSubFilters(newFilters);
+                            }}
+                            className="w-4 h-4 rounded border-2 border-zinc-600 bg-transparent checked:bg-yellow-500 checked:border-yellow-500 focus:ring-yellow-500 focus:ring-offset-0 cursor-pointer"
+                          />
+                          <span className="text-sm">{option}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
 
         </div>
       </div>
