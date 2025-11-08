@@ -116,9 +116,19 @@ export default function NewProductPage() {
     updated[index] = subFilterSlug;
     setSelectedSubFilterSlugs(updated);
 
-    // If the selected sub-filter has no options, automatically set its name as the value
+    // Debug: Log selected sub-filter details
     const selectedSubFilter = subFilters.find(sf => sf.slug === subFilterSlug);
+    console.log('🔍 Selected Sub-Filter:', {
+      name: selectedSubFilter?.name,
+      slug: selectedSubFilter?.slug,
+      options: selectedSubFilter?.options,
+      optionsLength: selectedSubFilter?.options?.length || 0,
+      hasOptions: selectedSubFilter && selectedSubFilter.options && selectedSubFilter.options.length > 0
+    });
+
+    // If the selected sub-filter has no options, automatically set its name as the value
     if (selectedSubFilter && (!selectedSubFilter.options || selectedSubFilter.options.length === 0)) {
+      console.log('⚠️ No options found - auto-saving sub-filter name');
       setFormData({
         ...formData,
         subFilters: {
