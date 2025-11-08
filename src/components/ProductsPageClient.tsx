@@ -257,48 +257,42 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
           </div>
 
           {/* Sub-Filters (shown when category is selected and has sub-filters) */}
-          {availableSubFilters.length > 0 && availableSubFilters.map((subFilter) => {
-            const isExpanded = expandedSubFilters.has(subFilter.slug);
-            const isSelected = selectedSubFilters[subFilter.slug] !== undefined;
+          {availableSubFilters.length > 0 && (
+            <div className="mb-4">
+              <button
+                className="w-full text-left mb-3"
+                onClick={() => {
+                  const newExpanded = new Set(expandedSubFilters);
+                  if (newExpanded.has('sub-filters')) {
+                    newExpanded.delete('sub-filters');
+                  } else {
+                    newExpanded.add('sub-filters');
+                  }
+                  setExpandedSubFilters(newExpanded);
+                }}
+              >
+                <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
+                  <span className="font-medium">Sub-Filters</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${expandedSubFilters.has('sub-filters') ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </button>
 
-            return (
-              <div key={subFilter._id || subFilter.slug} className="mb-4">
-                <button
-                  className="w-full text-left mb-2"
-                  onClick={() => {
-                    const newExpanded = new Set(expandedSubFilters);
-                    if (isExpanded) {
-                      newExpanded.delete(subFilter.slug);
-                    } else {
-                      newExpanded.add(subFilter.slug);
-                    }
-                    setExpandedSubFilters(newExpanded);
-                  }}
-                >
-                  <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
-                    <span className={`font-medium ${isSelected ? 'text-yellow-500' : ''}`}>
-                      {subFilter.name}
-                      {isSelected && ` (${selectedSubFilters[subFilter.slug]})`}
-                    </span>
-                    <svg
-                      className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="space-y-2 pl-2">
-                    {subFilter.options.map((option) => {
+              {expandedSubFilters.has('sub-filters') && (
+                <div className="space-y-2 pl-2">
+                  {availableSubFilters.map((subFilter) => (
+                    subFilter.options.map((option) => {
                       const isOptionSelected = selectedSubFilters[subFilter.slug] === option;
 
                       return (
                         <label
-                          key={option}
+                          key={`${subFilter.slug}-${option}`}
                           className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group"
                         >
                           <div
@@ -326,12 +320,12 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                           <span className="text-sm">{option}</span>
                         </label>
                       );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                    })
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
         </div>
       </div>
