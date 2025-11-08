@@ -30,13 +30,12 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/logos/logo.png"
+                src="/logos/Logo Blanco.png"
                 alt="PR Auto Custom"
-                width={40}
+                width={120}
                 height={40}
-                className="rounded-lg"
+                className="object-contain"
               />
-              <span className="text-white font-bold text-xl hidden sm:inline">PR Auto Custom</span>
             </Link>
 
 

@@ -262,56 +262,52 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
             </div>
 
             {/* Sub-Filters (shown when category is selected and has sub-filters) */}
-            {availableSubFilters.length > 0 && (
-              <div className="space-y-4">
-                {availableSubFilters.map((subFilter) => (
-                  <div key={subFilter._id || subFilter.slug}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                      </svg>
-                      <h4 className="text-sm font-semibold text-gray-300">{subFilter.name}</h4>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        onClick={() => {
-                          // Clear this sub-filter selection
-                          const newFilters = { ...selectedSubFilters };
-                          delete newFilters[subFilter.slug];
-                          setSelectedSubFilters(newFilters);
-                        }}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
-                          !selectedSubFilters[subFilter.slug]
-                            ? 'bg-yellow-500 text-black'
-                            : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
-                        }`}
-                      >
-                        All {subFilter.name}
-                      </button>
-                      {subFilter.options.map((option) => (
-                        <button
-                          key={option}
-                          onClick={() => {
-                            // Select this specific option
-                            setSelectedSubFilters({
-                              ...selectedSubFilters,
-                              [subFilter.slug]: option,
-                            });
-                          }}
-                          className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
-                            selectedSubFilters[subFilter.slug] === option
-                              ? 'bg-yellow-500 text-black'
-                              : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+            {availableSubFilters.length > 0 && availableSubFilters.map((subFilter) => (
+              <div key={subFilter._id || subFilter.slug}>
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">{subFilter.name}</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      // Clear this sub-filter selection
+                      const newFilters = { ...selectedSubFilters };
+                      delete newFilters[subFilter.slug];
+                      setSelectedSubFilters(newFilters);
+                    }}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      !selectedSubFilters[subFilter.slug]
+                        ? 'bg-yellow-500 text-black'
+                        : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
+                    }`}
+                  >
+                    All {subFilter.name}
+                  </button>
+                  {subFilter.options.map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => {
+                        // Select this specific option
+                        setSelectedSubFilters({
+                          ...selectedSubFilters,
+                          [subFilter.slug]: option,
+                        });
+                      }}
+                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                        selectedSubFilters[subFilter.slug] === option
+                          ? 'bg-yellow-500 text-black'
+                          : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
               </div>
-            )}
+            ))}
 
             {/* Clear Filters */}
             {activeFiltersCount > 0 && (

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function AdminSignIn() {
   const router = useRouter();
@@ -52,10 +53,16 @@ export default function AdminSignIn() {
         {/* Left Side - Sign In Form */}
         <div className="bg-zinc-900 rounded-lg p-8 shadow-2xl border border-zinc-800">
           <div className="mb-8">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 bg-yellow-500 rounded"></div>
-              <h2 className="text-white text-xl font-bold">Employee Sign In</h2>
+            <div className="flex items-center gap-3 mb-2">
+              <Image
+                src="/logos/Logo Blanco.png"
+                alt="PR Auto Custom"
+                width={100}
+                height={33}
+                className="object-contain"
+              />
             </div>
+            <h2 className="text-white text-xl font-bold mb-2">Employee Sign In</h2>
             <p className="text-gray-400 text-sm">Access the PR Auto Custom Employee Portal</p>
           </div>
 
