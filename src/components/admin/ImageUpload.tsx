@@ -115,7 +115,7 @@ export function ImageUpload({ onUploadComplete, currentImage, label = 'Product I
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
+            accept="image/jpeg,image/jpg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
             onChange={handleFileChange}
             className="hidden"
           />
