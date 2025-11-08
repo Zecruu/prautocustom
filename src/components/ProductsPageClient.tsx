@@ -58,6 +58,24 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
+  // Debug: Log received data on mount
+  useEffect(() => {
+    console.log('📦 ProductsPageClient Data:', {
+      totalProducts: products.length,
+      totalVehicleTypes: vehicleTypes.length,
+      totalCategories: productCategories.length,
+      totalSubFilters: subFilters.length,
+      subFiltersData: subFilters.map(sf => ({
+        name: sf.name,
+        slug: sf.slug,
+        categorySlug: sf.categorySlug,
+        optionsCount: sf.options.length,
+        options: sf.options
+      })),
+      categories: productCategories.map(c => ({ name: c.name, slug: c.slug }))
+    });
+  }, [products, vehicleTypes, productCategories, subFilters]);
+
   // Get available sub-filters for selected category
   const availableSubFilters = useMemo(() => {
     if (!selectedCategory) return [];
