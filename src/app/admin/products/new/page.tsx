@@ -105,16 +105,28 @@ export default function NewProductPage() {
   const updateSubFilterSelection = (index: number, subFilterSlug: string) => {
     const updated = [...selectedSubFilterSlugs];
     const oldSlug = updated[index];
-    
+
     // Remove old sub-filter value if changing
     if (oldSlug && oldSlug !== subFilterSlug) {
       const newSubFilters = { ...formData.subFilters };
       delete newSubFilters[oldSlug];
       setFormData({ ...formData, subFilters: newSubFilters });
     }
-    
+
     updated[index] = subFilterSlug;
     setSelectedSubFilterSlugs(updated);
+
+    // If the selected sub-filter has no options, automatically set its name as the value
+    const selectedSubFilter = subFilters.find(sf => sf.slug === subFilterSlug);
+    if (selectedSubFilter && (!selectedSubFilter.options || selectedSubFilter.options.length === 0)) {
+      setFormData({
+        ...formData,
+        subFilters: {
+          ...formData.subFilters,
+          [subFilterSlug]: selectedSubFilter.name,
+        },
+      });
+    }
   };
 
   const removeSubFilterSlot = (index: number) => {
@@ -334,7 +346,7 @@ export default function NewProductPage() {
                             </div>
 
                             {/* Options for Selected Sub-Filter */}
-                            {selectedSubFilter && (
+                            {selectedSubFilter && selectedSubFilter.options && selectedSubFilter.options.length > 0 && (
                               <div>
                                 <label className="block text-xs font-medium text-gray-400 mb-2">
                                   Select {selectedSubFilter.name} Option
@@ -351,6 +363,18 @@ export default function NewProductPage() {
                                     </option>
                                   ))}
                                 </select>
+                              </div>
+                            )}
+
+                            {/* Show confirmation when sub-filter with no options is selected */}
+                            {selectedSubFilter && (!selectedSubFilter.options || selectedSubFilter.options.length === 0) && (
+                              <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                                <div className="flex items-center gap-2 text-green-400 text-sm">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  <span>Sub-filter &quot;{selectedSubFilter.name}&quot; added</span>
+                                </div>
                               </div>
                             )}
                           </div>
