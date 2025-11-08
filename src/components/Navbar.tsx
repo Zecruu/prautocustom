@@ -32,8 +32,8 @@ export const Navbar: React.FC = () => {
               <Image
                 src="/logos/Logo Blanco.png"
                 alt="PR Auto Custom"
-                width={120}
-                height={40}
+                width={50}
+                height={50}
                 className="object-contain"
               />
             </Link>

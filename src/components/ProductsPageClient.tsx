@@ -193,16 +193,16 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
           <div className={`${showFilters ? 'block' : 'hidden'} lg:block space-y-4`}>
             {/* Vehicle Types Filter */}
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
-                <h3 className="text-sm font-semibold text-white uppercase tracking-wide">Vehicle Type</h3>
+                <h3 className="text-xs font-semibold text-white uppercase tracking-wide">Vehicle Type</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedVehicleType(null)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     selectedVehicleType === null
                       ? 'bg-yellow-500 text-black'
                       : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
@@ -214,7 +214,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   <button
                     key={vt._id}
                     onClick={() => setSelectedVehicleType(vt.slug)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                       selectedVehicleType === vt.slug
                         ? 'bg-yellow-500 text-black'
                         : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
@@ -228,16 +228,16 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
 
             {/* Product Categories Filter */}
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                 </svg>
-                <h3 className="text-sm font-semibold text-white uppercase tracking-wide">Category</h3>
+                <h3 className="text-xs font-semibold text-white uppercase tracking-wide">Category</h3>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     selectedCategory === null
                       ? 'bg-yellow-500 text-black'
                       : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
@@ -249,7 +249,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   <button
                     key={cat._id}
                     onClick={() => setSelectedCategory(cat.slug)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                       selectedCategory === cat.slug
                         ? 'bg-yellow-500 text-black'
                         : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
@@ -264,39 +264,29 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
             {/* Sub-Filters (shown when category is selected and has sub-filters) */}
             {availableSubFilters.length > 0 && availableSubFilters.map((subFilter) => (
               <div key={subFilter._id || subFilter.slug}>
-                <div className="flex items-center gap-2 mb-3">
-                  <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                   </svg>
-                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">{subFilter.name}</h3>
+                  <h3 className="text-xs font-semibold text-white uppercase tracking-wide">{subFilter.name}</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => {
-                      // Clear this sub-filter selection
-                      const newFilters = { ...selectedSubFilters };
-                      delete newFilters[subFilter.slug];
-                      setSelectedSubFilters(newFilters);
-                    }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                      !selectedSubFilters[subFilter.slug]
-                        ? 'bg-yellow-500 text-black'
-                        : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
-                    }`}
-                  >
-                    All {subFilter.name}
-                  </button>
                   {subFilter.options.map((option) => (
                     <button
                       key={option}
                       onClick={() => {
-                        // Select this specific option
-                        setSelectedSubFilters({
-                          ...selectedSubFilters,
-                          [subFilter.slug]: option,
-                        });
+                        // Toggle this specific option
+                        const newFilters = { ...selectedSubFilters };
+                        if (selectedSubFilters[subFilter.slug] === option) {
+                          // If already selected, deselect it
+                          delete newFilters[subFilter.slug];
+                        } else {
+                          // Otherwise, select it
+                          newFilters[subFilter.slug] = option;
+                        }
+                        setSelectedSubFilters(newFilters);
                       }}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                         selectedSubFilters[subFilter.slug] === option
                           ? 'bg-yellow-500 text-black'
                           : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700 border border-zinc-700'
@@ -326,7 +316,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       </div>
 
       {/* Products Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-8">
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
