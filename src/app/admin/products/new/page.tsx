@@ -61,7 +61,17 @@ export default function NewProductPage() {
           const data = await response.json();
           setVehicleTypes(data.vehicleTypes.filter((vt: VehicleType) => vt.active));
           setProductCategories(data.productCategories.filter((pc: ProductCategory) => pc.active));
-          setSubFilters(data.subFilters.filter((sf: SubFilter) => sf.active));
+          const activeSubFilters = data.subFilters.filter((sf: SubFilter) => sf.active);
+          setSubFilters(activeSubFilters);
+
+          // Debug: Log all sub-filters and their options
+          console.log('📋 ALL SUB-FILTERS LOADED:', activeSubFilters.map((sf: SubFilter) => ({
+            name: sf.name,
+            slug: sf.slug,
+            category: sf.categorySlug,
+            options: sf.options,
+            optionsCount: sf.options?.length || 0
+          })));
         }
       } catch (err) {
         console.error('Failed to fetch settings:', err);
