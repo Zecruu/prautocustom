@@ -304,42 +304,79 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
 
               {expandedSubFilters.has('sub-filters') && (
                 <div className="space-y-2 pl-2">
-                  {availableSubFilters.map((subFilter) => (
-                    subFilter.options.map((option) => {
-                      const isOptionSelected = selectedSubFilters[subFilter.slug] === option;
+                  {availableSubFilters.map((subFilter) => {
+                    // If sub-filter has options, show them as checkboxes
+                    if (subFilter.options && subFilter.options.length > 0) {
+                      return subFilter.options.map((option) => {
+                        const isOptionSelected = selectedSubFilters[subFilter.slug] === option;
 
-                      return (
-                        <label
-                          key={`${subFilter.slug}-${option}`}
-                          className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group"
-                        >
-                          <div
-                            className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
-                              isOptionSelected
-                                ? 'bg-yellow-500 border-yellow-500'
-                                : 'border-zinc-600 group-hover:border-zinc-500'
-                            }`}
-                            onClick={() => {
-                              const newFilters = { ...selectedSubFilters };
-                              if (isOptionSelected) {
-                                delete newFilters[subFilter.slug];
-                              } else {
-                                newFilters[subFilter.slug] = option;
-                              }
-                              setSelectedSubFilters(newFilters);
-                            }}
+                        return (
+                          <label
+                            key={`${subFilter.slug}-${option}`}
+                            className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group"
                           >
-                            {isOptionSelected && (
-                              <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                              </svg>
-                            )}
-                          </div>
-                          <span className="text-sm">{option}</span>
-                        </label>
-                      );
-                    })
-                  ))}
+                            <div
+                              className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
+                                isOptionSelected
+                                  ? 'bg-yellow-500 border-yellow-500'
+                                  : 'border-zinc-600 group-hover:border-zinc-500'
+                              }`}
+                              onClick={() => {
+                                const newFilters = { ...selectedSubFilters };
+                                if (isOptionSelected) {
+                                  delete newFilters[subFilter.slug];
+                                } else {
+                                  newFilters[subFilter.slug] = option;
+                                }
+                                setSelectedSubFilters(newFilters);
+                              }}
+                            >
+                              {isOptionSelected && (
+                                <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
+                            </div>
+                            <span className="text-sm">{option}</span>
+                          </label>
+                        );
+                      });
+                    }
+
+                    // If no options, show the sub-filter name itself as a checkbox
+                    const isSubFilterSelected = selectedSubFilters[subFilter.slug] === subFilter.name;
+
+                    return (
+                      <label
+                        key={subFilter.slug}
+                        className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group"
+                      >
+                        <div
+                          className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
+                            isSubFilterSelected
+                              ? 'bg-yellow-500 border-yellow-500'
+                              : 'border-zinc-600 group-hover:border-zinc-500'
+                          }`}
+                          onClick={() => {
+                            const newFilters = { ...selectedSubFilters };
+                            if (isSubFilterSelected) {
+                              delete newFilters[subFilter.slug];
+                            } else {
+                              newFilters[subFilter.slug] = subFilter.name;
+                            }
+                            setSelectedSubFilters(newFilters);
+                          }}
+                        >
+                          {isSubFilterSelected && (
+                            <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="text-sm">{subFilter.name}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               )}
             </div>
