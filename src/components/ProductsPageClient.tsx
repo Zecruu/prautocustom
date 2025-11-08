@@ -57,6 +57,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const [expandedSubFilters, setExpandedSubFilters] = useState<Set<string>>(new Set());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState<Record<string, number>>({});
 
   // Debug: Log received data on mount
   useEffect(() => {
@@ -476,15 +477,70 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                 key={product._id}
                 className="group bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10"
               >
-                {/* Product Image */}
-                <div className="relative aspect-square bg-zinc-800">
+                {/* Product Image Carousel */}
+                <div className="relative aspect-square bg-zinc-800 group/image">
                   {product.images && product.images.length > 0 ? (
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name[currentLang]}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    <>
+                      <Image
+                        src={product.images[currentImageIndex[product._id] || 0]}
+                        alt={product.name[currentLang]}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+
+                      {/* Navigation Arrows - Only show if more than 1 image */}
+                      {product.images.length > 1 && (
+                        <>
+                          {/* Previous Arrow */}
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              const currentIndex = currentImageIndex[product._id] || 0;
+                              const newIndex = currentIndex === 0 ? product.images.length - 1 : currentIndex - 1;
+                              setCurrentImageIndex({ ...currentImageIndex, [product._id]: newIndex });
+                            }}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity z-10"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+
+                          {/* Next Arrow */}
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              const currentIndex = currentImageIndex[product._id] || 0;
+                              const newIndex = currentIndex === product.images.length - 1 ? 0 : currentIndex + 1;
+                              setCurrentImageIndex({ ...currentImageIndex, [product._id]: newIndex });
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity z-10"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+
+                          {/* Image Indicators */}
+                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                            {product.images.map((_, index) => (
+                              <button
+                                key={index}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentImageIndex({ ...currentImageIndex, [product._id]: index });
+                                }}
+                                className={`w-2 h-2 rounded-full transition-all ${
+                                  (currentImageIndex[product._id] || 0) === index
+                                    ? 'bg-yellow-500 w-6'
+                                    : 'bg-white/50 hover:bg-white/80'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </>
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <svg className="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -492,10 +548,10 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                       </svg>
                     </div>
                   )}
-                  
+
                   {/* Stock Badge */}
                   {product.stock === 0 && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
                       Out of Stock
                     </div>
                   )}
