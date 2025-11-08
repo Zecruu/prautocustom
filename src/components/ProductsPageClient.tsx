@@ -497,14 +497,26 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   {/* Sub-Filters Tags */}
                   {product.subFilters && Object.keys(product.subFilters).length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-3">
-                      {Object.entries(product.subFilters).map(([slug, value]) => (
-                        <span
-                          key={slug}
-                          className="text-xs bg-zinc-800 text-gray-300 px-2 py-1 rounded-full border border-zinc-700"
-                        >
-                          {value}
-                        </span>
-                      ))}
+                      {Object.entries(product.subFilters).map(([slug, value]) => {
+                        // Find the sub-filter to get its name
+                        const subFilter = subFilters.find(sf => sf.slug === slug);
+                        const subFilterName = subFilter?.name || slug;
+
+                        return (
+                          <React.Fragment key={slug}>
+                            {/* Show sub-filter name */}
+                            <span className="text-xs bg-zinc-800 text-yellow-500 px-2 py-1 rounded-full border border-zinc-700">
+                              {subFilterName}
+                            </span>
+                            {/* Show option value if it's different from the sub-filter name */}
+                            {value && value !== subFilterName && (
+                              <span className="text-xs bg-zinc-800 text-gray-300 px-2 py-1 rounded-full border border-zinc-700">
+                                {value}
+                              </span>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
                     </div>
                   )}
 
