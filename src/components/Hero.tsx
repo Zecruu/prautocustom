@@ -8,11 +8,9 @@ export const Hero: React.FC = () => {
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Hero Background Image - Desktop */}
       <div
-        className="absolute inset-0 bg-cover bg-no-repeat hidden md:block"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat hidden md:block"
         style={{
           backgroundImage: 'url(/images/PR-AUTO-CUSTOM-1.png)',
-          backgroundPosition: 'center center',
-          backgroundSize: 'auto 100%',
         }}
       />
 
