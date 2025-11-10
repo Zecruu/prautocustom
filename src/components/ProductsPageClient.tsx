@@ -115,26 +115,39 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       }
 
       // Filter by sub-filters - product must match ALL selected sub-filters
-      // If a product has a sub-filter value set, it must match the selected option
-      // If a product doesn't have a sub-filter value set, it matches ANY option for that sub-filter
       for (const subFilterSlug of Object.keys(selectedSubFilters)) {
         const selectedOption = selectedSubFilters[subFilterSlug];
 
-        // If product has this sub-filter defined, it must match the selected option
-        if (product.subFilters && subFilterSlug in product.subFilters) {
-          if (product.subFilters[subFilterSlug] !== selectedOption) {
-            console.log('🚫 Product filtered out (has sub-filter but value mismatch):', {
+        // Find the sub-filter definition to check if selectedOption is the sub-filter name or an actual option
+        const subFilterDef = subFilters.find(sf => sf.slug === subFilterSlug);
+        const isSubFilterNameSelected = subFilterDef && selectedOption === subFilterDef.name;
+
+        // If only the sub-filter name is selected (not a specific option)
+        if (isSubFilterNameSelected) {
+          // Product must have this sub-filter slug defined (with any value)
+          if (!product.subFilters || !(subFilterSlug in product.subFilters)) {
+            console.log('🚫 Product filtered out (sub-filter name selected but product missing this sub-filter):', {
               productSku: product.sku,
               productName: product.name.en,
               subFilterSlug,
-              productValue: product.subFilters[subFilterSlug],
+              selectedOption,
+              productSubFilters: product.subFilters,
+            });
+            return false;
+          }
+        } else {
+          // A specific option is selected - product must have exact match
+          if (!product.subFilters || product.subFilters[subFilterSlug] !== selectedOption) {
+            console.log('🚫 Product filtered out (specific option selected but value mismatch):', {
+              productSku: product.sku,
+              productName: product.name.en,
+              subFilterSlug,
+              productValue: product.subFilters?.[subFilterSlug],
               selectedOption,
             });
             return false;
           }
         }
-        // If product doesn't have this sub-filter defined, it matches (shows for all options)
-        // This allows products without specific sub-filters to appear in filtered results
       }
 
       return true;
