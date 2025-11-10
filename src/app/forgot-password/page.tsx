@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -51,7 +49,7 @@ export default function ForgotPasswordPage() {
             Forgot Password?
           </h1>
           <p className="text-gray-400">
-            Enter your email and we'll send you a reset link
+            Enter your email and we&apos;ll send you a reset link
           </p>
         </div>
 
@@ -121,7 +119,7 @@ export default function ForgotPasswordPage() {
         {/* Additional Info */}
         <div className="mt-6 text-center">
           <p className="text-gray-500 text-sm">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-yellow-500 hover:text-yellow-400 font-medium">
               Sign up
             </Link>

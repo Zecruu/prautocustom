@@ -14,7 +14,7 @@ const WEBSITE_URL = process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://prautocustom
 
 interface ResendResponse {
   id?: string;
-  error?: any;
+  error?: unknown;
 }
 
 // Send welcome email on account creation

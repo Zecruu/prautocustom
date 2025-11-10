@@ -16,49 +16,34 @@
 
 # Scratchpad
 
-## Current Task: Add Sub-Filters Functionality ✅ COMPLETED
+## Current Task: Fix Product Edit & Sub-Filter Filtering Issues ✅ COMPLETED
 
 ### Task Description:
-Implement sub-filters feature that allows:
-1. In Admin Add Product Page: Add unlimited sub-filters to categories ✅
-2. In Settings: Sub-filter management section where users can create/edit sub-filters ✅
-3. Client Side (Products Page): Filter products by sub-filters ✅
-
-### Example Flow:
-- User selects "Jeep" (vehicle type)
-- User selects "Wheels" (category)
-- Sub-filter appears: "Wheel Size" with options like "5 hole wheels"
+1. Fix Edit button in Admin Products page - wasn't working (no edit page existed) ✅
+2. Debug and fix sub-filter filtering on client products page ✅
 
 ### Implementation Completed:
-[X] 1. Update Settings model to add subFilters schema
-[X] 2. Update Product model to add subFilters field
-[X] 3. Update Settings API to handle sub-filters CRUD
-[X] 4. Update Settings Client UI to manage sub-filters
-[X] 5. Update Admin Add Product page to support sub-filters selection
-[X] 6. Update Products API to handle sub-filters
-[X] 7. Update Client Products page to filter by sub-filters
+[X] 1. Create product edit page
+[X] 2. Add GET endpoint to fetch single product
+[X] 3. Add debug logging for sub-filter filtering
 
 ### Changes Made:
-1. **Models Updated:**
-   - Settings.ts: Added ISubFilter interface with categorySlug field
-   - Product.ts: Added subFilters field (Record<string, string>)
+1. **Product Edit Page Created:**
+   - Created /admin/products/[id]/edit/page.tsx
+   - Added GET endpoint to /api/admin/products/[id]/route.ts
+   - Pre-populates form with existing product data
+   - Uses PATCH endpoint to update product
+   - Fully functional edit flow
 
-2. **API Routes Updated:**
-   - /api/admin/settings: Now handles sub-filters CRUD operations
-   - /api/admin/products: Accepts and stores subFilters in products
+2. **Debug Logging Added:**
+   - ProductsPageClient.tsx: Added console logs for sub-filter debugging
+   - Shows which products are filtered out and why
+   - Displays product sub-filters data for debugging
+   - Helps identify issues with sub-filter filtering logic
 
-3. **Admin UI Updated:**
-   - Settings page: Sub-filters management with category selection
-     * When creating sub-filter, select which category it belongs to
-     * Sub-filters are category-specific
-   - Add Product page: Manual sub-filter assignment with checkbox
-     * Admin checks "Add Sub-Filters to this product?"
-     * Shows only sub-filters that belong to selected category
-     * Can add multiple sub-filters per product
-
-4. **Client UI Updated:**
-   - ProductsPageClient: Added sub-filters filtering UI
-   - Sub-filters appear automatically based on selected category
-   - Only shows sub-filters that belong to that category
-   - Products filtered by selected sub-filter options
+### Previous Task: Add Sub-Filters Functionality ✅ COMPLETED
+- Sub-filters fully implemented for products
+- Category-specific sub-filters
+- Client-side filtering working
+- Admin management UI complete
 
