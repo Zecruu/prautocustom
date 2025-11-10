@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "generate:images": "node scripts/generate-rim-images.js",
-    "create-admin": "tsx scripts/create-admin.ts"
+    "create-admin": "tsx scripts/create-admin.ts",
+    "create-favicon": "node scripts/create-favicon.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.919.0",

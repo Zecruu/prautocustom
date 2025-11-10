@@ -50,16 +50,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/logos/logo.png", sizes: "any" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logos/logo.png", sizes: "any", type: "image/png" },
+      { url: "/logos/logo-150x150.png", sizes: "150x150", type: "image/png" },
     ],
-    shortcut: "/logos/logo.png",
-    apple: "/logos/logo.png",
-    other: [
-      {
-        rel: "apple-touch-icon",
-        url: "/logos/logo.png",
-      },
+    shortcut: [
+      { url: "/logos/logo.png" }
+    ],
+    apple: [
+      { url: "/logos/logo.png", sizes: "180x180", type: "image/png" }
     ],
   },
   manifest: "/manifest.json",
@@ -226,9 +224,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
         />
-        {/* Additional meta tags for logo */}
-        <link rel="icon" type="image/png" href="/logos/logo.png" />
-        <link rel="apple-touch-icon" href="/logos/logo.png" />
+        {/* Favicon - PR Auto Customs Logo */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/logos/logo.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/logos/logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logos/logo.png" />
+        <link rel="shortcut icon" href="/logos/logo.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
