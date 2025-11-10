@@ -91,21 +91,16 @@ export const PasswordChangeEmail = ({
           <Hr style={hr} />
 
           <Text style={footer}>
-            Si tienes alguna pregunta o inquietud, contáctanos a{' '}
-            <a href={`mailto:${companyEmail}`} style={link}>
-              {companyEmail}
-            </a>{' '}
-            o llámanos al {companyPhone}.
+            Si tienes alguna pregunta o inquietud, contáctanos por WhatsApp al{' '}
+            <a href="https://wa.me/17877055536" style={link}>
+              (787) 705-5536
+            </a>
           </Text>
 
           <Text style={footer}>
             Saludos cordiales,
             <br />
             Equipo de PR Auto Custom
-            <br />
-            {companyEmail}
-            <br />
-            {companyPhone}
           </Text>
         </Container>
       </Body>
