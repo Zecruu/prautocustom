@@ -45,7 +45,7 @@ export const QuoteResponseEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Your Quote from PR Auto Custom - Quote #{quoteNumber}</Preview>
+      <Preview>Tu Cotización de PR Auto Custom - Cotización #{quoteNumber}</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
@@ -58,22 +58,22 @@ export const QuoteResponseEmail = ({
             />
           </Section>
 
-          <Heading style={h1}>Hello {clientName},</Heading>
-          
+          <Heading style={h1}>Hola {clientName},</Heading>
+
           <Text style={text}>
-            Thank you for your quote request! We're pleased to provide you with the following quote:
+            ¡Gracias por tu solicitud de cotización! Nos complace proporcionarte la siguiente cotización:
           </Text>
 
           <Section style={quoteBox}>
-            <Heading style={h2}>Quote #{quoteNumber}</Heading>
+            <Heading style={h2}>Cotización #{quoteNumber}</Heading>
             <Text style={textWhite}>
-              <strong>Valid Until:</strong> {validUntil}
+              <strong>Válida Hasta:</strong> {validUntil}
             </Text>
           </Section>
 
           <Hr style={hr} />
 
-          <Heading style={h3}>Products & Pricing:</Heading>
+          <Heading style={h3}>Productos y Precios:</Heading>
           <Section style={productList}>
             {products.map((product, index) => (
               <Text key={index} style={productItem}>
@@ -84,13 +84,13 @@ export const QuoteResponseEmail = ({
 
           <Hr style={hr} />
 
-          <Heading style={h3}>Summary:</Heading>
+          <Heading style={h3}>Resumen:</Heading>
           <Section style={summary}>
             <Text style={summaryItem}>
               <strong>Subtotal:</strong> ${subtotal}
             </Text>
             <Text style={summaryItem}>
-              <strong>Tax:</strong> ${tax}
+              <strong>Impuesto:</strong> ${tax}
             </Text>
             <Text style={totalText}>
               <strong>Total:</strong> ${total}
@@ -100,7 +100,7 @@ export const QuoteResponseEmail = ({
           {notes && (
             <>
               <Hr style={hr} />
-              <Heading style={h3}>Additional Notes:</Heading>
+              <Heading style={h3}>Notas Adicionales:</Heading>
               <Text style={notesText}>{notes}</Text>
             </>
           )}
@@ -108,17 +108,17 @@ export const QuoteResponseEmail = ({
           <Hr style={hr} />
 
           <Text style={footer}>
-            If you have any questions about this quote, please contact us at{' '}
+            Si tienes alguna pregunta sobre esta cotización, contáctanos a{' '}
             <a href={`mailto:${companyEmail}`} style={link}>
               {companyEmail}
             </a>{' '}
-            or call us at {companyPhone}.
+            o llámanos al {companyPhone}.
           </Text>
 
           <Text style={footer}>
-            Best regards,
+            Saludos cordiales,
             <br />
-            PR Auto Custom Team
+            Equipo de PR Auto Custom
             <br />
             {companyEmail}
             <br />

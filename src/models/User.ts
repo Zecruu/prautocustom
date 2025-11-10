@@ -16,6 +16,8 @@ export interface IUser extends Document {
   isActive: boolean;
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
+  deletionVerificationCode?: string;
+  deletionVerificationExpires?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -80,6 +82,14 @@ const UserSchema = new Schema<IUser>(
       select: false, // Don't include in queries by default
     },
     resetPasswordExpires: {
+      type: Date,
+      select: false, // Don't include in queries by default
+    },
+    deletionVerificationCode: {
+      type: String,
+      select: false, // Don't include in queries by default
+    },
+    deletionVerificationExpires: {
       type: Date,
       select: false, // Don't include in queries by default
     },

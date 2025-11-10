@@ -32,7 +32,7 @@ export const PasswordChangeEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Your PR Auto Custom password has been changed</Preview>
+      <Preview>Tu contraseña de PR Auto Custom ha sido cambiada</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
@@ -45,63 +45,63 @@ export const PasswordChangeEmail = ({
             />
           </Section>
 
-          <Heading style={h1}>Password Changed Successfully</Heading>
-          
+          <Heading style={h1}>Contraseña Cambiada Exitosamente</Heading>
+
           <Text style={text}>
-            Hello {userName},
+            Hola {userName},
           </Text>
 
           <Text style={text}>
-            This email confirms that your password for your PR Auto Custom account was recently changed.
+            Este correo confirma que la contraseña de tu cuenta de PR Auto Custom fue cambiada recientemente.
           </Text>
 
           <Section style={infoBox}>
             <Text style={textWhite}>
-              <strong>Account:</strong> {userEmail}
+              <strong>Cuenta:</strong> {userEmail}
             </Text>
             <Text style={textWhite}>
-              <strong>Changed On:</strong> {changeDate}
+              <strong>Cambiada el:</strong> {changeDate}
             </Text>
           </Section>
 
           <Section style={warningBox}>
-            <Heading style={h3Warning}>Didn't make this change?</Heading>
+            <Heading style={h3Warning}>¿No hiciste este cambio?</Heading>
             <Text style={warningText}>
-              If you did not change your password, please contact us immediately at{' '}
+              Si no cambiaste tu contraseña, por favor contáctanos inmediatamente a{' '}
               <a href={`mailto:${companyEmail}`} style={linkWhite}>
                 {companyEmail}
               </a>{' '}
-              or call {companyPhone}.
+              o llama al {companyPhone}.
             </Text>
             <Text style={warningText}>
-              Your account security is important to us. We recommend changing your password immediately if this wasn't you.
+              La seguridad de tu cuenta es importante para nosotros. Te recomendamos cambiar tu contraseña inmediatamente si no fuiste tú.
             </Text>
           </Section>
 
           <Hr style={hr} />
 
-          <Heading style={h3}>Security Tips:</Heading>
+          <Heading style={h3}>Consejos de Seguridad:</Heading>
           <Section style={tipsList}>
-            <Text style={tipItem}>• Use a strong, unique password for your account</Text>
-            <Text style={tipItem}>• Never share your password with anyone</Text>
-            <Text style={tipItem}>• Enable two-factor authentication if available</Text>
-            <Text style={tipItem}>• Regularly update your password</Text>
+            <Text style={tipItem}>• Usa una contraseña fuerte y única para tu cuenta</Text>
+            <Text style={tipItem}>• Nunca compartas tu contraseña con nadie</Text>
+            <Text style={tipItem}>• Activa la autenticación de dos factores si está disponible</Text>
+            <Text style={tipItem}>• Actualiza tu contraseña regularmente</Text>
           </Section>
 
           <Hr style={hr} />
 
           <Text style={footer}>
-            If you have any questions or concerns, please contact us at{' '}
+            Si tienes alguna pregunta o inquietud, contáctanos a{' '}
             <a href={`mailto:${companyEmail}`} style={link}>
               {companyEmail}
             </a>{' '}
-            or call us at {companyPhone}.
+            o llámanos al {companyPhone}.
           </Text>
 
           <Text style={footer}>
-            Best regards,
+            Saludos cordiales,
             <br />
-            PR Auto Custom Team
+            Equipo de PR Auto Custom
             <br />
             {companyEmail}
             <br />

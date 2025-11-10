@@ -30,7 +30,7 @@ export const WelcomeEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Welcome to PR Auto Custom - Your account is ready!</Preview>
+      <Preview>Bienvenido a PR Auto Custom - ¡Tu cuenta está lista!</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
@@ -43,44 +43,44 @@ export const WelcomeEmail = ({
             />
           </Section>
 
-          <Heading style={h1}>Welcome to PR Auto Custom, {userName}!</Heading>
+          <Heading style={h1}>¡Bienvenido a PR Auto Custom, {userName}!</Heading>
 
           <Text style={text}>
-            Thank you for creating an account with us. We're excited to have you as part of our community!
+            Gracias por crear una cuenta con nosotros. ¡Estamos emocionados de tenerte como parte de nuestra comunidad!
           </Text>
 
           <Section style={accountBox}>
-            <Heading style={h3Yellow}>Your Account Details:</Heading>
+            <Heading style={h3Yellow}>Detalles de tu Cuenta:</Heading>
             <Text style={textWhite}>
               <strong>Email:</strong> {userEmail}
             </Text>
             <Text style={textWhite}>
-              <strong>Account Status:</strong> Active ✓
+              <strong>Estado de la Cuenta:</strong> Activa ✓
             </Text>
           </Section>
 
-          <Heading style={h3}>What's Next?</Heading>
+          <Heading style={h3}>¿Qué Sigue?</Heading>
           <Section style={list}>
-            <Text style={listItem}>• Browse our premium automotive customization products</Text>
-            <Text style={listItem}>• Request quotes for custom work</Text>
-            <Text style={listItem}>• Track your quote requests and responses</Text>
-            <Text style={listItem}>• Manage your profile and preferences</Text>
+            <Text style={listItem}>• Explora nuestros productos premium de personalización automotriz</Text>
+            <Text style={listItem}>• Solicita cotizaciones para trabajos personalizados</Text>
+            <Text style={listItem}>• Rastrea tus solicitudes de cotización y respuestas</Text>
+            <Text style={listItem}>• Administra tu perfil y preferencias</Text>
           </Section>
 
           <Hr style={hr} />
 
           <Text style={footer}>
-            If you have any questions, feel free to contact us at{' '}
+            Si tienes alguna pregunta, no dudes en contactarnos a{' '}
             <a href={`mailto:${companyEmail}`} style={link}>
               {companyEmail}
             </a>{' '}
-            or call us at {companyPhone}.
+            o llámanos al {companyPhone}.
           </Text>
 
           <Text style={footer}>
-            Best regards,
+            Saludos cordiales,
             <br />
-            PR Auto Custom Team
+            Equipo de PR Auto Custom
             <br />
             {companyEmail}
             <br />

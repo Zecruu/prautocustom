@@ -4,6 +4,7 @@ import QuoteResponseEmail from '../../emails/QuoteResponseEmail';
 import QuoteConfirmationEmail from '../../emails/QuoteConfirmationEmail';
 import PasswordChangeEmail from '../../emails/PasswordChangeEmail';
 import PasswordResetEmail from '../../emails/PasswordResetEmail';
+import AccountDeletionEmail from '../../emails/AccountDeletionEmail';
 
 // Initialize Resend with API key or a placeholder for build time
 const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_for_build');
@@ -302,6 +303,45 @@ export const sendPasswordResetEmail = async (data: {
     return { id: emailData?.id };
   } catch (error) {
     console.error('Error sending password reset email:', error);
+    throw error;
+  }
+};
+
+// Send account deletion verification email
+export const sendAccountDeletionEmail = async (data: {
+  userEmail: string;
+  userName: string;
+  verificationCode: string;
+}): Promise<ResendResponse> => {
+  try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
+    const { data: emailData, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: data.userEmail,
+      subject: 'Código de Verificación para Eliminar tu Cuenta - PR Auto Custom',
+      react: AccountDeletionEmail({
+        userName: data.userName,
+        verificationCode: data.verificationCode,
+        websiteUrl: WEBSITE_URL,
+        companyEmail: COMPANY_EMAIL,
+        companyPhone: COMPANY_PHONE,
+      }),
+    });
+
+    if (error) {
+      console.error('Error sending account deletion email:', error);
+      return { error };
+    }
+
+    console.log('✅ Account deletion email sent:', emailData?.id);
+    return { id: emailData?.id };
+  } catch (error) {
+    console.error('Error sending account deletion email:', error);
     throw error;
   }
 };

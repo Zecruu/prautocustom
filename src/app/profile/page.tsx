@@ -81,6 +81,13 @@ export default function Profile() {
   // Cancel Quote States
   const [cancellingQuoteId, setCancellingQuoteId] = useState<string | null>(null);
 
+  // Delete Account States
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteStep, setDeleteStep] = useState<'confirm' | 'verify'>('confirm');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/signin');
@@ -245,6 +252,61 @@ export default function Profile() {
       alert('An error occurred while cancelling the quote');
     } finally {
       setCancellingQuoteId(null);
+    }
+  };
+
+  // Handle request account deletion
+  const handleRequestDeletion = async () => {
+    setDeleteError('');
+    setDeleteLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/request-account-deletion', {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setDeleteStep('verify');
+      } else {
+        setDeleteError(data.error || 'Error al solicitar eliminación de cuenta');
+      }
+    } catch (error) {
+      console.error('Error requesting account deletion:', error);
+      setDeleteError('Ocurrió un error al procesar tu solicitud');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // Handle confirm account deletion
+  const handleConfirmDeletion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDeleteError('');
+    setDeleteLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/confirm-account-deletion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ verificationCode }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Tu cuenta ha sido eliminada exitosamente');
+        // Sign out and redirect
+        window.location.href = '/api/auth/signout';
+      } else {
+        setDeleteError(data.error || 'Código de verificación incorrecto');
+      }
+    } catch (error) {
+      console.error('Error confirming account deletion:', error);
+      setDeleteError('Ocurrió un error al eliminar tu cuenta');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -456,15 +518,25 @@ export default function Profile() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-white mb-4">{t('profile.settings')}</h2>
               <div className="space-y-4">
-                <button 
+                <button
                   onClick={openEditModal}
                   className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-all duration-300">
                   {t('profile.editProfile')}
                 </button>
-                <button 
+                <button
                   onClick={() => setShowPasswordModal(true)}
                   className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-all duration-300">
                   Change Password
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(true);
+                    setDeleteStep('confirm');
+                    setDeleteError('');
+                    setVerificationCode('');
+                  }}
+                  className="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all duration-300">
+                  Eliminar Cuenta
                 </button>
               </div>
             </div>
@@ -593,6 +665,107 @@ export default function Profile() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg p-8 max-w-md w-full">
+            {deleteStep === 'confirm' ? (
+              <>
+                <h2 className="text-2xl font-bold text-red-500 mb-6">⚠️ Eliminar Cuenta</h2>
+                <div className="space-y-4">
+                  <div className="bg-red-500/10 border border-red-500 text-red-300 px-4 py-3 rounded">
+                    <p className="font-bold mb-2">Esta acción es permanente e irreversible.</p>
+                    <p className="text-sm">Una vez eliminada tu cuenta:</p>
+                    <ul className="text-sm mt-2 space-y-1 list-disc list-inside">
+                      <li>Perderás acceso a todos tus datos</li>
+                      <li>Se eliminarán todas tus cotizaciones</li>
+                      <li>No podrás recuperar tu historial</li>
+                      <li>Tendrás que crear una nueva cuenta para usar nuestros servicios</li>
+                    </ul>
+                  </div>
+
+                  {deleteError && (
+                    <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded">
+                      {deleteError}
+                    </div>
+                  )}
+
+                  <p className="text-gray-300">
+                    ¿Estás seguro de que deseas eliminar tu cuenta? Te enviaremos un código de verificación a tu correo electrónico.
+                  </p>
+
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteModal(false)}
+                      className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRequestDeletion}
+                      disabled={deleteLoading}
+                      className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                    >
+                      {deleteLoading ? 'Enviando...' : 'Continuar'}
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold text-white mb-6">Verificar Eliminación</h2>
+                <form onSubmit={handleConfirmDeletion} className="space-y-4">
+                  <div className="bg-blue-500/10 border border-blue-500 text-blue-300 px-4 py-3 rounded">
+                    <p className="text-sm">
+                      Hemos enviado un código de verificación de 6 dígitos a tu correo electrónico.
+                      El código expirará en 15 minutos.
+                    </p>
+                  </div>
+
+                  {deleteError && (
+                    <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded">
+                      {deleteError}
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-gray-300 mb-2">Código de Verificación</label>
+                    <input
+                      type="text"
+                      value={verificationCode}
+                      onChange={(e) => setVerificationCode(e.target.value)}
+                      className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-center text-2xl tracking-widest font-mono focus:outline-none focus:border-red-500"
+                      placeholder="000000"
+                      maxLength={6}
+                      required
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteModal(false)}
+                      className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={deleteLoading || verificationCode.length !== 6}
+                      className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+                    >
+                      {deleteLoading ? 'Eliminando...' : 'Eliminar Cuenta'}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
         </div>
       )}

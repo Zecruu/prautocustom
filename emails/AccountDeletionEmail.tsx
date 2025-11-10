@@ -1,6 +1,5 @@
 import {
   Body,
-  Button,
   Container,
   Head,
   Heading,
@@ -13,27 +12,25 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface PasswordResetEmailProps {
+interface AccountDeletionEmailProps {
   userName: string;
-  resetLink: string;
-  expiresIn?: string;
+  verificationCode: string;
   websiteUrl?: string;
   companyEmail?: string;
   companyPhone?: string;
 }
 
-export const PasswordResetEmail = ({
-  userName = 'Valued Customer',
-  resetLink,
-  expiresIn = '1 hour',
+export const AccountDeletionEmail = ({
+  userName = 'Usuario Valorado',
+  verificationCode,
   websiteUrl = 'https://prautocustoms.com',
   companyEmail = 'info@prautocustom.com',
   companyPhone = '+1 (787) 123-4567',
-}: PasswordResetEmailProps) => {
+}: AccountDeletionEmailProps) => {
   return (
     <Html>
       <Head />
-      <Preview>Restablece tu contraseña de PR Auto Custom</Preview>
+      <Preview>Código de verificación para eliminar tu cuenta de PR Auto Custom</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
@@ -46,60 +43,51 @@ export const PasswordResetEmail = ({
             />
           </Section>
 
-          <Heading style={h1}>Solicitud de Restablecimiento de Contraseña</Heading>
-
+          <Heading style={h1}>Solicitud de Eliminación de Cuenta</Heading>
+          
           <Text style={text}>
             Hola {userName},
           </Text>
 
           <Text style={text}>
-            Recibimos una solicitud para restablecer tu contraseña de tu cuenta de PR Auto Custom.
-            Haz clic en el botón de abajo para crear una nueva contraseña:
+            Recibimos una solicitud para eliminar tu cuenta de PR Auto Custom. 
+            Para confirmar esta acción, por favor usa el siguiente código de verificación:
           </Text>
 
-          <Section style={buttonContainer}>
-            <Button style={button} href={resetLink}>
-              Restablecer Contraseña
-            </Button>
+          <Section style={codeBox}>
+            <Text style={codeText}>{verificationCode}</Text>
           </Section>
 
-          <Text style={text}>
-            O copia y pega este enlace en tu navegador:
-          </Text>
-
-          <Text style={linkText}>
-            {resetLink}
-          </Text>
-
           <Section style={warningBox}>
+            <Heading style={h3Warning}>⚠️ Advertencia Importante</Heading>
             <Text style={warningText}>
-              ⏰ <strong>Este enlace expirará en {expiresIn}.</strong>
+              Esta acción es <strong>permanente e irreversible</strong>. Una vez eliminada tu cuenta:
             </Text>
             <Text style={warningText}>
-              Si no solicitaste restablecer tu contraseña, puedes ignorar este correo de forma segura.
-              Tu contraseña no será cambiada.
+              • Perderás acceso a todos tus datos
+              <br />
+              • Se eliminarán todas tus cotizaciones
+              <br />
+              • No podrás recuperar tu historial
+              <br />
+              • Tendrás que crear una nueva cuenta para usar nuestros servicios
             </Text>
           </Section>
 
           <Hr style={hr} />
 
-          <Section style={securityBox}>
-            <Heading style={h3}>Consejos de Seguridad:</Heading>
-            <Text style={tipText}>
-              • Nunca compartas tu contraseña con nadie
-              <br />
-              • Usa una contraseña fuerte y única
-              <br />
-              • No uses la misma contraseña en múltiples sitios
-              <br />
-              • Activa la autenticación de dos factores cuando esté disponible
+          <Section style={infoBox}>
+            <Heading style={h3}>¿No solicitaste esto?</Heading>
+            <Text style={text}>
+              Si no solicitaste eliminar tu cuenta, ignora este correo y tu cuenta permanecerá activa. 
+              También te recomendamos cambiar tu contraseña por seguridad.
             </Text>
           </Section>
 
           <Hr style={hr} />
 
           <Text style={footer}>
-            Si tienes alguna pregunta o no solicitaste este restablecimiento, contáctanos a{' '}
+            Si tienes alguna pregunta o necesitas ayuda, contáctanos a{' '}
             <a href={`mailto:${companyEmail}`} style={link}>
               {companyEmail}
             </a>{' '}
@@ -121,7 +109,7 @@ export const PasswordResetEmail = ({
   );
 };
 
-export default PasswordResetEmail;
+export default AccountDeletionEmail;
 
 const main = {
   backgroundColor: '#0f172a',
@@ -156,9 +144,16 @@ const h1 = {
 
 const h3 = {
   color: '#ffffff',
-  fontSize: '18px',
+  fontSize: '20px',
   fontWeight: 'bold',
   margin: '16px 0 12px',
+};
+
+const h3Warning = {
+  color: '#ef4444',
+  fontSize: '20px',
+  fontWeight: 'bold',
+  margin: '0 0 16px',
 };
 
 const text = {
@@ -168,63 +163,45 @@ const text = {
   margin: '16px 0',
 };
 
-const linkText = {
-  color: '#94a3b8',
-  fontSize: '14px',
-  lineHeight: '24px',
-  wordBreak: 'break-all' as const,
+const codeBox = {
   backgroundColor: '#1e293b',
-  padding: '12px',
-  borderRadius: '6px',
-  margin: '16px 0',
-  border: '1px solid #334155',
-};
-
-const buttonContainer = {
+  padding: '30px',
+  borderRadius: '12px',
   margin: '32px 0',
   textAlign: 'center' as const,
-};
-
-const button = {
-  backgroundColor: '#EAB308',
-  borderRadius: '8px',
-  color: '#0f172a',
-  fontSize: '16px',
-  fontWeight: 'bold',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
-  display: 'inline-block',
-  padding: '14px 32px',
-};
-
-const warningBox = {
-  backgroundColor: '#713f12',
-  padding: '20px',
-  borderRadius: '8px',
-  margin: '24px 0',
   border: '2px solid #EAB308',
 };
 
+const codeText = {
+  color: '#EAB308',
+  fontSize: '36px',
+  fontWeight: 'bold',
+  letterSpacing: '8px',
+  margin: '0',
+  fontFamily: 'monospace',
+};
+
+const warningBox = {
+  backgroundColor: '#7f1d1d',
+  padding: '20px',
+  borderRadius: '8px',
+  margin: '24px 0',
+  border: '2px solid #ef4444',
+};
+
 const warningText = {
-  color: '#fef3c7',
-  fontSize: '14px',
-  lineHeight: '22px',
+  color: '#fecaca',
+  fontSize: '16px',
+  lineHeight: '26px',
   margin: '8px 0',
 };
 
-const securityBox = {
+const infoBox = {
   backgroundColor: '#1e293b',
   padding: '20px',
   borderRadius: '8px',
   margin: '20px 0',
   border: '1px solid #334155',
-};
-
-const tipText = {
-  color: '#e2e8f0',
-  fontSize: '14px',
-  lineHeight: '24px',
-  margin: '8px 0',
 };
 
 const hr = {

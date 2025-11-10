@@ -38,7 +38,7 @@ export const QuoteConfirmationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Quote Request Received - Quote #{quoteNumber}</Preview>
+      <Preview>Solicitud de Cotización Recibida - Cotización #{quoteNumber}</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
@@ -51,23 +51,23 @@ export const QuoteConfirmationEmail = ({
             />
           </Section>
 
-          <Heading style={h1}>Hello {clientName},</Heading>
-          
+          <Heading style={h1}>Hola {clientName},</Heading>
+
           <Text style={text}>
-            Thank you for your quote request! We've received your inquiry and our team will review it shortly.
+            ¡Gracias por tu solicitud de cotización! Hemos recibido tu consulta y nuestro equipo la revisará pronto.
           </Text>
 
           <Section style={confirmBox}>
-            <Heading style={h2}>Quote Request #{quoteNumber}</Heading>
+            <Heading style={h2}>Solicitud de Cotización #{quoteNumber}</Heading>
             <Text style={textWhite}>
-              <strong>Submitted:</strong> {submissionDate}
+              <strong>Enviada:</strong> {submissionDate}
             </Text>
             <Text style={textWhite}>
-              <strong>Status:</strong> Under Review
+              <strong>Estado:</strong> En Revisión
             </Text>
           </Section>
 
-          <Heading style={h3}>Requested Products:</Heading>
+          <Heading style={h3}>Productos Solicitados:</Heading>
           <Section style={productList}>
             {products.map((product, index) => (
               <Text key={index} style={productItem}>
@@ -78,14 +78,14 @@ export const QuoteConfirmationEmail = ({
 
           {message && (
             <>
-              <Heading style={h3}>Your Message:</Heading>
+              <Heading style={h3}>Tu Mensaje:</Heading>
               <Text style={messageText}>{message}</Text>
             </>
           )}
 
           {shippingAddress && (
             <>
-              <Heading style={h3}>Shipping Address:</Heading>
+              <Heading style={h3}>Dirección de Envío:</Heading>
               <Text style={addressText}>{shippingAddress}</Text>
             </>
           )}
@@ -93,32 +93,32 @@ export const QuoteConfirmationEmail = ({
           <Hr style={hr} />
 
           <Section style={infoBox}>
-            <Heading style={h3}>What Happens Next?</Heading>
+            <Heading style={h3}>¿Qué Sigue?</Heading>
             <Text style={text}>
-              1. Our team will review your quote request
+              1. Nuestro equipo revisará tu solicitud de cotización
               <br />
-              2. We'll prepare a detailed quote with pricing
+              2. Prepararemos una cotización detallada con precios
               <br />
-              3. You'll receive the quote via email within 24-48 hours
+              3. Recibirás la cotización por correo dentro de 24-48 horas
               <br />
-              4. You can then decide whether to proceed with the order
+              4. Luego podrás decidir si proceder con el pedido
             </Text>
           </Section>
 
           <Hr style={hr} />
 
           <Text style={footer}>
-            If you have any questions or need to modify your request, please contact us at{' '}
+            Si tienes alguna pregunta o necesitas modificar tu solicitud, contáctanos a{' '}
             <a href={`mailto:${companyEmail}`} style={link}>
               {companyEmail}
             </a>{' '}
-            or call us at {companyPhone}.
+            o llámanos al {companyPhone}.
           </Text>
 
           <Text style={footer}>
-            Best regards,
+            Saludos cordiales,
             <br />
-            PR Auto Custom Team
+            Equipo de PR Auto Custom
             <br />
             {companyEmail}
             <br />
