@@ -5,7 +5,8 @@ import QuoteConfirmationEmail from '../../emails/QuoteConfirmationEmail';
 import PasswordChangeEmail from '../../emails/PasswordChangeEmail';
 import PasswordResetEmail from '../../emails/PasswordResetEmail';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with API key or a placeholder for build time
+const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_for_build');
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'noreply@yourdomain.com';
 const COMPANY_EMAIL = process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'info@prautocustom.com';
@@ -23,6 +24,12 @@ export const sendWelcomeEmail = async (data: {
   userName: string;
 }): Promise<ResendResponse> => {
   try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: data.userEmail,
@@ -63,6 +70,12 @@ export const sendQuoteResponseEmail = async (data: {
   replyTo?: string; // Optional: Set reply-to address
 }): Promise<ResendResponse> => {
   try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: data.clientEmail,
@@ -108,6 +121,12 @@ export const sendQuoteConfirmationEmail = async (data: {
   replyTo?: string; // Optional: Set reply-to address
 }): Promise<ResendResponse> => {
   try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: data.clientEmail,
@@ -145,6 +164,12 @@ export const sendPasswordChangeEmail = async (data: {
   userName: string;
 }): Promise<ResendResponse> => {
   try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
     const changeDate = new Date().toLocaleString('en-US', {
       dateStyle: 'full',
       timeStyle: 'short',
@@ -188,6 +213,12 @@ export const sendQuoteRequestToCompany = async (data: {
   shippingAddress?: string;
 }): Promise<ResendResponse> => {
   try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: COMPANY_EMAIL, // Send to your company email
@@ -242,6 +273,12 @@ export const sendPasswordResetEmail = async (data: {
   resetLink: string;
 }): Promise<ResendResponse> => {
   try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: data.userEmail,
