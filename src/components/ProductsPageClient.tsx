@@ -114,23 +114,27 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
         return false;
       }
 
-      // Filter by sub-filters - product must have ALL selected sub-filters with matching option values
+      // Filter by sub-filters - product must match ALL selected sub-filters
+      // If a product has a sub-filter value set, it must match the selected option
+      // If a product doesn't have a sub-filter value set, it matches ANY option for that sub-filter
       for (const subFilterSlug of Object.keys(selectedSubFilters)) {
         const selectedOption = selectedSubFilters[subFilterSlug];
-        // Check if product has this sub-filter with the selected option value
-        if (!product.subFilters || product.subFilters[subFilterSlug] !== selectedOption) {
-          console.log('🚫 Product filtered out:', {
-            productSku: product.sku,
-            productName: product.name.en,
-            productSubFilters: product.subFilters,
-            requiredSubFilterSlug: subFilterSlug,
-            requiredOption: selectedOption,
-            productHasSubFilter: !!product.subFilters?.[subFilterSlug],
-            productOptionValue: product.subFilters?.[subFilterSlug],
-            matches: product.subFilters?.[subFilterSlug] === selectedOption
-          });
-          return false;
+
+        // If product has this sub-filter defined, it must match the selected option
+        if (product.subFilters && subFilterSlug in product.subFilters) {
+          if (product.subFilters[subFilterSlug] !== selectedOption) {
+            console.log('🚫 Product filtered out (has sub-filter but value mismatch):', {
+              productSku: product.sku,
+              productName: product.name.en,
+              subFilterSlug,
+              productValue: product.subFilters[subFilterSlug],
+              selectedOption,
+            });
+            return false;
+          }
         }
+        // If product doesn't have this sub-filter defined, it matches (shows for all options)
+        // This allows products without specific sub-filters to appear in filtered results
       }
 
       return true;

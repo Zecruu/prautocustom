@@ -3,7 +3,7 @@
 import React from 'react';
 
 export const WhatsAppFloat: React.FC = () => {
-  const phoneNumber = '17874205538'; // +1 787-420-5538 in international format
+  const phoneNumber = '17877055536'; // +1 787-705-5536 in international format
   const message = encodeURIComponent("Hello! I'm interested in your custom rims.");
   // Use api.whatsapp.com which is more reliable than wa.me and avoids some 429/404 cases
   const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
