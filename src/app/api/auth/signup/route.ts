@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
-import { sendWelcomeEmailServer } from '@/lib/emailjs-server';
+import { sendWelcomeEmail } from '@/lib/resend';
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Send welcome email (don't fail signup if email fails)
     try {
-      await sendWelcomeEmailServer({
+      await sendWelcomeEmail({
         userEmail: user.email,
         userName: user.name,
       });
