@@ -3,7 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
-import { sendWelcomeEmailServer } from '@/lib/emailjs-server';
+import { sendWelcomeEmail } from '@/lib/resend';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
 
           // Send welcome email for new Google OAuth users
           try {
-            await sendWelcomeEmailServer({
+            await sendWelcomeEmail({
               userEmail: newUser.email,
               userName: newUser.name,
             });
