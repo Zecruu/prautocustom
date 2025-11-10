@@ -10,7 +10,7 @@ export const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-contain bg-center bg-no-repeat hidden md:block"
         style={{
-          backgroundImage: 'url(/images/PR-AUTO-CUSTOM-1.png)',
+          backgroundImage: 'url(/images/PR-AUTO-CUSTOM-DESKTOP.png)',
           backgroundColor: '#0a0a0a',
         }}
       />
