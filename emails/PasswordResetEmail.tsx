@@ -5,6 +5,7 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -35,6 +36,16 @@ export const PasswordResetEmail = ({
       <Preview>Reset your PR Auto Custom password</Preview>
       <Body style={main}>
         <Container style={container}>
+          {/* Logo Section */}
+          <Section style={logoSection}>
+            <Img
+              src={`${websiteUrl}/logos/Logo Blanco.png`}
+              alt="PR Auto Custom Logo"
+              width="200"
+              style={logo}
+            />
+          </Section>
+
           <Heading style={h1}>Password Reset Request</Heading>
           
           <Text style={text}>
@@ -113,7 +124,7 @@ export const PasswordResetEmail = ({
 export default PasswordResetEmail;
 
 const main = {
-  backgroundColor: '#ffffff',
+  backgroundColor: '#0f172a',
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
@@ -124,37 +135,49 @@ const container = {
   maxWidth: '600px',
 };
 
+const logoSection = {
+  textAlign: 'center' as const,
+  padding: '40px 0 20px',
+};
+
+const logo = {
+  margin: '0 auto',
+  display: 'block',
+};
+
 const h1 = {
-  color: '#1F2937',
+  color: '#ffffff',
   fontSize: '28px',
   fontWeight: 'bold',
   margin: '40px 0',
   padding: '0',
+  textAlign: 'center' as const,
 };
 
 const h3 = {
-  color: '#1F2937',
+  color: '#ffffff',
   fontSize: '18px',
   fontWeight: 'bold',
   margin: '16px 0 12px',
 };
 
 const text = {
-  color: '#374151',
+  color: '#e2e8f0',
   fontSize: '16px',
   lineHeight: '26px',
   margin: '16px 0',
 };
 
 const linkText = {
-  color: '#6B7280',
+  color: '#94a3b8',
   fontSize: '14px',
   lineHeight: '24px',
   wordBreak: 'break-all' as const,
-  backgroundColor: '#F3F4F6',
+  backgroundColor: '#1e293b',
   padding: '12px',
   borderRadius: '6px',
   margin: '16px 0',
+  border: '1px solid #334155',
 };
 
 const buttonContainer = {
@@ -165,7 +188,7 @@ const buttonContainer = {
 const button = {
   backgroundColor: '#EAB308',
   borderRadius: '8px',
-  color: '#1F2937',
+  color: '#0f172a',
   fontSize: '16px',
   fontWeight: 'bold',
   textDecoration: 'none',
@@ -175,7 +198,7 @@ const button = {
 };
 
 const warningBox = {
-  backgroundColor: '#FEF3C7',
+  backgroundColor: '#713f12',
   padding: '20px',
   borderRadius: '8px',
   margin: '24px 0',
@@ -183,33 +206,34 @@ const warningBox = {
 };
 
 const warningText = {
-  color: '#92400E',
+  color: '#fef3c7',
   fontSize: '14px',
   lineHeight: '22px',
   margin: '8px 0',
 };
 
 const securityBox = {
-  backgroundColor: '#F9FAFB',
+  backgroundColor: '#1e293b',
   padding: '20px',
   borderRadius: '8px',
   margin: '20px 0',
+  border: '1px solid #334155',
 };
 
 const tipText = {
-  color: '#374151',
+  color: '#e2e8f0',
   fontSize: '14px',
   lineHeight: '24px',
   margin: '8px 0',
 };
 
 const hr = {
-  borderColor: '#e5e7eb',
+  borderColor: '#334155',
   margin: '32px 0',
 };
 
 const footer = {
-  color: '#6b7280',
+  color: '#94a3b8',
   fontSize: '14px',
   lineHeight: '24px',
   marginTop: '16px',

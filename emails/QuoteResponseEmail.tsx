@@ -4,6 +4,7 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -47,6 +48,16 @@ export const QuoteResponseEmail = ({
       <Preview>Your Quote from PR Auto Custom - Quote #{quoteNumber}</Preview>
       <Body style={main}>
         <Container style={container}>
+          {/* Logo Section */}
+          <Section style={logoSection}>
+            <Img
+              src={`${websiteUrl}/logos/Logo Blanco.png`}
+              alt="PR Auto Custom Logo"
+              width="200"
+              style={logo}
+            />
+          </Section>
+
           <Heading style={h1}>Hello {clientName},</Heading>
           
           <Text style={text}>
@@ -122,7 +133,7 @@ export const QuoteResponseEmail = ({
 export default QuoteResponseEmail;
 
 const main = {
-  backgroundColor: '#ffffff',
+  backgroundColor: '#0f172a',
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
@@ -133,12 +144,23 @@ const container = {
   maxWidth: '600px',
 };
 
+const logoSection = {
+  textAlign: 'center' as const,
+  padding: '40px 0 20px',
+};
+
+const logo = {
+  margin: '0 auto',
+  display: 'block',
+};
+
 const h1 = {
-  color: '#1F2937',
+  color: '#ffffff',
   fontSize: '28px',
   fontWeight: 'bold',
   margin: '40px 0',
   padding: '0',
+  textAlign: 'center' as const,
 };
 
 const h2 = {
@@ -149,14 +171,14 @@ const h2 = {
 };
 
 const h3 = {
-  color: '#1F2937',
+  color: '#ffffff',
   fontSize: '20px',
   fontWeight: 'bold',
   margin: '24px 0 16px',
 };
 
 const text = {
-  color: '#374151',
+  color: '#e2e8f0',
   fontSize: '16px',
   lineHeight: '26px',
 };
@@ -169,10 +191,11 @@ const textWhite = {
 };
 
 const quoteBox = {
-  backgroundColor: '#1F2937',
+  backgroundColor: '#1e293b',
   padding: '20px',
   borderRadius: '8px',
   margin: '20px 0',
+  border: '1px solid #334155',
 };
 
 const productList = {
@@ -180,7 +203,7 @@ const productList = {
 };
 
 const productItem = {
-  color: '#374151',
+  color: '#e2e8f0',
   fontSize: '16px',
   lineHeight: '26px',
   margin: '8px 0',
@@ -191,36 +214,37 @@ const summary = {
 };
 
 const summaryItem = {
-  color: '#374151',
+  color: '#e2e8f0',
   fontSize: '16px',
   lineHeight: '26px',
   margin: '8px 0',
 };
 
 const totalText = {
-  color: '#1F2937',
+  color: '#EAB308',
   fontSize: '20px',
   lineHeight: '30px',
   margin: '16px 0 0',
+  fontWeight: 'bold',
 };
 
 const notesText = {
-  color: '#374151',
+  color: '#e2e8f0',
   fontSize: '16px',
   lineHeight: '26px',
-  backgroundColor: '#F9FAFB',
+  backgroundColor: '#1e293b',
   padding: '16px',
   borderRadius: '8px',
   borderLeft: '4px solid #EAB308',
 };
 
 const hr = {
-  borderColor: '#e5e7eb',
+  borderColor: '#334155',
   margin: '32px 0',
 };
 
 const footer = {
-  color: '#6b7280',
+  color: '#94a3b8',
   fontSize: '14px',
   lineHeight: '24px',
   marginTop: '16px',
