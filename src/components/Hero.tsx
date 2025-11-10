@@ -10,7 +10,7 @@ export const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-no-repeat hidden md:block"
         style={{
-          backgroundImage: 'url(/images/PR AUTO CUSTOM (1).png)',
+          backgroundImage: 'url(/images/PR-AUTO-CUSTOM-1.png)',
           backgroundPosition: 'center',
         }}
       />
@@ -19,7 +19,7 @@ export const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-no-repeat md:hidden"
         style={{
-          backgroundImage: 'url(/images/PR AUTO CUSTOM (1).png)',
+          backgroundImage: 'url(/images/PR-AUTO-CUSTOM-1.png)',
           backgroundPosition: 'center',
         }}
       />
