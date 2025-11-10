@@ -5,6 +5,7 @@ import QuoteConfirmationEmail from '../../emails/QuoteConfirmationEmail';
 import PasswordChangeEmail from '../../emails/PasswordChangeEmail';
 import PasswordResetEmail from '../../emails/PasswordResetEmail';
 import AccountDeletionEmail from '../../emails/AccountDeletionEmail';
+import EmployeeWelcomeEmail from '../../emails/EmployeeWelcomeEmail';
 
 // Initialize Resend with API key or a placeholder for build time
 const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder_for_build');
@@ -342,6 +343,45 @@ export const sendAccountDeletionEmail = async (data: {
     return { id: emailData?.id };
   } catch (error) {
     console.error('Error sending account deletion email:', error);
+    throw error;
+  }
+};
+
+// Send employee welcome email with login credentials
+export const sendEmployeeWelcomeEmail = async (data: {
+  employeeEmail: string;
+  employeeName: string;
+  username: string;
+  temporaryPassword: string;
+}): Promise<ResendResponse> => {
+  try {
+    // Check if API key is configured
+    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 're_placeholder_for_build') {
+      console.warn('⚠️ Resend API key not configured. Email not sent.');
+      return { error: 'Resend API key not configured' };
+    }
+
+    const { data: emailData, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: data.employeeEmail,
+      subject: '¡Bienvenido al Equipo de PR Auto Custom! 🎉',
+      react: EmployeeWelcomeEmail({
+        employeeName: data.employeeName,
+        employeeEmail: data.employeeEmail,
+        username: data.username,
+        temporaryPassword: data.temporaryPassword,
+      }),
+    });
+
+    if (error) {
+      console.error('Error sending employee welcome email:', error);
+      return { error };
+    }
+
+    console.log('✅ Employee welcome email sent:', emailData?.id);
+    return { id: emailData?.id };
+  } catch (error) {
+    console.error('Error sending employee welcome email:', error);
     throw error;
   }
 };

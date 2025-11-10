@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
+import { sendEmployeeWelcomeEmail } from '@/lib/resend';
 
 // GET - List all users (Admin only)
 export async function GET() {
@@ -105,7 +106,23 @@ export async function POST(request: NextRequest) {
 
     const user = await User.create(userData);
 
-    return NextResponse.json({ 
+    // Send employee welcome email if role is employee
+    if (role === 'employee') {
+      try {
+        await sendEmployeeWelcomeEmail({
+          employeeEmail: user.email,
+          employeeName: user.name,
+          username: user.username || user.email,
+          temporaryPassword: password, // Send the original password before hashing
+        });
+        console.log('✅ Employee welcome email sent to:', user.email);
+      } catch (emailError) {
+        console.error('❌ Failed to send employee welcome email:', emailError);
+        // Continue - account is still created even if email fails
+      }
+    }
+
+    return NextResponse.json({
       message: 'User created successfully',
       user: {
         id: String(user._id),
