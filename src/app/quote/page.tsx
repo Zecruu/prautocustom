@@ -1,11 +1,16 @@
 'use client';
 
+// NOTE: This page may be deprecated. The newer quote system uses:
+// - API Route: src/app/api/quotes/route.ts
+// - Client Page: Check for newer quote submission pages
+// - Email System: Resend (not EmailJS)
+
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Navbar } from '@/components/Navbar';
 import { getRimById, rims } from '@/lib/rimData';
-import { sendQuoteEmail, initEmailJS } from '@/lib/emailjs';
+// import { sendQuoteEmail, initEmailJS } from '@/lib/emailjs'; // DEPRECATED: EmailJS removed
 
 function QuotePageContent() {
   const { t } = useTranslation();
@@ -26,7 +31,7 @@ function QuotePageContent() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    initEmailJS();
+    // initEmailJS(); // DEPRECATED: EmailJS removed
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -44,8 +49,12 @@ function QuotePageContent() {
 
     try {
       setLoading(true);
-      await sendQuoteEmail(formData);
-      setSuccess(true);
+      // await sendQuoteEmail(formData); // DEPRECATED: Use API route instead
+      // TODO: Replace with API call to /api/quotes
+      setError('This quote form is deprecated. Please use the main quote system.');
+      setLoading(false);
+      return;
+      // setSuccess(true);
       setFormData({
         name: '',
         email: '',

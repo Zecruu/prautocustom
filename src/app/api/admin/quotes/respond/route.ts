@@ -6,7 +6,7 @@ import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
 import Product from '@/models/Product';
 import User from '@/models/User';
-import { sendQuoteResponseEmailServer } from '@/lib/emailjs-server';
+import { sendQuoteResponseEmail } from '@/lib/resend';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,37 +75,31 @@ export async function POST(request: NextRequest) {
     try {
       // Get client details
       const client = await User.findById(existingQuote.client).select('name email');
-      
+
       // Get product details for email
       const populatedProducts = await Promise.all(
         formattedProducts.map(async (p: { product: string; quantity: number; unitPrice: number; totalPrice: number; notes: string }) => {
           const product = await Product.findById(p.product).select('name');
           return {
             name: product?.name?.en || 'Product',
-            quantity: p.quantity,
-            unitPrice: p.unitPrice,
-            totalPrice: p.totalPrice,
+            price: p.totalPrice.toFixed(2),
           };
         })
       );
 
-      // Format product details as HTML list
-      const productDetails = populatedProducts.map(p => 
-        `<li><strong>${p.name}</strong> (x${p.quantity}) - $${p.unitPrice.toFixed(2)} each = <strong>$${p.totalPrice.toFixed(2)}</strong></li>`
-      ).join('');
-
-      await sendQuoteResponseEmailServer({
+      await sendQuoteResponseEmail({
         clientEmail: client?.email || '',
         clientName: client?.name || 'Customer',
         quoteNumber: String(existingQuote._id).slice(-8).toUpperCase(),
-        validUntil: validUntil.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
-        productDetails: `<ul style="list-style: none; padding: 0;">${productDetails}</ul>`,
+        validUntil: validUntil.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        products: populatedProducts,
         subtotal: subtotal.toFixed(2),
         tax: tax.toFixed(2),
         total: total.toFixed(2),
         notes: notes || '',
+        replyTo: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'info@prautocustoms.com',
       });
-      
+
       console.log('✅ Quote response email sent to:', client?.email);
     } catch (emailError) {
       console.error('Failed to send quote response email:', emailError);
