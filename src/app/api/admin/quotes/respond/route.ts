@@ -76,13 +76,15 @@ export async function POST(request: NextRequest) {
       // Get client details
       const client = await User.findById(existingQuote.client).select('name email');
 
-      // Get product details for email
+      // Get product details for email (including images)
       const populatedProducts = await Promise.all(
         formattedProducts.map(async (p: { product: string; quantity: number; unitPrice: number; totalPrice: number; notes: string }) => {
-          const product = await Product.findById(p.product).select('name');
+          const product = await Product.findById(p.product).select('name images');
           return {
             name: product?.name?.en || 'Product',
             price: p.totalPrice.toFixed(2),
+            image: product?.images?.[0] || '', // First image
+            quantity: p.quantity,
           };
         })
       );

@@ -19,6 +19,8 @@ interface QuoteResponseEmailProps {
   products: Array<{
     name: string;
     price: string;
+    image?: string;
+    quantity?: number;
   }>;
   subtotal: string;
   tax: string;
@@ -44,14 +46,17 @@ export const QuoteResponseEmail = ({
 }: QuoteResponseEmailProps) => {
   return (
     <Html>
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>Tu Cotización de PR Auto Custom - Cotización #{quoteNumber}</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
           <Section style={logoSection}>
             <Img
-              src={`${websiteUrl}/logos/Logo Blanco.png`}
+              src={`${websiteUrl}/logos/Logo%20Blanco.png`}
               alt="PR Auto Custom Logo"
               width="200"
               style={logo}
@@ -76,9 +81,24 @@ export const QuoteResponseEmail = ({
           <Heading style={h3}>Productos y Precios:</Heading>
           <Section style={productList}>
             {products.map((product, index) => (
-              <Text key={index} style={productItem}>
-                • {product.name} - ${product.price}
-              </Text>
+              <Section key={index} style={productCard}>
+                {product.image && (
+                  <Img
+                    src={product.image}
+                    alt={product.name}
+                    width="120"
+                    height="120"
+                    style={productImage}
+                  />
+                )}
+                <Section style={productInfo}>
+                  <Text style={productName}>{product.name}</Text>
+                  {product.quantity && product.quantity > 1 && (
+                    <Text style={productQuantity}>Cantidad: {product.quantity}</Text>
+                  )}
+                  <Text style={productPrice}>${product.price}</Text>
+                </Section>
+              </Section>
             ))}
           </Section>
 
@@ -128,7 +148,7 @@ export const QuoteResponseEmail = ({
 export default QuoteResponseEmail;
 
 const main = {
-  backgroundColor: '#0f172a',
+  backgroundColor: '#0f172a !important' as any,
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
@@ -137,6 +157,7 @@ const container = {
   margin: '0 auto',
   padding: '20px 0 48px',
   maxWidth: '600px',
+  backgroundColor: '#0f172a !important' as any,
 };
 
 const logoSection = {
@@ -195,6 +216,47 @@ const quoteBox = {
 
 const productList = {
   margin: '16px 0',
+};
+
+const productCard = {
+  backgroundColor: '#1e293b',
+  padding: '16px',
+  borderRadius: '8px',
+  margin: '12px 0',
+  border: '1px solid #334155',
+  display: 'flex' as const,
+  alignItems: 'center' as const,
+  gap: '16px',
+};
+
+const productImage = {
+  borderRadius: '8px',
+  objectFit: 'cover' as const,
+  border: '2px solid #334155',
+};
+
+const productInfo = {
+  flex: '1',
+};
+
+const productName = {
+  color: '#ffffff',
+  fontSize: '16px',
+  fontWeight: 'bold' as const,
+  margin: '0 0 4px 0',
+};
+
+const productQuantity = {
+  color: '#94a3b8',
+  fontSize: '14px',
+  margin: '4px 0',
+};
+
+const productPrice = {
+  color: '#EAB308',
+  fontSize: '18px',
+  fontWeight: 'bold' as const,
+  margin: '8px 0 0 0',
 };
 
 const productItem = {

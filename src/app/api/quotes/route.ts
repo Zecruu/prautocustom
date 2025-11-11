@@ -5,6 +5,7 @@ import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import User from '@/models/User';
 import Product from '@/models/Product';
+import { sendQuoteConfirmationEmail, sendQuoteRequestToCompany } from '@/lib/resend';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,6 +74,57 @@ export async function POST(request: NextRequest) {
       message: message || undefined,
       shippingAddress: shippingAddress || undefined,
     });
+
+    // Generate quote number from ID
+    const quoteNumber = String(quote._id).slice(-8).toUpperCase();
+    const submissionDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    // Get product details for emails (name and images)
+    const populatedQuote = await Quote.findById(quote._id).populate('products.product', 'name images');
+    const productDetails = populatedQuote?.products.map((p: any) => ({
+      name: p.product?.name?.en || p.product?.name || 'Unknown Product',
+      image: p.product?.images?.[0] || '', // First image
+      quantity: p.quantity,
+    })) || [];
+    const productNames = productDetails.map(p => p.name);
+
+    // 1. Send confirmation email to CLIENT
+    try {
+      await sendQuoteConfirmationEmail({
+        clientEmail: email,
+        clientName: `${firstName} ${lastName}`,
+        quoteNumber,
+        submissionDate,
+        products: productDetails, // Pass full product details with images
+        message: message || undefined,
+        shippingAddress: shippingAddress || undefined,
+      });
+      console.log('✅ Quote confirmation email sent to client:', email);
+    } catch (emailError) {
+      console.error('❌ Failed to send confirmation email to client:', emailError);
+      // Continue - quote is still created
+    }
+
+    // 2. Send notification email to COMPANY (with client's email as reply-to)
+    try {
+      await sendQuoteRequestToCompany({
+        clientEmail: email,
+        clientName: `${firstName} ${lastName}`,
+        clientPhone: phone,
+        quoteNumber,
+        products: productNames,
+        message: message || undefined,
+        shippingAddress: shippingAddress || undefined,
+      });
+      console.log('✅ Quote request notification sent to company');
+    } catch (emailError) {
+      console.error('❌ Failed to send quote notification to company:', emailError);
+      // Continue - quote is still created
+    }
 
     return NextResponse.json(
       {

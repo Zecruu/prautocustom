@@ -32,14 +32,17 @@ export const PasswordResetEmail = ({
 }: PasswordResetEmailProps) => {
   return (
     <Html>
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>Restablece tu contraseña de PR Auto Custom</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
           <Section style={logoSection}>
             <Img
-              src={`${websiteUrl}/logos/Logo Blanco.png`}
+              src={`${websiteUrl}/logos/Logo%20Blanco.png`}
               alt="PR Auto Custom Logo"
               width="200"
               style={logo}
@@ -119,7 +122,7 @@ export const PasswordResetEmail = ({
 export default PasswordResetEmail;
 
 const main = {
-  backgroundColor: '#0f172a',
+  backgroundColor: '#0f172a !important' as any,
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
@@ -128,6 +131,7 @@ const container = {
   margin: '0 auto',
   padding: '20px 0 48px',
   maxWidth: '600px',
+  backgroundColor: '#0f172a !important' as any,
 };
 
 const logoSection = {

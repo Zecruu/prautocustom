@@ -31,14 +31,17 @@ export const PasswordChangeEmail = ({
 }: PasswordChangeEmailProps) => {
   return (
     <Html>
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>Tu contraseña de PR Auto Custom ha sido cambiada</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo Section */}
           <Section style={logoSection}>
             <Img
-              src={`${websiteUrl}/logos/Logo Blanco.png`}
+              src={`${websiteUrl}/logos/Logo%20Blanco.png`}
               alt="PR Auto Custom Logo"
               width="200"
               style={logo}

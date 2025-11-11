@@ -106,8 +106,8 @@ export async function POST(request: NextRequest) {
 
     const user = await User.create(userData);
 
-    // Send employee welcome email if role is employee
-    if (role === 'employee') {
+    // Send employee welcome email if role is employee or admin
+    if (role === 'employee' || role === 'admin') {
       try {
         await sendEmployeeWelcomeEmail({
           employeeEmail: user.email,
@@ -115,9 +115,9 @@ export async function POST(request: NextRequest) {
           username: user.username || user.email,
           temporaryPassword: password, // Send the original password before hashing
         });
-        console.log('✅ Employee welcome email sent to:', user.email);
+        console.log(`✅ ${role === 'admin' ? 'Admin' : 'Employee'} welcome email sent to:`, user.email);
       } catch (emailError) {
-        console.error('❌ Failed to send employee welcome email:', emailError);
+        console.error(`❌ Failed to send ${role === 'admin' ? 'admin' : 'employee'} welcome email:`, emailError);
         // Continue - account is still created even if email fails
       }
     }

@@ -32,14 +32,17 @@ export const EmployeeWelcomeEmail = ({
 
   return (
     <Html>
-      <Head />
+      <Head>
+        <meta name="color-scheme" content="dark" />
+        <meta name="supported-color-schemes" content="dark" />
+      </Head>
       <Preview>{previewText}</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Logo */}
           <Section style={logoSection}>
             <Img
-              src={`${baseUrl}/logos/Logo Blanco.png`}
+              src={`${baseUrl}/logos/Logo%20Blanco.png`}
               alt="PR Auto Custom"
               width="150"
               height="auto"
