@@ -43,53 +43,56 @@ export function ProductCard({
   };
 
   return (
-    <Card className="group overflow-hidden border-border bg-card hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/50">
+    <Card className="group relative overflow-hidden border-border/50 bg-card/80 backdrop-blur-xl hover:scale-[1.03] transition-all duration-500 hover:shadow-2xl hover:shadow-primary/30 hover:border-primary/70 hover:bg-card/95">
+      {/* Ambient glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
       {/* Product Image with Carousel */}
       <div className="relative">
         <AspectRatio ratio={1}>
           {images && images.length > 0 ? (
             <>
-              <Image 
-                src={images[currentImageIndex]} 
+              <Image
+                src={images[currentImageIndex]}
                 alt={title}
                 fill
-                className={`object-cover transition-opacity duration-300 ${
+                className={`object-cover transition-all duration-700 group-hover:scale-110 ${
                   imageLoading ? 'opacity-0' : 'opacity-100'
                 }`}
                 onLoad={() => setImageLoading(false)}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
-              
-              {/* Gradient overlay for better text readability */}
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-              
-              {/* Image navigation arrows */}
+
+              {/* Enhanced gradient overlay with glow */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none" />
+
+              {/* Image navigation arrows with glassmorphism */}
               {images.length > 1 && (
                 <>
                   <button
                     onClick={prevImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 backdrop-blur-md hover:bg-primary/80 text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
                     aria-label="Previous image"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </button>
                   <button
                     onClick={nextImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 backdrop-blur-md hover:bg-primary/80 text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
                     aria-label="Next image"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </button>
-                  
-                  {/* Image indicators */}
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+
+                  {/* Enhanced image indicators with glassmorphism */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
                     {images.map((_, idx) => (
                       <div
                         key={idx}
-                        className={`h-1.5 rounded-full transition-all ${
-                          idx === currentImageIndex 
-                            ? 'w-6 bg-primary' 
-                            : 'w-1.5 bg-white/50'
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          idx === currentImageIndex
+                            ? 'w-8 bg-primary shadow-lg shadow-primary/50'
+                            : 'w-1.5 bg-white/40 hover:bg-white/60'
                         }`}
                       />
                     ))}
@@ -104,30 +107,30 @@ export function ProductCard({
           )}
         </AspectRatio>
       </div>
-      
-      <CardContent className="p-4 space-y-2">
-        <h3 className="font-semibold text-lg text-foreground truncate group-hover:text-primary transition-colors">
+
+      <CardContent className="relative p-5 space-y-3">
+        <h3 className="font-bold text-lg text-foreground truncate group-hover:text-primary transition-colors duration-300">
           {title}
         </h3>
-        
+
         <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant="secondary" className="uppercase text-xs bg-muted text-primary font-semibold">
+          <Badge variant="secondary" className="uppercase text-xs bg-primary/20 text-primary font-bold border border-primary/30 shadow-sm">
             {category}
           </Badge>
           {badges.map((badge, i) => (
-            <Badge key={i} variant="outline" className="text-xs border-primary/30 text-muted-foreground">
+            <Badge key={i} variant="outline" className="text-xs border-border/50 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors">
               {badge}
             </Badge>
           ))}
         </div>
       </CardContent>
-      
-      <CardFooter className="p-4 pt-0">
-        <Button 
+
+      <CardFooter className="p-5 pt-0">
+        <Button
           onClick={() => onAddToCart(id)}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all hover:shadow-lg hover:shadow-primary/20"
+          className="w-full bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] group/btn"
         >
-          <ShoppingCart className="mr-2 h-4 w-4" />
+          <ShoppingCart className="mr-2 h-4 w-4 group-hover/btn:scale-110 transition-transform" />
           {currentLang === 'es' ? 'Agregar al Carrito' : 'Add to Cart'}
         </Button>
       </CardFooter>

@@ -201,9 +201,12 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-black flex">
-      {/* Sidebar Filter */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-zinc-900 border-r border-zinc-800 transform transition-transform duration-300 ease-in-out ${
+    <div className="min-h-screen bg-background flex">
+      {/* Ambient background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+
+      {/* Sidebar Filter with glassmorphism */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card/95 backdrop-blur-xl border-r border-border/50 transform transition-transform duration-300 ease-in-out shadow-2xl ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="h-full overflow-y-auto p-6">
@@ -450,22 +453,22 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       )}
 
       {/* Main Content */}
-      <div className="flex-1">
-        {/* Top Bar with Hamburger */}
-        <div className="sticky top-0 z-30 bg-black border-b border-zinc-800">
-          <div className="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <div className="flex-1 relative">
+        {/* Top Bar with Hamburger - Enhanced glassmorphism */}
+        <div className="sticky top-0 z-30 bg-background/60 backdrop-blur-2xl border-b border-border/30 shadow-lg">
+          <div className="px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden"
+                className="lg:hidden hover:bg-primary/10 hover:text-primary transition-colors"
               >
                 <Menu className="h-6 w-6" />
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-white">Our Products</h1>
-                <p className="text-sm text-gray-400">
+                <h1 className="text-3xl font-bold text-foreground bg-gradient-to-r from-foreground to-primary bg-clip-text">Our Products</h1>
+                <p className="text-sm text-muted-foreground mt-1">
                   {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} available
                 </p>
               </div>
@@ -473,24 +476,26 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
+        {/* Products Grid with better spacing */}
+        <div className="px-4 sm:px-6 lg:px-8 py-12">
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-            </svg>
-            <h3 className="text-xl font-semibold text-white mb-2">No products found</h3>
-            <p className="text-gray-400 mb-4">Try adjusting your filters to see more products</p>
-            <button
-              onClick={clearFilters}
-              className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-colors"
-            >
-              Clear Filters
-            </button>
+          <div className="text-center py-24">
+            <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-2xl p-12 max-w-md mx-auto">
+              <svg className="w-20 h-20 text-muted-foreground mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+              <h3 className="text-2xl font-bold text-foreground mb-3">No products found</h3>
+              <p className="text-muted-foreground mb-6">Try adjusting your filters to see more products</p>
+              <Button
+                onClick={clearFilters}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/30"
+              >
+                Clear Filters
+              </Button>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
             {filteredProducts.map((product) => {
               // Prepare badges from vehicle types and sub-filters
               const badges: string[] = [];

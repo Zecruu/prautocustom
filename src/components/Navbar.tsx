@@ -29,8 +29,11 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 w-full bg-background/60 backdrop-blur-2xl z-50 border-b border-border/30 shadow-lg shadow-black/10">
+      {/* Ambient glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center gap-4">

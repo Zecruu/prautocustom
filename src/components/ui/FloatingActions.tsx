@@ -15,22 +15,25 @@ export function FloatingActions() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-      <Button 
-        size="icon" 
+    <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
+      {/* Location Button with enhanced glassmorphism */}
+      <Button
+        size="icon"
         onClick={handleLocationClick}
-        className="h-14 w-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-2xl hover:scale-110 transition-transform"
+        className="h-16 w-16 rounded-full bg-blue-600/90 hover:bg-blue-600 backdrop-blur-md shadow-2xl hover:shadow-blue-600/50 transition-all duration-300 hover:scale-110 border border-blue-400/20 group"
         aria-label="View location on map"
       >
-        <MapPin className="h-6 w-6" />
+        <MapPin className="h-7 w-7 group-hover:scale-110 transition-transform" />
       </Button>
-      <Button 
-        size="icon" 
+
+      {/* WhatsApp Button with enhanced glassmorphism */}
+      <Button
+        size="icon"
         onClick={handleWhatsAppClick}
-        className="h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-2xl hover:scale-110 transition-transform"
+        className="h-16 w-16 rounded-full bg-green-600/90 hover:bg-green-600 backdrop-blur-md shadow-2xl hover:shadow-green-600/50 transition-all duration-300 hover:scale-110 border border-green-400/20 group"
         aria-label="Contact us on WhatsApp"
       >
-        <MessageCircle className="h-6 w-6" />
+        <MessageCircle className="h-7 w-7 group-hover:scale-110 transition-transform" />
       </Button>
     </div>
   );

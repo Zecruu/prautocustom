@@ -4,39 +4,41 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --accent-gradient: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-  --primary: oklch(0.205 0 0);
-  --secondary: oklch(0.97 0 0);
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
+  /* Sexy dark theme with vibrant accents */
+  --accent-gradient: linear-gradient(135deg, #FFB800 0%, #FFA500 50%, #FF8C00 100%);
+  --background: oklch(0.09 0.01 270); /* Rich dark with subtle purple #16161a */
+  --foreground: oklch(0.98 0 0); /* Soft white #fafafa */
+  --card: oklch(0.15 0.015 270 / 0.7); /* Dark card with transparency and glow */
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.13 0.015 270);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.78 0.18 70); /* Vibrant amber/gold #FFB800 */
+  --primary-foreground: oklch(0.09 0 0); /* Dark text on amber */
+  --secondary: oklch(0.22 0.02 270); /* Dark gray with purple tint */
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.25 0.015 270);
+  --muted-foreground: oklch(0.6 0.01 270);
+  --accent: oklch(0.78 0.18 70); /* Amber accent */
+  --accent-foreground: oklch(0.09 0 0);
+  --destructive: oklch(0.58 0.24 25); /* Vibrant red #EF4444 */
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.22 0.02 270 / 0.4); /* Subtle border with transparency */
+  --input: oklch(0.18 0.02 270);
+  --ring: oklch(0.78 0.18 70); /* Amber ring */
+  --radius: 0.75rem; /* More rounded for modern look */
+  --chart-1: oklch(0.78 0.18 70);
   --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-3: oklch(0.58 0.24 25);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.12 0.015 270);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.78 0.18 70);
+  --sidebar-primary-foreground: oklch(0.09 0 0);
+  --sidebar-accent: oklch(0.22 0.02 270);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.22 0.02 270 / 0.4);
+  --sidebar-ring: oklch(0.78 0.18 70);
 }
 
 @theme inline {
@@ -134,6 +136,37 @@ body {
 
 .animate-scroll {
   animation: scroll 1.5s ease-in-out infinite;
+}
+
+/* Sexy glow effect for cards */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 184, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 184, 0, 0.2);
+  }
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 184, 0, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
 }
 
 /* Dark theme - PR Auto Custom Design System */
