@@ -61,12 +61,7 @@ export const metadata: Metadata = {
       { url: "/logos/logo.png", sizes: "180x180", type: "image/png" }
     ],
   },
-  other: [
-    {
-      rel: 'icon',
-      url: '/logos/logo.png',
-    },
-  ],
+
   manifest: "/manifest.json",
   openGraph: {
     type: "website",

@@ -24,10 +24,6 @@ export const Navbar: React.FC = () => {
   const user = session?.user;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en');
-  };
-
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/' });
   };

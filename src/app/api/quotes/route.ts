@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
 
     // Get product details for emails (name and images)
     const populatedQuote = await Quote.findById(quote._id).populate('products.product', 'name images');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const productDetails = populatedQuote?.products.map((p: any) => ({
       name: p.product?.name?.en || p.product?.name || 'Unknown Product',
       image: p.product?.images?.[0] || '', // First image

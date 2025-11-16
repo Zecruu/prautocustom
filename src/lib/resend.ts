@@ -117,7 +117,7 @@ export const sendQuoteConfirmationEmail = async (data: {
   clientName: string;
   quoteNumber: string;
   submissionDate: string;
-  products: string[];
+  products: string[] | Array<{ name: string; image?: string; quantity?: number }>;
   message?: string;
   shippingAddress?: string;
   replyTo?: string; // Optional: Set reply-to address
@@ -210,7 +210,7 @@ export const sendQuoteRequestToCompany = async (data: {
   clientName: string;
   clientPhone: string;
   quoteNumber: string;
-  products: string[];
+  products: string[] | Array<{ name: string; image?: string; quantity?: number }>;
   message?: string;
   shippingAddress?: string;
 }): Promise<ResendResponse> => {
@@ -235,7 +235,7 @@ export const sendQuoteRequestToCompany = async (data: {
 
         <h3>Requested Products:</h3>
         <ul>
-          ${data.products.map(p => `<li>${p}</li>`).join('')}
+          ${data.products.map(p => typeof p === 'string' ? `<li>${p}</li>` : `<li>${p.name}${p.quantity ? ` (Qty: ${p.quantity})` : ''}</li>`).join('')}
         </ul>
 
         ${data.message ? `

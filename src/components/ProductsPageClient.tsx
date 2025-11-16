@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '@/contexts/CartContext';
 import { ProductCard } from '@/components/ui/ProductCard';
@@ -170,7 +169,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     }
 
     return filtered;
-  }, [products, selectedVehicleType, selectedCategory, selectedSubFilters]);
+  }, [products, selectedVehicleType, selectedCategory, selectedSubFilters, subFilters]);
 
   const clearFilters = () => {
     setSelectedVehicleType(null);
@@ -522,7 +521,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   category={productCategories.find(c => c.slug === product.category)?.name || product.category}
                   images={product.images}
                   badges={badges}
-                  onAddToCart={handleAddToCart}
+                  onAddToCart={() => handleAddToCart(product)}
                   currentLang={currentLang}
                 />
               );
