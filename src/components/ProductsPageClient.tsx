@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useCart } from '@/contexts/CartContext';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Product {
@@ -466,17 +466,24 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
 
       {/* Main Content */}
       <div className="flex-1 relative">
-        {/* Top Bar with Hamburger */}
-        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-2xl border-b border-border/30 shadow-lg">
+        {/* Top Bar with Filter Button */}
+        <div className="sticky top-0 z-30 bg-black border-b border-border/30 shadow-lg">
           <div className="px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
+              {/* Filter Button - Always visible on mobile/tablet */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden hover:bg-primary/10 transition-colors"
+                className="lg:hidden hover:bg-primary/10 transition-colors relative"
+                aria-label="Toggle filters"
               >
-                <Menu className="h-6 w-6" />
+                <Filter className="h-6 w-6" />
+                {activeFiltersCount > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary text-primary-foreground text-xs font-bold rounded-full">
+                    {activeFiltersCount}
+                  </span>
+                )}
               </Button>
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Our Products</h1>
