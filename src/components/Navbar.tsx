@@ -29,9 +29,9 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-0 w-full bg-background/60 backdrop-blur-2xl z-50 border-b border-border/30 shadow-lg shadow-black/10">
-      {/* Ambient glow */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+    <nav className="fixed top-0 w-full bg-black/90 backdrop-blur-2xl z-50 border-b border-border/30 shadow-lg shadow-black/10">
+      {/* Subtle ambient glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white/[0.02] via-transparent to-white/[0.02] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -50,10 +50,10 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            <Button variant="ghost" asChild className="text-foreground hover:text-primary">
+            <Button variant="ghost" asChild className="text-foreground hover:text-foreground hover:bg-primary/10">
               <Link href="/">{t('nav.home')}</Link>
             </Button>
-            <Button variant="ghost" asChild className="text-foreground hover:text-primary">
+            <Button variant="ghost" asChild className="text-foreground hover:text-foreground hover:bg-primary/10">
               <Link href="/products">{t('nav.products')}</Link>
             </Button>
           </div>

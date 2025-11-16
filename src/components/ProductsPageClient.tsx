@@ -201,9 +201,21 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   ].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Ambient background gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+    <div className="min-h-screen bg-background flex relative overflow-hidden">
+      {/* Showroom-style spotlights */}
+      <div className="fixed inset-0 pointer-events-none">
+        {/* Top-left spotlight */}
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+
+        {/* Top-right spotlight */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/4 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2" />
+
+        {/* Bottom-left spotlight */}
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/3 rounded-full blur-[90px] -translate-x-1/3 translate-y-1/3" />
+
+        {/* Bottom-right spotlight */}
+        <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-white/3 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3" />
+      </div>
 
       {/* Sidebar Filter with glassmorphism */}
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card/95 backdrop-blur-xl border-r border-border/50 transform transition-transform duration-300 ease-in-out shadow-2xl ${
@@ -454,20 +466,20 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
 
       {/* Main Content */}
       <div className="flex-1 relative">
-        {/* Top Bar with Hamburger - Enhanced glassmorphism */}
-        <div className="sticky top-0 z-30 bg-background/60 backdrop-blur-2xl border-b border-border/30 shadow-lg">
+        {/* Top Bar with Hamburger */}
+        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-2xl border-b border-border/30 shadow-lg">
           <div className="px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden hover:bg-primary/10 hover:text-primary transition-colors"
+                className="lg:hidden hover:bg-primary/10 transition-colors"
               >
                 <Menu className="h-6 w-6" />
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-foreground bg-gradient-to-r from-foreground to-primary bg-clip-text">Our Products</h1>
+                <h1 className="text-3xl font-bold text-foreground">Our Products</h1>
                 <p className="text-sm text-muted-foreground mt-1">
                   {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} available
                 </p>
