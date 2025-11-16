@@ -6,6 +6,7 @@ import { I18nProvider } from "@/components/I18nProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -246,6 +247,17 @@ export default function RootLayout({
           <I18nProvider>
             <CartProvider>
               <ConditionalLayout>{children}</ConditionalLayout>
+              <Toaster
+                position="bottom-right"
+                theme="dark"
+                toastOptions={{
+                  style: {
+                    background: 'hsl(var(--card))',
+                    color: 'hsl(var(--foreground))',
+                    border: '1px solid hsl(var(--border))',
+                  },
+                }}
+              />
             </CartProvider>
           </I18nProvider>
         </SessionProvider>

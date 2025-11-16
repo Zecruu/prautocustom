@@ -4,6 +4,10 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '@/contexts/CartContext';
+import { ProductCard } from '@/components/ui/ProductCard';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Product {
   _id: string;
@@ -56,8 +60,6 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({});
   const [expandedSubFilters, setExpandedSubFilters] = useState<Set<string>>(new Set());
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [addedToCart, setAddedToCart] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState<Record<string, number>>({});
 
   // Debug: Log received data on mount
   useEffect(() => {
@@ -187,9 +189,10 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       category: product.category,
     });
 
-    // Show feedback
-    setAddedToCart(product._id);
-    setTimeout(() => setAddedToCart(null), 2000);
+    // Show toast notification
+    toast.success(`${product.name[currentLang]} added to cart!`, {
+      duration: 2000,
+    });
   };
 
   const activeFiltersCount = [
@@ -453,14 +456,14 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
         <div className="sticky top-0 z-30 bg-black border-b border-zinc-800">
           <div className="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                className="lg:hidden"
               >
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+                <Menu className="h-6 w-6" />
+              </Button>
               <div>
                 <h1 className="text-2xl font-bold text-white">Our Products</h1>
                 <p className="text-sm text-gray-400">
@@ -489,177 +492,41 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                className="group bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10"
-              >
-                {/* Product Image Carousel */}
-                <div className="relative aspect-square bg-zinc-800 group/image">
-                  {product.images && product.images.length > 0 ? (
-                    <>
-                      <Image
-                        src={product.images[currentImageIndex[product._id] || 0]}
-                        alt={product.name[currentLang]}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
+            {filteredProducts.map((product) => {
+              // Prepare badges from vehicle types and sub-filters
+              const badges: string[] = [];
 
-                      {/* Navigation Arrows - Only show if more than 1 image */}
-                      {product.images.length > 1 && (
-                        <>
-                          {/* Previous Arrow */}
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              const currentIndex = currentImageIndex[product._id] || 0;
-                              const newIndex = currentIndex === 0 ? product.images.length - 1 : currentIndex - 1;
-                              setCurrentImageIndex({ ...currentImageIndex, [product._id]: newIndex });
-                            }}
-                            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity z-10"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                          </button>
+              // Add vehicle types as badges
+              if (product.vehicleTypes && product.vehicleTypes.length > 0) {
+                product.vehicleTypes.forEach((vtSlug) => {
+                  const vt = vehicleTypes.find(v => v.slug === vtSlug);
+                  if (vt) badges.push(vt.name);
+                });
+              }
 
-                          {/* Next Arrow */}
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              const currentIndex = currentImageIndex[product._id] || 0;
-                              const newIndex = currentIndex === product.images.length - 1 ? 0 : currentIndex + 1;
-                              setCurrentImageIndex({ ...currentImageIndex, [product._id]: newIndex });
-                            }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity z-10"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </button>
+              // Add sub-filters as badges
+              if (product.subFilters && Object.keys(product.subFilters).length > 0) {
+                Object.entries(product.subFilters).forEach(([slug, value]) => {
+                  const subFilter = subFilters.find(sf => sf.slug === slug);
+                  if (subFilter && value) {
+                    badges.push(`${subFilter.name}: ${value}`);
+                  }
+                });
+              }
 
-                          {/* Image Indicators */}
-                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-                            {product.images.map((_, index) => (
-                              <button
-                                key={index}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  setCurrentImageIndex({ ...currentImageIndex, [product._id]: index });
-                                }}
-                                className={`w-2 h-2 rounded-full transition-all ${
-                                  (currentImageIndex[product._id] || 0) === index
-                                    ? 'bg-yellow-500 w-6'
-                                    : 'bg-white/50 hover:bg-white/80'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <svg className="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  )}
-
-                  {/* Stock Badge */}
-                  {product.stock === 0 && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-                      Out of Stock
-                    </div>
-                  )}
-                </div>
-
-                {/* Product Info */}
-                <div className="p-4">
-                  <h3 className="text-white font-semibold text-lg mb-1 line-clamp-2 group-hover:text-yellow-500 transition-colors">
-                    {product.name[currentLang]}
-                  </h3>
-                  
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs text-gray-400 uppercase tracking-wide">
-                      {productCategories.find(c => c.slug === product.category)?.name || product.category}
-                    </span>
-                  </div>
-
-                  {/* Vehicle Types Tags */}
-                  {product.vehicleTypes && product.vehicleTypes.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {product.vehicleTypes.map((vtSlug) => {
-                        const vt = vehicleTypes.find(v => v.slug === vtSlug);
-                        return vt ? (
-                          <span
-                            key={vtSlug}
-                            className="text-xs bg-zinc-800 text-yellow-500 px-2 py-1 rounded-full border border-zinc-700"
-                          >
-                            {vt.name}
-                          </span>
-                        ) : null;
-                      })}
-                    </div>
-                  )}
-
-                  {/* Sub-Filters Tags */}
-                  {product.subFilters && Object.keys(product.subFilters).length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {Object.entries(product.subFilters).map(([slug, value]) => {
-                        // Find the sub-filter to get its name
-                        const subFilter = subFilters.find(sf => sf.slug === slug);
-                        const subFilterName = subFilter?.name || slug;
-
-                        return (
-                          <React.Fragment key={slug}>
-                            {/* Show sub-filter name */}
-                            <span className="text-xs bg-zinc-800 text-yellow-500 px-2 py-1 rounded-full border border-zinc-700">
-                              {subFilterName}
-                            </span>
-                            {/* Show option value if it's different from the sub-filter name */}
-                            {value && value !== subFilterName && (
-                              <span className="text-xs bg-zinc-800 text-gray-300 px-2 py-1 rounded-full border border-zinc-700">
-                                {value}
-                              </span>
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* Add to Cart Button */}
-                  <button
-                    onClick={() => handleAddToCart(product)}
-                    disabled={product.stock === 0 || addedToCart === product._id}
-                    className={`w-full py-2.5 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                      addedToCart === product._id
-                        ? 'bg-green-500 text-white'
-                        : product.stock === 0
-                        ? 'bg-zinc-800 text-gray-500 cursor-not-allowed'
-                        : 'bg-yellow-500 hover:bg-yellow-600 text-black'
-                    }`}
-                  >
-                    {addedToCart === product._id ? (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Added to Cart
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
+              return (
+                <ProductCard
+                  key={product._id}
+                  id={product._id}
+                  title={product.name[currentLang]}
+                  category={productCategories.find(c => c.slug === product.category)?.name || product.category}
+                  images={product.images}
+                  badges={badges}
+                  onAddToCart={handleAddToCart}
+                  currentLang={currentLang}
+                />
+              );
+            })}
           </div>
         )}
         </div>
