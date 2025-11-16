@@ -6,7 +6,7 @@
 :root {
   /* Showroom-style dark theme with vibrant accents */
   --accent-gradient: linear-gradient(135deg, #FFB800 0%, #FFA500 50%, #FF8C00 100%);
-  --background: oklch(0 0 0); /* Pure black #000000 - showroom style */
+  --background: oklch(0 0 0); /* Pure black #000000 */
   --foreground: oklch(0.98 0 0); /* Soft white #fafafa */
   --card: oklch(0.12 0 0 / 0.7); /* Dark card with transparency */
   --card-foreground: oklch(0.98 0 0);
