@@ -467,15 +467,15 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
       {/* Main Content */}
       <div className="flex-1 relative">
         {/* Top Bar with Filter Button */}
-        <div className="sticky top-0 z-30 bg-black border-b border-border/30 shadow-lg">
+        <div className="sticky top-0 z-30 bg-background border-b border-border/30 shadow-lg">
           <div className="px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {/* Filter Button - Always visible on mobile/tablet */}
+              {/* Filter Button - Visible on all screen sizes */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden hover:bg-primary/10 transition-colors relative"
+                className="hover:bg-primary/10 transition-colors relative"
                 aria-label="Toggle filters"
               >
                 <Filter className="h-6 w-6" />
