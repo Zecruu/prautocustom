@@ -183,8 +183,7 @@ export function ProductCard({
         {onViewDetails && (
           <Button
             onClick={() => onViewDetails(id)}
-            variant="outline"
-            className="flex-1 border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300"
+            className="flex-1 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02]"
           >
             {currentLang === 'es' ? 'Detalles' : 'Details'}
           </Button>
