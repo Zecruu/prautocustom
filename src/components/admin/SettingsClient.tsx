@@ -174,12 +174,21 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
             <h2 className="text-xl font-bold text-white mb-1">Vehicle Types</h2>
             <p className="text-sm text-gray-400">Manage vehicle types for product filtering (e.g., Jeep, Truck, SUV)</p>
           </div>
-          <button
-            onClick={addVehicleType}
-            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
-          >
-            + Add Vehicle Type
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={addVehicleType}
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
+            >
+              + Add Vehicle Type
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Saving...' : 'Save'}
+            </button>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -237,12 +246,21 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
             <h2 className="text-xl font-bold text-white mb-1">Product Categories</h2>
             <p className="text-sm text-gray-400">Manage product categories for filtering (e.g., Rims, Lights, Bumpers)</p>
           </div>
-          <button
-            onClick={addProductCategory}
-            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
-          >
-            + Add Category
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={addProductCategory}
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
+            >
+              + Add Category
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Saving...' : 'Save'}
+            </button>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -300,12 +318,21 @@ export function SettingsClient({ initialVehicleTypes, initialProductCategories, 
             <h2 className="text-xl font-bold text-white mb-1">Sub-Filters</h2>
             <p className="text-sm text-gray-400">Create sub-filters with multiple options for advanced filtering</p>
           </div>
-          <button
-            onClick={addSubFilter}
-            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
-          >
-            + Add Sub-Filter
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={addSubFilter}
+              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium rounded-lg transition-colors"
+            >
+              + Add Sub-Filter
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Saving...' : 'Save'}
+            </button>
+          </div>
         </div>
 
         {/* Example Box */}

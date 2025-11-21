@@ -4,18 +4,27 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '@/contexts/CartContext';
 import { ProductCard } from '@/components/ui/ProductCard';
+import { ProductDetailsModal } from '@/components/ui/ProductDetailsModal';
 import { Button } from '@/components/ui/button';
 import { Filter } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface ImageVariant {
+  url: string;
+  color?: string;
+  colorName?: string;
+}
 
 interface Product {
   _id: string;
   sku: string;
   name: { en: string; es: string };
+  description?: { en?: string; es?: string };
   category: string;
   vehicleTypes?: string[];
   subFilters?: Record<string, string>;
   images: string[];
+  imageVariants?: ImageVariant[];
   stock: number;
   status: string;
 }
@@ -56,9 +65,11 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   const { addToCart } = useCart();
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string>>({});
+  const [selectedSubFilters, setSelectedSubFilters] = useState<Record<string, string[]>>({});  // Changed to string[] for multiple selections
   const [expandedSubFilters, setExpandedSubFilters] = useState<Set<string>>(new Set());
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Debug: Log received data on mount
   useEffect(() => {
@@ -115,39 +126,17 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
         return false;
       }
 
-      // Filter by sub-filters - product must match ALL selected sub-filters
+      // Filter by sub-filters - product must match ANY of the selected options within each sub-filter
       for (const subFilterSlug of Object.keys(selectedSubFilters)) {
-        const selectedOption = selectedSubFilters[subFilterSlug];
+        const selectedOptions = selectedSubFilters[subFilterSlug];
 
-        // Find the sub-filter definition to check if selectedOption is the sub-filter name or an actual option
-        const subFilterDef = subFilters.find(sf => sf.slug === subFilterSlug);
-        const isSubFilterNameSelected = subFilterDef && selectedOption === subFilterDef.name;
+        if (!selectedOptions || selectedOptions.length === 0) continue;
 
-        // If only the sub-filter name is selected (not a specific option)
-        if (isSubFilterNameSelected) {
-          // Product must have this sub-filter slug defined (with any value)
-          if (!product.subFilters || !(subFilterSlug in product.subFilters)) {
-            console.log('🚫 Product filtered out (sub-filter name selected but product missing this sub-filter):', {
-              productSku: product.sku,
-              productName: product.name.en,
-              subFilterSlug,
-              selectedOption,
-              productSubFilters: product.subFilters,
-            });
-            return false;
-          }
-        } else {
-          // A specific option is selected - product must have exact match
-          if (!product.subFilters || product.subFilters[subFilterSlug] !== selectedOption) {
-            console.log('🚫 Product filtered out (specific option selected but value mismatch):', {
-              productSku: product.sku,
-              productName: product.name.en,
-              subFilterSlug,
-              productValue: product.subFilters?.[subFilterSlug],
-              selectedOption,
-            });
-            return false;
-          }
+        // Product must match at least one of the selected options for this sub-filter
+        const productValue = product.subFilters?.[subFilterSlug];
+
+        if (!productValue || !selectedOptions.includes(productValue)) {
+          return false;
         }
       }
 
@@ -195,9 +184,9 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
   };
 
   const activeFiltersCount = [
-    selectedVehicleType, 
+    selectedVehicleType,
     selectedCategory,
-    ...Object.values(selectedSubFilters).filter(v => v && v !== '')
+    ...Object.values(selectedSubFilters).flat()  // Flatten arrays of selected options
   ].filter(Boolean).length;
 
   return (
@@ -340,15 +329,15 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
               {expandedSubFilters.has('sub-filters') && (
                 <div className="space-y-3 pl-2">
                   {availableSubFilters.map((subFilter) => {
-                    const isSubFilterSelected = selectedSubFilters[subFilter.slug] !== undefined;
                     const isSubFilterExpanded = expandedSubFilters.has(subFilter.slug);
                     const hasOptions = subFilter.options && subFilter.options.length > 0;
+                    const selectedCount = selectedSubFilters[subFilter.slug]?.length || 0;
 
                     return (
                       <div key={subFilter.slug} className="space-y-2">
-                        {/* Sub-filter name checkbox */}
+                        {/* Sub-filter name with expand button */}
                         <div className="flex items-center gap-1">
-                          {/* Expand arrow if has options - MOVED TO LEFT */}
+                          {/* Expand arrow if has options */}
                           {hasOptions && (
                             <button
                               onClick={() => {
@@ -376,39 +365,22 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                           {/* Spacer if no options */}
                           {!hasOptions && <div className="w-6" />}
 
-                          <label className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer group flex-1">
-                            <div
-                              className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors cursor-pointer ${
-                                isSubFilterSelected
-                                  ? 'bg-yellow-500 border-yellow-500'
-                                  : 'border-zinc-600 group-hover:border-zinc-500'
-                              }`}
-                              onClick={() => {
-                                const newFilters = { ...selectedSubFilters };
-                                if (isSubFilterSelected) {
-                                  delete newFilters[subFilter.slug];
-                                } else {
-                                  // Select sub-filter without option (just the name)
-                                  newFilters[subFilter.slug] = subFilter.name;
-                                }
-                                setSelectedSubFilters(newFilters);
-                              }}
-                            >
-                              {isSubFilterSelected && (
-                                <svg className="w-3 h-3 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                </svg>
-                              )}
-                            </div>
-                            <span className="text-sm">{subFilter.name}</span>
-                          </label>
+                          <div className="flex items-center gap-2 flex-1">
+                            <span className="text-sm text-gray-300">{subFilter.name}</span>
+                            {selectedCount > 0 && (
+                              <span className="text-xs bg-yellow-500 text-black px-2 py-0.5 rounded-full font-bold">
+                                {selectedCount}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Options (nested under sub-filter) */}
+                        {/* Options (nested under sub-filter) - Multiple selection enabled */}
                         {hasOptions && isSubFilterExpanded && (
                           <div className="pl-6 space-y-2">
                             {subFilter.options.map((option) => {
-                              const isOptionSelected = selectedSubFilters[subFilter.slug] === option;
+                              const currentSelections = selectedSubFilters[subFilter.slug] || [];
+                              const isOptionSelected = currentSelections.includes(option);
 
                               return (
                                 <label
@@ -423,12 +395,18 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                                     }`}
                                     onClick={() => {
                                       const newFilters = { ...selectedSubFilters };
+                                      const currentSelections = newFilters[subFilter.slug] || [];
+
                                       if (isOptionSelected) {
-                                        // Unselect option - revert to just sub-filter name
-                                        newFilters[subFilter.slug] = subFilter.name;
+                                        // Remove this option from selections
+                                        newFilters[subFilter.slug] = currentSelections.filter(o => o !== option);
+                                        // If no options left, remove the sub-filter entirely
+                                        if (newFilters[subFilter.slug].length === 0) {
+                                          delete newFilters[subFilter.slug];
+                                        }
                                       } else {
-                                        // Select this option
-                                        newFilters[subFilter.slug] = option;
+                                        // Add this option to selections
+                                        newFilters[subFilter.slug] = [...currentSelections, option];
                                       }
                                       setSelectedSubFilters(newFilters);
                                     }}
@@ -544,8 +522,13 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   title={product.name[currentLang]}
                   category={productCategories.find(c => c.slug === product.category)?.name || product.category}
                   images={product.images}
+                  imageVariants={product.imageVariants}
                   badges={badges}
                   onAddToCart={() => handleAddToCart(product)}
+                  onViewDetails={() => {
+                    setSelectedProduct(product);
+                    setIsModalOpen(true);
+                  }}
                   currentLang={currentLang}
                 />
               );
@@ -554,6 +537,28 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
         )}
         </div>
       </div>
+
+      {/* Product Details Modal */}
+      {selectedProduct && (
+        <ProductDetailsModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedProduct(null);
+          }}
+          product={{
+            id: selectedProduct._id,
+            title: selectedProduct.name[currentLang],
+            category: productCategories.find(c => c.slug === selectedProduct.category)?.name || selectedProduct.category,
+            description: selectedProduct.description?.[currentLang],
+            images: selectedProduct.images,
+            imageVariants: selectedProduct.imageVariants,
+            badges: [],
+          }}
+          onAddToCart={() => handleAddToCart(selectedProduct)}
+          currentLang={currentLang}
+        />
+      )}
     </div>
   );
 }

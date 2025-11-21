@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ImageUpload } from '@/components/admin/ImageUpload';
+import { ImageUploadWithColor } from '@/components/admin/ImageUploadWithColor';
 
 interface VehicleType {
   _id: string;
@@ -47,6 +47,7 @@ export default function NewProductPage() {
     stock: '',
     status: 'active',
     images: [] as string[],
+    imageVariants: [] as Array<{ url: string; color?: string; colorName?: string }>,
   });
 
   const [enableSubFilters, setEnableSubFilters] = useState(false);
@@ -87,18 +88,19 @@ export default function NewProductPage() {
     setFormData(prev => ({ ...prev, subFilters: {} }));
   }, [formData.category]);
 
-  const handleImageUpload = (url: string, index: number) => {
-    const newImages = [...formData.images];
-    if (url) {
-      newImages[index] = url;
-    } else {
-      newImages.splice(index, 1);
-    }
-    setFormData({ ...formData, images: newImages });
+  const handleImageVariantUpload = (data: { url: string; color?: string; colorName?: string }, index: number) => {
+    const newImageVariants = [...formData.imageVariants];
+    newImageVariants[index] = data;
+    setFormData({ ...formData, imageVariants: newImageVariants });
   };
 
-  const addImageSlot = () => {
-    setFormData({ ...formData, images: [...formData.images, ''] });
+  const addImageVariantSlot = () => {
+    setFormData({ ...formData, imageVariants: [...formData.imageVariants, { url: '' }] });
+  };
+
+  const removeImageVariant = (index: number) => {
+    const newImageVariants = formData.imageVariants.filter((_, i) => i !== index);
+    setFormData({ ...formData, imageVariants: newImageVariants });
   };
 
   const toggleVehicleType = (slug: string) => {
@@ -197,7 +199,7 @@ export default function NewProductPage() {
           subFilters: formData.subFilters,
           stock: parseInt(formData.stock) || 0,
           status: formData.status,
-          images: formData.images.filter(img => img !== ''),
+          imageVariants: formData.imageVariants.filter(img => img.url !== ''),
         }),
       });
 
@@ -528,25 +530,29 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        {/* Product Images */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-4">
-          <h2 className="text-xl font-bold text-white mb-4">Product Images</h2>
-          
-          {formData.images.map((image, index) => (
-            <ImageUpload
+        {/* Product Images with Color Variants */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6">
+          <div>
+            <h2 className="text-xl font-bold text-white mb-2">Product Images with Colors</h2>
+            <p className="text-sm text-gray-400">Upload images and assign colors for Amazon-style color picker</p>
+          </div>
+
+          {formData.imageVariants.map((imageVariant, index) => (
+            <ImageUploadWithColor
               key={index}
-              currentImage={image}
-              onUploadComplete={(url) => handleImageUpload(url, index)}
-              label={`Image ${index + 1}`}
+              currentImage={imageVariant}
+              onUploadComplete={(data) => handleImageVariantUpload(data, index)}
+              onRemove={() => removeImageVariant(index)}
+              label={`Image Variant ${index + 1}`}
             />
           ))}
 
           <button
             type="button"
-            onClick={addImageSlot}
+            onClick={addImageVariantSlot}
             className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg border border-zinc-700 transition-colors"
           >
-            + Add Another Image
+            + Add Another Image Variant
           </button>
         </div>
 

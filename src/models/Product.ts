@@ -1,5 +1,11 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
+export interface IProductImage {
+  url: string;
+  color?: string; // Hex color code (e.g., '#000000')
+  colorName?: string; // Display name (e.g., 'Black', 'Silver')
+}
+
 export interface IProduct extends Document {
   sku: string;
   name: {
@@ -13,7 +19,8 @@ export interface IProduct extends Document {
     en?: string;
     es?: string;
   };
-  images: string[]; // S3/Cloudflare URLs
+  images: string[]; // S3/Cloudflare URLs (legacy support)
+  imageVariants?: IProductImage[]; // New: Images with color assignments
   specifications?: Record<string, string>;
   stock: number;
   status: 'active' | 'hidden' | 'discontinued';
@@ -72,6 +79,14 @@ const ProductSchema = new Schema<IProduct>(
     },
     images: {
       type: [String],
+      default: [],
+    },
+    imageVariants: {
+      type: [{
+        url: { type: String, required: true },
+        color: { type: String }, // Hex color code
+        colorName: { type: String }, // Display name
+      }],
       default: [],
     },
     specifications: {

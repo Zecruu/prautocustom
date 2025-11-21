@@ -8,38 +8,62 @@ import { ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
+interface ImageVariant {
+  url: string;
+  color?: string;
+  colorName?: string;
+}
+
 interface ProductCardProps {
   id: string;
   title: string;
   category: string;
   images: string[];
+  imageVariants?: ImageVariant[];
   badges?: string[];
   onAddToCart: (id: string) => void;
+  onViewDetails?: (id: string) => void;
   currentLang: 'en' | 'es';
 }
 
-export function ProductCard({ 
-  id, 
-  title, 
-  category, 
-  images = [], 
-  badges = [], 
+export function ProductCard({
+  id,
+  title,
+  category,
+  images = [],
+  imageVariants = [],
+  badges = [],
   onAddToCart,
+  onViewDetails,
   currentLang
 }: ProductCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
+
+  // Use imageVariants if available, otherwise fall back to images
+  const displayImages = imageVariants.length > 0
+    ? imageVariants.map(v => v.url)
+    : images;
+
+  const currentImage = displayImages[currentImageIndex] || images[0];
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setImageLoading(true);
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    setCurrentImageIndex((prev) => (prev + 1) % displayImages.length);
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setImageLoading(true);
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentImageIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length);
+  };
+
+  const handleColorSelect = (index: number) => {
+    setSelectedColorIndex(index);
+    setCurrentImageIndex(index);
+    setImageLoading(true);
   };
 
   return (
@@ -50,10 +74,10 @@ export function ProductCard({
       {/* Product Image with Carousel */}
       <div className="relative">
         <AspectRatio ratio={1}>
-          {images && images.length > 0 ? (
+          {displayImages && displayImages.length > 0 ? (
             <>
               <Image
-                src={images[currentImageIndex]}
+                src={currentImage}
                 alt={title}
                 fill
                 className={`object-cover transition-all duration-700 group-hover:scale-110 ${
@@ -67,7 +91,7 @@ export function ProductCard({
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500 pointer-events-none" />
 
               {/* Image navigation arrows with glassmorphism */}
-              {images.length > 1 && (
+              {displayImages.length > 1 && (
                 <>
                   <button
                     onClick={prevImage}
@@ -86,7 +110,7 @@ export function ProductCard({
 
                   {/* Enhanced image indicators with glassmorphism */}
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-                    {images.map((_, idx) => (
+                    {displayImages.map((_, idx) => (
                       <div
                         key={idx}
                         className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -123,15 +147,54 @@ export function ProductCard({
             </Badge>
           ))}
         </div>
+
+        {/* Amazon-style Color Picker */}
+        {imageVariants.length > 0 && imageVariants.some(v => v.color) && (
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Color: <span className="text-foreground font-medium">{imageVariants[selectedColorIndex]?.colorName || 'Select'}</span>
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              {imageVariants.map((variant, idx) => (
+                variant.color && (
+                  <button
+                    key={idx}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleColorSelect(idx);
+                    }}
+                    className={`w-8 h-8 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+                      selectedColorIndex === idx
+                        ? 'border-primary shadow-lg shadow-primary/50 ring-2 ring-primary/30'
+                        : 'border-border/50 hover:border-primary/50'
+                    }`}
+                    style={{ backgroundColor: variant.color }}
+                    title={variant.colorName || variant.color}
+                    aria-label={`Select ${variant.colorName || variant.color} color`}
+                  />
+                )
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
 
-      <CardFooter className="p-5 pt-0">
+      <CardFooter className="p-5 pt-0 flex gap-2">
+        {onViewDetails && (
+          <Button
+            onClick={() => onViewDetails(id)}
+            variant="outline"
+            className="flex-1 border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300"
+          >
+            {currentLang === 'es' ? 'Detalles' : 'Details'}
+          </Button>
+        )}
         <Button
           onClick={() => onAddToCart(id)}
-          className="w-full bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] group/btn"
+          className="flex-1 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] group/btn"
         >
           <ShoppingCart className="mr-2 h-4 w-4 group-hover/btn:scale-110 transition-transform" />
-          {currentLang === 'es' ? 'Agregar al Carrito' : 'Add to Cart'}
+          {currentLang === 'es' ? 'Agregar' : 'Add to Cart'}
         </Button>
       </CardFooter>
     </Card>
