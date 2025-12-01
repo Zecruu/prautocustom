@@ -10,18 +10,22 @@ interface AdminLayoutClientProps {
 }
 
 export function AdminLayoutClient({ userRole, userName, children }: AdminLayoutClientProps) {
-  // Initialize with true, but will be updated from localStorage if available
+  // Track if component has mounted (for hydration safety)
+  const [hasMounted, setHasMounted] = useState(false);
+  // Initialize sidebar as open - will be updated from localStorage after mount
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Load sidebar state from localStorage on mount
+  // Set mounted state and load sidebar preference from localStorage
   useEffect(() => {
+    setHasMounted(true);
     const savedState = localStorage.getItem('sidebarOpen');
-    console.log('Saved sidebar state:', savedState);
+    console.log('AdminLayoutClient mounted. Saved sidebar state:', savedState);
     if (savedState !== null) {
       setIsSidebarOpen(savedState === 'true');
     } else {
-      // Default to open on first load
+      // Default to open on first load and save it
       setIsSidebarOpen(true);
+      localStorage.setItem('sidebarOpen', 'true');
     }
   }, []);
 
@@ -30,6 +34,17 @@ export function AdminLayoutClient({ userRole, userName, children }: AdminLayoutC
     setIsSidebarOpen(open);
     localStorage.setItem('sidebarOpen', String(open));
   };
+
+  // During SSR/initial hydration, show loading state to avoid mismatch
+  if (!hasMounted) {
+    return (
+      <div className="relative h-screen bg-black overflow-hidden">
+        <div className="h-full overflow-y-auto lg:ml-64">
+          {children}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-screen bg-black overflow-hidden">

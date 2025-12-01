@@ -16,34 +16,21 @@
 
 # Scratchpad
 
-## Current Task: Fix Product Edit & Sub-Filter Filtering Issues ✅ COMPLETED
+## Current Task: Fix Admin Issues & Git Operations
 
 ### Task Description:
-1. Fix Edit button in Admin Products page - wasn't working (no edit page existed) ✅
-2. Debug and fix sub-filter filtering on client products page ✅
+1. Fix sidebar not appearing on first login until page refresh
+2. Fix color picker for products created before the feature was added  
+3. Pull changes from main and merge with this project
+4. Commit changes to dev branch (not main)
 
-### Implementation Completed:
-[X] 1. Create product edit page
-[X] 2. Add GET endpoint to fetch single product
-[X] 3. Add debug logging for sub-filter filtering
+### Implementation Plan:
+[X] 1. Fix AdminLayoutClient.tsx - add mounted state for hydration
+[X] 2. Fix edit page - use ImageUploadWithColor & handle legacy images
+[ ] 3. Pull changes from main and merge
+[ ] 4. Commit changes to dev branch
 
-### Changes Made:
-1. **Product Edit Page Created:**
-   - Created /admin/products/[id]/edit/page.tsx
-   - Added GET endpoint to /api/admin/products/[id]/route.ts
-   - Pre-populates form with existing product data
-   - Uses PATCH endpoint to update product
-   - Fully functional edit flow
-
-2. **Debug Logging Added:**
-   - ProductsPageClient.tsx: Added console logs for sub-filter debugging
-   - Shows which products are filtered out and why
-   - Displays product sub-filters data for debugging
-   - Helps identify issues with sub-filter filtering logic
-
-### Previous Task: Add Sub-Filters Functionality ✅ COMPLETED
-- Sub-filters fully implemented for products
-- Category-specific sub-filters
-- Client-side filtering working
-- Admin management UI complete
+### Root Causes:
+1. **Sidebar issue**: Hydration mismatch - component initializes with `useState(true)` but then useEffect reads from localStorage causing flash/mismatch on SSR
+2. **Color picker issue**: Edit page uses old `ImageUpload` component instead of `ImageUploadWithColor`, and uses `images: string[]` instead of `imageVariants: Array<{url, color, colorName}>`
 
