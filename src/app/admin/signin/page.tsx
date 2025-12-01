@@ -18,9 +18,10 @@ export default function AdminSignIn() {
   // Redirect to dashboard if already authenticated
   useEffect(() => {
     if (status === 'authenticated' && session) {
-      router.push('/admin/dashboard');
+      // Use full page navigation to ensure server components re-run
+      window.location.href = '/admin/dashboard';
     }
-  }, [status, session, router]);
+  }, [status, session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,9 @@ export default function AdminSignIn() {
       if (result?.error) {
         setError(result.error);
       } else {
-        router.push('/admin/dashboard');
+        // Use full page navigation to ensure the server-side session is detected
+        // This forces the admin layout server component to re-run with the new session
+        window.location.href = '/admin/dashboard';
       }
     } catch {
       setError('An error occurred. Please try again.');
