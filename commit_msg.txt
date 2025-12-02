@@ -1,0 +1,5 @@
+[Cursor] Remove accidentally committed nested duplicate directory
+
+Deleted prautocustom-main/scripts/generate-rim-images.js which was an empty
+file in a nested duplicate of the project directory structure.
+

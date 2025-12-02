@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import Product from '@/models/Product';
+import User from '@/models/User'; // Required for populate to work
 import Link from 'next/link';
 import Image from 'next/image';
 import ProductActions from '@/components/admin/ProductActions';
@@ -11,6 +12,9 @@ export const dynamic = 'force-dynamic';
 export default async function ProductsPage() {
   await getServerSession(authOptions);
   await connectDB();
+
+  // Ensure User model is registered before populate (prevents tree-shaking in serverless)
+  void User;
 
   // Fetch all products
   const productsRaw = await Product.find()

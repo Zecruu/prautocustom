@@ -22,6 +22,10 @@ export default async function QuoteDetailPage({ params }: PageProps) {
 
   await connectDB();
 
+  // Ensure models are registered before populate (prevents tree-shaking in serverless)
+  void Product;
+  void User;
+
   // Fetch quote with populated data
   const quoteRaw = await Quote.findById(id)
     .populate('client', 'name email phone')

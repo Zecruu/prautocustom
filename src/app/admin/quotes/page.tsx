@@ -12,6 +12,10 @@ export default async function QuotesPage() {
   await getServerSession(authOptions);
   await connectDB();
 
+  // Ensure models are registered before populate (prevents tree-shaking in serverless)
+  void Product;
+  void User;
+
   // Fetch all quotes with populated client and product data
   const quotesRaw = await Quote.find()
     .populate('client', 'name email phone')
