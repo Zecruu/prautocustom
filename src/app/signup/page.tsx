@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { signIn } from 'next-auth/react';
 import { Navbar } from '@/components/Navbar';
+import Turnstile from '@/components/Turnstile';
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -16,10 +17,37 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState(''); // Bot trap field
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setTurnstileToken(token);
+  }, []);
+
+  const handleTurnstileError = useCallback(() => {
+    setError('Security verification failed. Please try again.');
+    setTurnstileToken(null);
+  }, []);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Honeypot check - if filled, it's a bot
+    if (honeypot) {
+      // Silently fail for bots
+      setLoading(true);
+      setTimeout(() => {
+        router.push('/profile');
+      }, 2000);
+      return;
+    }
+
+    // Turnstile verification required
+    if (!turnstileToken) {
+      setError('Please complete the security verification');
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -34,11 +62,11 @@ export default function SignUp() {
     try {
       setLoading(true);
 
-      // Create user account
+      // Create user account with Turnstile token
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, turnstileToken }),
       });
 
       const data = await response.json();
@@ -149,9 +177,30 @@ export default function SignUp() {
                 />
               </div>
 
+              {/* Honeypot field - invisible to humans, bots will fill it */}
+              <div className="absolute -left-[9999px]" aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
+
+              {/* Cloudflare Turnstile CAPTCHA */}
+              <Turnstile
+                onVerify={handleTurnstileVerify}
+                onError={handleTurnstileError}
+                onExpire={handleTurnstileError}
+              />
+
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !turnstileToken}
                 className="w-full px-6 py-3 bg-gradient-to-r from-white to-gray-200 text-black font-bold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50"
               >
                 {loading ? 'Creating Account...' : t('auth.signUp')}
