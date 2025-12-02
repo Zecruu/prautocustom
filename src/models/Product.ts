@@ -124,7 +124,16 @@ const ProductSchema = new Schema<IProduct>(
 ProductSchema.index({ 'name.en': 'text', 'name.es': 'text', category: 'text' });
 ProductSchema.index({ category: 1, vehicleTypes: 1 });
 
-const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+// Ensure the model is always registered
+// Use a function to get the model, ensuring it's always properly registered
+function getProductModel(): Model<IProduct> {
+  if (mongoose.models.Product) {
+    return mongoose.models.Product as Model<IProduct>;
+  }
+  return mongoose.model<IProduct>('Product', ProductSchema);
+}
+
+const Product = getProductModel();
 
 export default Product;
 
