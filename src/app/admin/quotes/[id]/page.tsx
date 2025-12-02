@@ -3,6 +3,8 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
 import QuoteResponse from '@/models/QuoteResponse';
+import Product from '@/models/Product'; // Required for populate to work
+import User from '@/models/User'; // Required for populate to work
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';

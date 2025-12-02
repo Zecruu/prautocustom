@@ -2,6 +2,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
 import Quote from '@/models/Quote';
+import Product from '@/models/Product'; // Required for populate to work
+import User from '@/models/User'; // Required for populate to work
 import QuotesTable from '@/components/admin/QuotesTable';
 
 export const dynamic = 'force-dynamic';

@@ -16,20 +16,22 @@
 
 # Scratchpad
 
-## Current Task: Fix Admin Issues & Git Operations ✅ COMPLETED
+## Current Task: Fix Quotes Page MissingSchemaError ✅ COMPLETED
 
 ### Task Description:
-1. Fix sidebar not appearing on first login until page refresh ✅
-2. Fix color picker for products created before the feature was added ✅
-3. Pull changes from main and merge with this project ✅
-4. Commit changes to dev branch (not main) ✅
+1. Fix `MissingSchemaError: Schema hasn't been registered for model "Product"` on admin/quotes page
+2. Pull from main and commit changes to main
 
-### Changes Made:
-1. **AdminLayoutClient.tsx**: Added `hasMounted` state to prevent hydration mismatch - shows a consistent initial render during SSR before enabling full sidebar functionality
+### Root Cause:
+- `/admin/quotes/page.tsx` and `/admin/quotes/[id]/page.tsx` use `.populate('products.product')` 
+- But they don't import the Product model, so Mongoose can't find the schema when populating
 
-2. **Product Edit Page**: 
-   - Changed from `ImageUpload` to `ImageUploadWithColor` component
-   - Changed `images: string[]` to `imageVariants: Array<{url, color, colorName}>`
-   - Added legacy image conversion - products with old `images` array are automatically converted to `imageVariants` format
-   - Updated form handlers and submission to use new format
+### Fix:
+[X] Add `import Product from '@/models/Product'` to both quote pages
+[X] Add `import User from '@/models/User'` for User populate as well
+[X] Pull from main
+[X] Commit and push to main
+
+### Verified:
+- Page https://prautocustoms.com/admin/quotes loads successfully with quote data
 
