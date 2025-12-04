@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const Hero: React.FC = () => {
+  const { t } = useTranslation();
 
   return (
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
@@ -36,7 +38,7 @@ export const Hero: React.FC = () => {
             <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-1 h-3 bg-white rounded-full animate-scroll"></div>
           </div>
           {/* Scroll Text */}
-          <span className="text-white text-sm font-medium tracking-wider opacity-80">SCROLL</span>
+          <span className="text-white text-sm font-medium tracking-wider opacity-80">{t('hero.scroll', 'SCROLL')}</span>
         </div>
       </div>
     </section>

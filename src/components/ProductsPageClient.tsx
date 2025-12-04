@@ -60,8 +60,8 @@ interface ProductsPageClientProps {
 }
 
 export function ProductsPageClient({ products, vehicleTypes, productCategories, subFilters }: ProductsPageClientProps) {
-  const { i18n } = useTranslation();
-  const currentLang = i18n.language as 'en' | 'es';
+  const { t, i18n } = useTranslation();
+  const currentLang = (i18n.language?.startsWith('es') ? 'es' : 'en') as 'en' | 'es';
   const { addToCart } = useCart();
   const [selectedVehicleType, setSelectedVehicleType] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -178,7 +178,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
     });
 
     // Show toast notification
-    toast.success(`${product.name[currentLang]} added to cart!`, {
+    toast.success(`${product.name[currentLang]} ${t('products.addedToCart', 'added to cart!')}`, {
       duration: 2000,
     });
   };
@@ -217,14 +217,14 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
               <svg className="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              <h2 className="text-white font-bold text-lg">Filters</h2>
+              <h2 className="text-white font-bold text-lg">{t('products.filters', 'Filters')}</h2>
             </div>
             {activeFiltersCount > 0 && (
               <button
                 onClick={clearFilters}
                 className="text-yellow-500 hover:text-yellow-400 text-sm font-medium"
               >
-                Clear all
+                {t('products.clearAll', 'Clear all')}
               </button>
             )}
           </div>
@@ -236,7 +236,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
               className="w-full text-left mb-2"
             >
               <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
-                <span className="font-medium">Vehicle Type</span>
+                <span className="font-medium">{t('products.vehicleType', 'Vehicle Type')}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -251,7 +251,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                   onChange={() => setSelectedVehicleType(null)}
                   className="w-4 h-4 text-yellow-500 bg-zinc-800 border-zinc-700 focus:ring-yellow-500"
                 />
-                <span className="text-sm">All Vehicles</span>
+                <span className="text-sm">{t('products.allVehicles', 'All Vehicles')}</span>
               </label>
               {vehicleTypes.map((vt) => (
                 <label key={vt._id} className="flex items-center gap-2 text-gray-300 hover:text-white cursor-pointer">
@@ -272,7 +272,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
           <div className="mb-6">
             <button className="w-full text-left mb-2">
               <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
-                <span className="font-medium">Category</span>
+                <span className="font-medium">{t('products.category', 'Category')}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -314,7 +314,7 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                 }}
               >
                 <div className="flex items-center justify-between text-white hover:text-yellow-500 transition-colors">
-                  <span className="font-medium">Sub-Filters</span>
+                  <span className="font-medium">{t('products.subFilters', 'Sub-Filters')}</span>
                   <svg
                     className={`w-4 h-4 transition-transform ${expandedSubFilters.has('sub-filters') ? 'rotate-180' : ''}`}
                     fill="none"
@@ -464,9 +464,9 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
                 )}
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-foreground">Our Products</h1>
+                <h1 className="text-3xl font-bold text-foreground">{t('products.title', 'Our Products')}</h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} available
+                  {filteredProducts.length} {filteredProducts.length === 1 ? t('products.productAvailable', 'product available') : t('products.productsAvailable', 'products available')}
                 </p>
               </div>
             </div>
@@ -481,13 +481,13 @@ export function ProductsPageClient({ products, vehicleTypes, productCategories, 
               <svg className="w-20 h-20 text-muted-foreground mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
-              <h3 className="text-2xl font-bold text-foreground mb-3">No products found</h3>
-              <p className="text-muted-foreground mb-6">Try adjusting your filters to see more products</p>
+              <h3 className="text-2xl font-bold text-foreground mb-3">{t('products.noProductsFound', 'No products found')}</h3>
+              <p className="text-muted-foreground mb-6">{t('products.noProductsHint', 'Try adjusting your filters to see more products')}</p>
               <Button
                 onClick={clearFilters}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/30"
               >
-                Clear Filters
+                {t('products.clearFilters', 'Clear Filters')}
               </Button>
             </div>
           </div>

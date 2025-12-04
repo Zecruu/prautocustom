@@ -8,64 +8,84 @@ import Link from 'next/link';
 interface ShowcaseImage {
   src: string;
   alt: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
+  fallbackTitle: string;
+  fallbackDescription: string;
 }
 
 const showcaseImages: ShowcaseImage[] = [
   {
     src: '/images/porsche-macan-custom-wheels-pr-auto.jpg',
     alt: 'Porsche Macan with 21" BMF Custom Wheels in Carolina PR',
-    title: 'Porsche Macan',
-    description: 'Stunning 21" BMF wheels with aggressive stance and perfect fitment',
+    titleKey: 'showcase.images.porscheMacan.title',
+    descriptionKey: 'showcase.images.porscheMacan.description',
+    fallbackTitle: 'Porsche Macan',
+    fallbackDescription: 'Stunning 21" BMF wheels with aggressive stance and perfect fitment',
   },
   {
     src: '/images/porsche-boxster-custom-wheels-orange.jpg',
     alt: 'Orange Porsche Boxster with 20" Centerlock Style Wheels',
-    title: 'Porsche Boxster',
-    description: 'Centerlock style 20" wheels with racing-inspired design and yellow brake calipers',
+    titleKey: 'showcase.images.porscheBoxster.title',
+    descriptionKey: 'showcase.images.porscheBoxster.description',
+    fallbackTitle: 'Porsche Boxster',
+    fallbackDescription: 'Centerlock style 20" wheels with racing-inspired design and yellow brake calipers',
   },
   {
     src: '/images/red-mercedes-custom-wheels-carolina-pr.jpg',
     alt: 'Red Mercedes-Benz C-Class with 19" BMF Custom Wheels Puerto Rico',
-    title: 'Mercedes-Benz C-Class',
-    description: 'Premium 19" BMF wheels with elegant multi-spoke design and perfect offset',
+    titleKey: 'showcase.images.mercedesCClass.title',
+    descriptionKey: 'showcase.images.mercedesCClass.description',
+    fallbackTitle: 'Mercedes-Benz C-Class',
+    fallbackDescription: 'Premium 19" BMF wheels with elegant multi-spoke design and perfect offset',
   },
   {
     src: '/images/custom-luxury-sedan-wheels-puerto-rico.jpg',
     alt: 'Audi Q8 with 22" GB Custom Wheels Installation PR',
-    title: 'Audi Q8',
-    description: 'Massive 22" GB wheels with gloss black finish and luxury presence',
+    titleKey: 'showcase.images.audiQ8.title',
+    descriptionKey: 'showcase.images.audiQ8.description',
+    fallbackTitle: 'Audi Q8',
+    fallbackDescription: 'Massive 22" GB wheels with gloss black finish and luxury presence',
   },
   {
     src: '/images/black-sport-rims-custom-installation.jpg',
     alt: 'Volkswagen GTI with 19" GM Sport Rims Carolina',
-    title: 'Volkswagen GTI',
-    description: 'Aggressive 19" GM wheels with gunmetal finish and performance-oriented design',
+    titleKey: 'showcase.images.vwGTI.title',
+    descriptionKey: 'showcase.images.vwGTI.description',
+    fallbackTitle: 'Volkswagen GTI',
+    fallbackDescription: 'Aggressive 19" GM wheels with gunmetal finish and performance-oriented design',
   },
   {
     src: '/images/performance-wheels-custom-fitment.jpg',
     alt: 'Mercedes-Benz G63 AMG with 22" SB-M Performance Wheels Puerto Rico',
-    title: 'Mercedes-Benz G63',
-    description: 'Beast mode with 22" SB-M wheels, matte black finish, and commanding presence',
+    titleKey: 'showcase.images.mercedesG63.title',
+    descriptionKey: 'showcase.images.mercedesG63.description',
+    fallbackTitle: 'Mercedes-Benz G63',
+    fallbackDescription: 'Beast mode with 22" SB-M wheels, matte black finish, and commanding presence',
   },
   {
     src: '/images/luxury-suv-aftermarket-wheels-pr.jpg',
     alt: 'Toyota Tundra with 22" 4Play Aftermarket Wheels PR Auto Custom',
-    title: 'Toyota Tundra',
-    description: 'Powerful 22" 4Play wheels built for durability and off-road capability',
+    titleKey: 'showcase.images.toyotaTundra.title',
+    descriptionKey: 'showcase.images.toyotaTundra.description',
+    fallbackTitle: 'Toyota Tundra',
+    fallbackDescription: 'Powerful 22" 4Play wheels built for durability and off-road capability',
   },
   {
     src: '/images/custom-sport-wheels-installation-puerto-rico.jpg',
     alt: 'BMW 4 Series with 19" GB Custom Sport Wheels Puerto Rico',
-    title: 'BMW 4 Series',
-    description: 'Sleek 19" GB wheels with gloss black finish and sport-tuned stance',
+    titleKey: 'showcase.images.bmw4Series.title',
+    descriptionKey: 'showcase.images.bmw4Series.description',
+    fallbackTitle: 'BMW 4 Series',
+    fallbackDescription: 'Sleek 19" GB wheels with gloss black finish and sport-tuned stance',
   },
   {
     src: '/images/premium-car-wheels-pr-auto-custom.jpg',
     alt: 'Jeep Gladiator with 17" BR Wheels and 37" Tires Carolina',
-    title: 'Jeep Gladiator',
-    description: 'Rugged 17" BR wheels wrapped in massive 37" tires for ultimate off-road domination',
+    titleKey: 'showcase.images.jeepGladiator.title',
+    descriptionKey: 'showcase.images.jeepGladiator.description',
+    fallbackTitle: 'Jeep Gladiator',
+    fallbackDescription: 'Rugged 17" BR wheels wrapped in massive 37" tires for ultimate off-road domination',
   },
 ];
 
@@ -114,10 +134,10 @@ export const WorkShowcase: React.FC = () => {
               {/* Text Content */}
               <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                 <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-yellow-500 transition-colors duration-300">
-                  {image.title}
+                  {t(image.titleKey, image.fallbackTitle)}
                 </h3>
                 <p className="text-gray-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
-                  {image.description}
+                  {t(image.descriptionKey, image.fallbackDescription)}
                 </p>
               </div>
 
@@ -180,8 +200,8 @@ export const WorkShowcase: React.FC = () => {
               />
             </div>
             <div className="mt-6 text-center">
-              <h3 className="text-3xl font-bold text-white mb-2">{selectedImage.title}</h3>
-              <p className="text-gray-400 text-lg">{selectedImage.description}</p>
+              <h3 className="text-3xl font-bold text-white mb-2">{t(selectedImage.titleKey, selectedImage.fallbackTitle)}</h3>
+              <p className="text-gray-400 text-lg">{t(selectedImage.descriptionKey, selectedImage.fallbackDescription)}</p>
             </div>
           </div>
         </div>
