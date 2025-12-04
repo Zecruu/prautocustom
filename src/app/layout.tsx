@@ -6,6 +6,7 @@ import { I18nProvider } from "@/components/I18nProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { CookieConsent } from "@/components/CookieConsent";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -253,6 +254,7 @@ export default function RootLayout({
                   },
                 }}
               />
+              <CookieConsent />
             </CartProvider>
           </I18nProvider>
         </SessionProvider>
