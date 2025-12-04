@@ -19,6 +19,7 @@ const resources = {
         title: 'PR Auto Custom',
         subtitle: 'Premium Custom Rims & Wheels',
         cta: 'Start Customizing',
+        scroll: 'SCROLL',
       },
       visualizer: {
         title: 'Premium Rim Collection',
@@ -125,9 +126,6 @@ const resources = {
           jeepGladiator: { title: 'Jeep Gladiator', description: 'Rugged 17" BR wheels wrapped in massive 37" tires for ultimate off-road domination' },
         },
       },
-      hero: {
-        scroll: 'SCROLL',
-      },
       products: {
         title: 'Our Products',
         productsAvailable: 'products available',
@@ -164,6 +162,7 @@ const resources = {
         title: 'PR Auto Custom',
         subtitle: 'Llantas y Rines Personalizados Premium',
         cta: 'Comenzar a Personalizar',
+        scroll: 'DESLIZA',
       },
       visualizer: {
         title: 'Colección Premium de Rines',
@@ -269,9 +268,6 @@ const resources = {
           bmw4Series: { title: 'BMW Serie 4', description: 'Elegantes rines GB de 19" con acabado negro brillante y postura deportiva' },
           jeepGladiator: { title: 'Jeep Gladiator', description: 'Rines BR robustos de 17" con neumáticos masivos de 37" para dominio todoterreno total' },
         },
-      },
-      hero: {
-        scroll: 'DESLIZA',
       },
       products: {
         title: 'Nuestros Productos',
